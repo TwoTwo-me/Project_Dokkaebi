@@ -8,6 +8,21 @@ Human -> AI Manager Agent -> Symphony/GitHub Project -> AI Worker -> verifiable 
 
 Dokkaebi manages Human intent, approval boundaries, work contracts, and result review. Symphony is treated as the first worker orchestration backend for GitHub Project based dispatch, isolated worker execution, and progress/result tracking.
 
+
+## Manager strategy
+
+Dokkaebi is **Hermes-first, contract-first**:
+
+- Hermes is the first baseline AI Manager implementation.
+- Dokkaebi itself is not Hermes-specific; the stable interface is the Manager Contract.
+- Codex/oh-my-codex remains useful as a development, planning, and alternate Manager adapter.
+- OpenClaw remains a future candidate for channel/UI-heavy operation after safety boundaries are mature.
+
+See:
+
+- [`docs/adr/0001-hermes-first-manager-contract.md`](docs/adr/0001-hermes-first-manager-contract.md)
+- [`docs/contracts/manager-contract.md`](docs/contracts/manager-contract.md)
+
 ## Initial scope
 
 Milestone 1 is a repository-contract milestone:
