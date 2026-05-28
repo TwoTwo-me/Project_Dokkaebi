@@ -169,13 +169,16 @@ If project status fields, labels, workpad conventions, or Worker metadata cannot
 be mapped, the Manager must mark the ticket blocked and request a mapping or
 project setup change.
 
-For v0 scheduling, the custom `Dokkaebi Status` field is authoritative; the
-native GitHub Project `status` field is informational. After a Worker produces a
-complete result packet, Manager-controlled result ingestion must move `Dokkaebi
-Status` out of active states (`Human Review`, `Fix Requested`, or `Blocked`)
-before unattended polling can safely continue. Leaving a completed result in
-`Dispatchable` is a repeat-dispatch hazard and must be treated as blocked or
-operator-interrupted.
+For v0 scheduling, the custom `Dokkaebi Status` field is authoritative for
+Symphony, and the human-visible GitHub Project `Status` field is a strict mirror
+with the same option set. Manager-controlled result ingestion must update both
+fields to the same semantic state; any mismatch is drift and must be repaired
+with `scripts/dokkaebi-project-status-sync.py --apply` or blocked before
+dispatch. After a Worker produces a complete result packet, result ingestion
+must move the item out of active states (`Human Review`, `Fix Requested`, or
+`Blocked`) before unattended polling can safely continue. Leaving a completed
+result in `Dispatchable` is a repeat-dispatch hazard and must be treated as
+blocked or operator-interrupted.
 
 ## Trusted automation gates
 

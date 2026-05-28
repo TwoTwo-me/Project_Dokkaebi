@@ -198,6 +198,12 @@ the semantic states should remain stable.
 | Failed | Manager | Work cannot be completed under current constraints. | Reopened, Cancelled |
 | Cancelled | Human / Manager | Work is intentionally stopped. | Reopened |
 
+The human-visible GitHub Project `Status` field must expose the same option set
+as the Dokkaebi state field and mirror its value on every item. Project board
+views should group by `Status` for humans while Symphony reads the configured
+Dokkaebi state field. Any mismatch is drift and must be repaired with
+`scripts/dokkaebi-project-status-sync.py --apply` or blocked before dispatch.
+
 ## Status transition provenance
 
 GitHub Project status is the first v0 approval surface, but a status value alone

@@ -117,6 +117,21 @@ unattended poll loop. `Human Review`, `Fix Requested`, or `Blocked` are the safe
 post-result states; leaving a completed item as `Dispatchable` can repeat
 dispatch.
 
+The GitHub Project's human-visible `Status` field is a strict mirror of
+`Dokkaebi Status`. It must have the same option set and the same value on every
+item. Before starting or resuming a Manager/Symphony loop, run:
+
+```bash
+scripts/dokkaebi-project-status-sync.py --json
+```
+
+If drift is reported and the Dokkaebi field is trusted as authoritative, repair
+the human mirror with:
+
+```bash
+scripts/dokkaebi-project-status-sync.py --apply --json
+```
+
 ## 5. First test item
 
 The first live item is `basic`, docs-only, and non-credentialed. It validates

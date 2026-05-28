@@ -12,6 +12,8 @@ mode:
 
 human_review_transition_policy:
   status_field: Dokkaebi Status
+  human_status_mirror_field: Status
+  status_mirror_policy: strict_equal
   review_state: Human Review
   manager_may_enter_review_state: true
   terminal_approval_transitions:

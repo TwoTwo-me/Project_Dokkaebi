@@ -3,6 +3,8 @@ tracker:
   kind: github-project
   project_id: PVT_kwHOES1Fes4BY7jD
   state_field: Dokkaebi Status
+  human_status_mirror_field: Status
+  status_mirror_policy: strict_equal
   active_states:
     - Dispatchable
     - In Progress
@@ -205,13 +207,16 @@ unavailable or ambiguous, leave the item in `Human Review` or move it to
 
 ## Repeat-dispatch guard
 
-The custom `Dokkaebi Status` field is authoritative for this workflow; the native
-GitHub Project `status` field is informational. Symphony must not be left to
-repeat an already-completed `Dispatchable` item unattended. After a Worker
-produces a complete result packet, the Manager-controlled ingestion step must
-review the packet and move the custom `Dokkaebi Status` out of active states
-(`Human Review`, `Fix Requested`, or `Blocked`) before continued polling is
-treated as safe.
+The custom `Dokkaebi Status` field is authoritative for Symphony dispatch. The
+human-visible GitHub Project `Status` field must mirror the same semantic value
+and expose the same option set for people using the Project board. Any mismatch
+between `Status` and `Dokkaebi Status` is drift; run
+`scripts/dokkaebi-project-status-sync.py --apply` or block dispatch until it is
+fixed. Symphony must not be left to repeat an already-completed `Dispatchable`
+item unattended. After a Worker produces a complete result packet, the
+Manager-controlled ingestion step must review the packet and move the status out
+of active states (`Human Review`, `Fix Requested`, or `Blocked`) before
+continued polling is treated as safe.
 
 ## Execution checklist
 

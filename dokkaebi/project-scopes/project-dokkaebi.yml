@@ -57,6 +57,8 @@ tracker:
   project_url: https://github.com/users/Project-Dokkaebi/projects/1
   token_env: GITHUB_GRAPHQL_TOKEN
   state_field: Dokkaebi Status
+  human_status_mirror_field: Status
+  status_mirror_policy: strict_equal
   priority_field: Priority
   admission_labels:
     - dokkaebi

@@ -116,6 +116,13 @@ or an adapter-equivalent check. The helper may recommend `Human Review`,
 `Fix Requested`, or `Blocked`, but it does not grant merge, deploy, or terminal
 closeout authority.
 
+The GitHub Project `Status` field is the human-visible mirror of the configured
+Dokkaebi state field. Managers must keep both fields on the same semantic value
+for every item. Run
+[`scripts/dokkaebi-project-status-sync.py`](../../scripts/dokkaebi-project-status-sync.py)
+in verify mode before dispatch and with `--apply` when the mirror has drifted
+from the Dokkaebi-authoritative field.
+
 ### Approval evidence minimum
 
 Pre-execution Human approval must record:

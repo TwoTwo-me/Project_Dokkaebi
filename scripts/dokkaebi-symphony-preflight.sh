@@ -123,6 +123,8 @@ assert workflow_tracker['kind'] == 'github-project'
 comparisons = [
     ('project_id', scope_tracker.get('project_id'), workflow_tracker.get('project_id')),
     ('state_field', scope_tracker.get('state_field'), workflow_tracker.get('state_field')),
+    ('human_status_mirror_field', scope_tracker.get('human_status_mirror_field'), workflow_tracker.get('human_status_mirror_field')),
+    ('status_mirror_policy', scope_tracker.get('status_mirror_policy'), workflow_tracker.get('status_mirror_policy')),
     ('priority_field', scope_tracker.get('priority_field'), workflow_tracker.get('priority_field')),
     ('active_states', scope_tracker.get('active_states'), workflow_tracker.get('active_states')),
     ('wait_states', scope_tracker.get('wait_states'), workflow_tracker.get('wait_states')),
@@ -165,6 +167,9 @@ if (policy_transition_policy.get('approval_action_aliases') or {}) != (transitio
     errors.append('policy/workflow approval_action_aliases mismatch')
 if (policy_transition_policy.get('enabled_provenance_sources') or []) != (transition_policy.get('enabled_provenance_sources') or []):
     errors.append('policy/workflow enabled_provenance_sources mismatch')
+for name in ['human_status_mirror_field', 'status_mirror_policy']:
+    if policy_transition_policy.get(name) != scope_tracker.get(name) or policy_transition_policy.get(name) != workflow_tracker.get(name):
+        errors.append(f'policy/scope/workflow {name} mismatch')
 wrapper = root / 'scripts' / 'dokkaebi-codex-worker-app-server.sh'
 if not (wrapper.is_file() and wrapper.stat().st_mode & 0o111):
     errors.append('worker env scrubber is missing or not executable')

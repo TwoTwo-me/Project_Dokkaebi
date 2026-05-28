@@ -78,8 +78,12 @@ to scrub Manager/control-plane credentials before `codex app-server` starts.
 Use `DOKKAEBI_WORKER_REF` when a Worker must validate a committed branch, pull
 request ref, or SHA instead of remote `main`.
 
-The v0 Human approval surface is the GitHub Project `Dokkaebi Status` field.
-The Manager may route complete results to `Human Review`, but
+The v0 Human approval surface is the GitHub Project state pair:
+`Dokkaebi Status` is the Symphony/Manager state field and the human-visible
+`Status` field is a strict mirror with the same options. Verify or repair the
+mirror with `scripts/dokkaebi-project-status-sync.py --json` or
+`scripts/dokkaebi-project-status-sync.py --apply --json`. The Manager may route
+complete results to `Human Review`, but
 `Human Review` → `Merging` and `Human Review` → `Done` require human-origin
 provenance from a trusted verifier with source-specific evidence. Manager
 self-approval, GitHub issue closeout without human-origin approval, and

@@ -41,6 +41,7 @@ require_file docs/runbooks/dokkaebi-runtime-bootstrap.md
 require_file README.md
 require_file scripts/dokkaebi-approval-transition-check.py
 require_file scripts/dokkaebi-worker-result-review.py
+require_file scripts/dokkaebi-project-status-sync.py
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -63,6 +64,8 @@ require_text WORKFLOW.md 'Human Review` → `Done`'
 require_text WORKFLOW.md 'Unknown, untrusted, or ambiguous provenance fails closed'
 require_text WORKFLOW.md 'GitHub issue closeout is also terminal closeout'
 require_text WORKFLOW.md 'trusted provenance verifier'
+require_text WORKFLOW.md 'human-visible GitHub Project `Status` field'
+require_text WORKFLOW.md 'scripts/dokkaebi-project-status-sync.py --apply'
 require_text WORKFLOW.md 'dokkaebi/KILL_SWITCH'
 
 require_text docs/contracts/manager-contract.md '# Dokkaebi Manager Contract'
@@ -87,6 +90,7 @@ require_text docs/contracts/manager-contract.md 'SHA-256 hash'
 require_text docs/contracts/manager-contract.md 'Caller-supplied'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-approval-transition-check.py'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-worker-result-review.py'
+require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-project-status-sync.py'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -107,6 +111,7 @@ require_text docs/policies/authority-and-safety.md 'caller-supplied'
 require_text docs/policies/authority-and-safety.md 'GitHub issue close'
 require_text docs/policies/authority-and-safety.md 'source-specific evidence file'
 require_text docs/policies/authority-and-safety.md 'repeat-dispatch hazard'
+require_text docs/policies/authority-and-safety.md 'human-visible GitHub Project `Status` field is a strict mirror'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
@@ -256,6 +261,8 @@ for doc_name, doc_text in [
     for term in [
         'human_review_transition_policy',
         'Human Review',
+        'human_status_mirror_field',
+        'status_mirror_policy',
         'Merging',
         'Done',
         'required_origin: human',
