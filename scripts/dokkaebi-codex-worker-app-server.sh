@@ -8,6 +8,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 KILL_SWITCH="$ROOT/dokkaebi/KILL_SWITCH"
+KILL_SWITCH_POLL_INTERVAL_SECONDS="${DOKKAEBI_KILL_SWITCH_POLL_INTERVAL_SECONDS:-2}"
 
 if [[ -e "$KILL_SWITCH" ]]; then
   if [[ -f "$KILL_SWITCH" ]]; then
@@ -75,4 +76,38 @@ if [[ "${1:-}" == "--check-sanitizer" ]]; then
   exit 0
 fi
 
-exec codex app-server "$@"
+child_pid=""
+
+terminate_child() {
+  if [[ -n "$child_pid" ]] && kill -0 "$child_pid" 2>/dev/null; then
+    kill "$child_pid" 2>/dev/null || true
+    wait "$child_pid" 2>/dev/null || true
+  fi
+}
+
+handle_signal() {
+  terminate_child
+  exit 143
+}
+
+trap handle_signal INT TERM HUP
+
+codex app-server "$@" &
+child_pid="$!"
+
+while kill -0 "$child_pid" 2>/dev/null; do
+  if [[ -e "$KILL_SWITCH" ]]; then
+    if [[ -f "$KILL_SWITCH" ]]; then
+      echo "Dokkaebi kill switch present during worker run: ${KILL_SWITCH#$ROOT/}" >&2
+    else
+      echo "Dokkaebi kill switch path is ambiguous/non-file during worker run: ${KILL_SWITCH#$ROOT/}" >&2
+    fi
+    terminate_child
+    exit 2
+  fi
+
+  sleep "$KILL_SWITCH_POLL_INTERVAL_SECONDS" &
+  wait "$!" || true
+done
+
+wait "$child_pid"

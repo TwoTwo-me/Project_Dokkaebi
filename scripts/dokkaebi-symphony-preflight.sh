@@ -51,18 +51,24 @@ verify_github_graphql_token_scope() {
     return 4
   fi
   local headers
+  local curl_config
   headers="$(mktemp)"
+  curl_config="$(mktemp)"
+  chmod 600 "$curl_config"
+  {
+    printf 'header = "Authorization: Bearer %s"\n' "$GITHUB_GRAPHQL_TOKEN"
+    printf 'header = "Accept: application/vnd.github+json"\n'
+    printf 'header = "X-GitHub-Api-Version: 2022-11-28"\n'
+  } > "$curl_config"
   if ! curl -fsS -D "$headers" -o /dev/null \
-      -H "Authorization: Bearer ${GITHUB_GRAPHQL_TOKEN}" \
-      -H "Accept: application/vnd.github+json" \
-      -H "X-GitHub-Api-Version: 2022-11-28" \
+      --config "$curl_config" \
       https://api.github.com/user >/tmp/dokkaebi-token-curl.out 2>/tmp/dokkaebi-token-curl.err; then
-    rm -f "$headers"
+    rm -f "$headers" "$curl_config"
     return 5
   fi
   local scopes_line
   scopes_line="$(tr -d '\r' < "$headers" | awk -F': ' 'tolower($1) == "x-oauth-scopes" {print $2; exit}')"
-  rm -f "$headers"
+  rm -f "$headers" "$curl_config"
   if [[ -z "$scopes_line" ]]; then
     return 6
   fi
@@ -149,6 +155,7 @@ if 'github_issue_close' not in (transition_policy.get('approval_required_actions
 for name, expected, actual in [
     ('source_verification', (scope_transition_policy.get('source_verification') or {}), (transition_policy.get('source_verification') or {})),
     ('approval_action_aliases', (scope_transition_policy.get('approval_action_aliases') or {}), (transition_policy.get('approval_action_aliases') or {})),
+    ('enabled_provenance_sources', (scope_transition_policy.get('enabled_provenance_sources') or []), (transition_policy.get('enabled_provenance_sources') or [])),
 ]:
     if expected != actual:
         errors.append(f'tracker.human_review_transition_policy.{name} mismatch: scope={expected!r} workflow={actual!r}')
@@ -156,6 +163,8 @@ if (policy_transition_policy.get('source_verification') or {}) != (transition_po
     errors.append('policy/workflow source_verification mismatch')
 if (policy_transition_policy.get('approval_action_aliases') or {}) != (transition_policy.get('approval_action_aliases') or {}):
     errors.append('policy/workflow approval_action_aliases mismatch')
+if (policy_transition_policy.get('enabled_provenance_sources') or []) != (transition_policy.get('enabled_provenance_sources') or []):
+    errors.append('policy/workflow enabled_provenance_sources mismatch')
 wrapper = root / 'scripts' / 'dokkaebi-codex-worker-app-server.sh'
 if not (wrapper.is_file() and wrapper.stat().st_mode & 0o111):
     errors.append('worker env scrubber is missing or not executable')

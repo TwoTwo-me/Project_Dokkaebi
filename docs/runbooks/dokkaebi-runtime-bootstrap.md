@@ -149,11 +149,12 @@ source-specific provenance. Manager-authored, untrusted, or ambiguous terminal
 transitions are blocked rather than treated as approval.
 
 For local/bootstrap validation, source-specific provenance must be represented
-by a durable evidence file and SHA-256 hash. GitHub status-history records should
-come from a status-history adapter output, durable approval records from an
-approval-record adapter, and future broker decisions from signed broker output.
-The checker rejects forged records that only copy accepted verifier/source
-strings without matching evidence.
+by a durable evidence file and SHA-256 hash plus existing linked result/review
+evidence. Bootstrap v0 enables only `durable_human_approval_record`; GitHub
+status-history records and future broker decisions fail closed until their
+adapters authenticate live API output or verify a broker signature. The checker
+rejects forged records that only copy accepted verifier/source strings without
+enabled source-specific evidence.
 
 ## 7. Worker result ingestion and Manager review
 

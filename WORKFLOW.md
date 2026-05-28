@@ -214,10 +214,12 @@ GitHub issue closeout is also terminal closeout and requires the same approval
 class. The approval record must identify the actor, actor origin, source
 transition, target transition, approved action, linked ticket/project item,
 linked Worker result packet or Manager review, trusted provenance verifier,
-source-specific record id, verification method, and provenance source such as
-GitHub Project status history, a durable Human approval record, or a future
-approved approval broker. Caller-supplied `actor_origin: human` JSON is not
-approval by itself. A Manager-authored `Human Review` → `Merging`,
+source-specific record id, verification method, and an enabled provenance
+source. In this bootstrap v0 policy only `durable_human_approval_record` is
+enabled; GitHub status-history and broker sources stay listed as planned
+sources but fail closed until their adapters can authenticate API output or
+broker signatures. Caller-supplied `actor_origin: human` JSON is not approval
+by itself. A Manager-authored `Human Review` → `Merging`,
 `Human Review` → `Done`, or GitHub issue close transition is self-approval and
 must be rejected. Unknown, untrusted, or ambiguous provenance fails closed.
 

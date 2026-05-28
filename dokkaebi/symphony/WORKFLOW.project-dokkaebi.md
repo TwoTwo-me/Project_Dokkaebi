@@ -33,6 +33,8 @@ tracker:
         required_origin: human
     manager_self_approval: forbidden
     unknown_or_ambiguous_provenance: fail_closed
+    enabled_provenance_sources:
+      - durable_human_approval_record
     trusted_provenance_verifiers:
       - dokkaebi-github-project-status-adapter
       - dokkaebi-human-approval-record-adapter

@@ -27,6 +27,8 @@ human_review_transition_policy:
     - github_project_status_history_actor
     - durable_human_approval_record
     - future_approved_approval_broker
+  enabled_provenance_sources:
+    - durable_human_approval_record
   trusted_provenance_verifiers:
     - dokkaebi-github-project-status-adapter
     - dokkaebi-human-approval-record-adapter

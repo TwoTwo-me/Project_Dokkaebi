@@ -263,6 +263,7 @@ for doc_name, doc_text in [
         'unknown_or_ambiguous_provenance: fail_closed',
         'trusted_provenance_verifiers',
         'source_verification',
+        'enabled_provenance_sources',
         'durable_human_approval_record',
         'github_issue_close',
         'approval_action_aliases',

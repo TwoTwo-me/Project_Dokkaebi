@@ -92,7 +92,7 @@ Worker result packet. The Manager must not treat its own subsequent
 approval. That mutation is Manager self-approval. Those transitions and GitHub
 issue closeout require a human-origin actor or a future approved approval
 broker, linked ticket/result evidence, a trusted provenance verifier, a
-source-specific record id, evidence file hash, and an auditable provenance source. Caller-supplied
+source-specific record id, evidence file hash, and an enabled auditable provenance source. Caller-supplied
 `actor_origin: human` JSON is not approval by itself. Missing, ambiguous,
 untrusted, or Manager-authored provenance fails closed and blocks merge,
 deployment, issue close, terminal closeout, and any high-impact follow-up.
@@ -100,12 +100,14 @@ deployment, issue close, terminal closeout, and any high-impact follow-up.
 The local validation gate is
 [`scripts/dokkaebi-approval-transition-check.py`](../../scripts/dokkaebi-approval-transition-check.py).
 Adapters must feed it a transition record produced or checked by a trusted
-provenance verifier: GitHub Project status history query, a durable Human
-approval record adapter, or a future approved approval broker. Arbitrary
-Manager-authored records are fixtures only and must not be used as terminal
-approval evidence. The local checker requires a source-specific evidence file
-and SHA-256 hash for bootstrap verification; future brokered approvals should
-use signed adapter output.
+provenance verifier. Bootstrap v0 enables only the durable Human approval record
+adapter. GitHub Project status-history and approval-broker sources remain
+planned but disabled until the adapter can authenticate API output or verify a
+broker signature. Arbitrary Manager-authored records are fixtures only and must
+not be used as terminal approval evidence. The local checker requires a
+source-specific evidence file, SHA-256 hash, and an existing linked result or
+review artifact for bootstrap verification; future brokered approvals should use
+signed adapter output.
 
 Worker result ingestion should use the result-packet template plus the local
 review helper

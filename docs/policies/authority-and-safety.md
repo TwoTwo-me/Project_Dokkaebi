@@ -53,13 +53,16 @@ that state require human-origin provenance:
 
 Accepted provenance sources are GitHub Project status history with an
 identifiable Human actor, a durable Human approval record, or a future approved
-approval broker. They must be produced or checked by a trusted provenance
-verifier such as a GitHub Project status-history adapter, a durable approval
-record adapter, or a broker-signed approval decision; caller-supplied
+approval broker. Bootstrap v0 enables only `durable_human_approval_record`;
+GitHub status-history and broker sources fail closed until the adapter verifies
+live API output or a broker signature. Enabled sources must be produced or
+checked by a trusted provenance verifier such as a GitHub Project status-history
+adapter, a durable approval record adapter, or a broker-signed approval decision; caller-supplied
 `actor_origin: human` JSON is not approval by itself. A Manager-authored terminal
 transition or GitHub issue close is self-approval and is forbidden. Unknown,
 ambiguous, missing, untrusted, or contradictory provenance fails closed.
-Bootstrap evidence must include a source-specific evidence file and SHA-256 hash;
+Bootstrap evidence must include a source-specific evidence file, SHA-256 hash,
+and existing linked result/review evidence;
 future production evidence should replace that local file binding with signed
 adapter or broker output.
 

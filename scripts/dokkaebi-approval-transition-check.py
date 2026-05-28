@@ -12,8 +12,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any
 
 try:
@@ -176,11 +178,40 @@ def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, 
         if not resolved_approval.is_relative_to(approvals_root) or not resolved_approval.is_file():
             return False, "approval_record_path must point to an existing file under dokkaebi/approvals"
     elif provenance_source == "future_approved_approval_broker":
-        for key in ["broker_decision_id", "broker_signature"]:
-            if not str(evidence.get(key) or "").strip():
-                return False, f"broker provenance missing {key}"
+        return False, "broker provenance is disabled until cryptographic signature verification is implemented"
 
     return True, "source-specific JSON provenance verified"
+
+
+def _verify_linked_result_packet_or_review(value: str, details: dict[str, Any]) -> tuple[bool, str]:
+    value = value.strip()
+    parsed = urlparse(value)
+    if parsed.scheme in {"http", "https"}:
+        if parsed.netloc != "github.com":
+            return False, "linked_result_packet_or_review URL must be on github.com"
+        if not re.match(r"^/TwoTwo-me/Project_Dokkaebi/(issues|pull)/[0-9]+", parsed.path):
+            return False, "linked_result_packet_or_review URL must point to this repository issue/PR evidence"
+        details["linked_result_packet_or_review_kind"] = "github_url"
+        return True, "linked GitHub review/result URL verified"
+
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts:
+        return False, "linked_result_packet_or_review must be a repository-relative path or approved GitHub URL"
+    resolved = (ROOT / path).resolve()
+    if not resolved.is_relative_to(ROOT):
+        return False, "linked_result_packet_or_review must stay inside the repository"
+    allowed_roots = [
+        (ROOT / ".omx" / "evidence").resolve(),
+        (ROOT / "docs").resolve(),
+        (ROOT / "dokkaebi" / "approvals").resolve(),
+    ]
+    if not any(resolved.is_relative_to(prefix) for prefix in allowed_roots):
+        return False, "linked_result_packet_or_review must be under .omx/evidence, docs, or dokkaebi/approvals"
+    if not resolved.is_file():
+        return False, f"linked_result_packet_or_review does not exist: {value}"
+    details["linked_result_packet_or_review_kind"] = "repo_file"
+    details["linked_result_packet_or_review_resolved"] = str(resolved.relative_to(ROOT))
+    return True, "linked result/review evidence exists"
 
 
 def _action_aliases(policy: dict[str, Any]) -> dict[str, str]:
@@ -207,6 +238,7 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     terminal_targets = {target for _, target in transitions}
     accepted_sources = set(policy.get("accepted_provenance_sources") or [])
     accepted_sources.update(policy.get("provenance_sources") or [])
+    enabled_sources = set(policy.get("enabled_provenance_sources") or accepted_sources)
     trusted_verifiers = set(policy.get("trusted_provenance_verifiers") or [])
     if not trusted_verifiers:
         trusted_verifiers = DEFAULT_TRUSTED_VERIFIERS
@@ -239,6 +271,7 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
         "is_gated_action": is_gated_action,
         "review_state": review_state,
         "terminal_approval_transitions": sorted([{"from": a, "to": b} for a, b in transitions], key=lambda x: (x["from"], x["to"])),
+        "enabled_provenance_sources": sorted(enabled_sources),
     }
 
     if not source or not target:
@@ -275,6 +308,9 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if accepted_sources and provenance_source not in accepted_sources:
         return False, f"unaccepted provenance_source {provenance_source!r}; expected one of {sorted(accepted_sources)!r}", details
 
+    if enabled_sources and provenance_source not in enabled_sources:
+        return False, f"provenance_source {provenance_source!r} is not enabled for this v0 policy; expected one of {sorted(enabled_sources)!r}", details
+
     if allowed_actions and canonical_approved_action not in allowed_actions:
         return False, f"unaccepted approved_action {approved_action!r}; expected one of {sorted(allowed_actions)!r}", details
 
@@ -298,6 +334,10 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     linked_result = str(record.get("linked_result_packet_or_review") or "").strip()
     if linked_result.lower() in {"n/a", "none", "null", "unknown"}:
         return False, "linked_result_packet_or_review must identify durable evidence", details
+    linked_ok, linked_reason = _verify_linked_result_packet_or_review(linked_result, details)
+    if not linked_ok:
+        return False, linked_reason, details
+    details["linked_result_packet_or_review_verification"] = linked_reason
 
     return True, "human-origin gated approval accepted", details
 
