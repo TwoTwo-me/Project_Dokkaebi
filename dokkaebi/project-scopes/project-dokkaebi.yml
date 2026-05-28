@@ -107,7 +107,7 @@ tracker:
     unknown_or_ambiguous_provenance: fail_closed
     provenance_sources:
       - github_project_status_history_actor
-      - human_approval_record
+      - durable_human_approval_record
       - future_approved_approval_broker
     trusted_provenance_verifiers:
       - dokkaebi-github-project-status-adapter
@@ -115,7 +115,7 @@ tracker:
       - dokkaebi-approval-broker
     source_verification:
       github_project_status_history_actor: github_project_status_history_query
-      human_approval_record: approval_record_path
+      durable_human_approval_record: approval_record_path
       future_approved_approval_broker: broker_signed_decision
     approval_required_actions:
       - pr_merge
@@ -123,6 +123,12 @@ tracker:
       - deployment
       - human_review_to_merging_transition
       - human_review_to_done_transition
+    approval_action_aliases:
+      merge_pr: pr_merge
+      repo.pr.merge: pr_merge
+      deploy_or_cutover: deployment
+      repo.deploy: deployment
+      deploy: deployment
     required_transition_record_fields:
       - source_status
       - target_status

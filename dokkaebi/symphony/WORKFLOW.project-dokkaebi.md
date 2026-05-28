@@ -47,6 +47,12 @@ tracker:
       - deployment
       - human_review_to_merging_transition
       - human_review_to_done_transition
+    approval_action_aliases:
+      merge_pr: pr_merge
+      repo.pr.merge: pr_merge
+      deploy_or_cutover: deployment
+      repo.deploy: deployment
+      deploy: deployment
     required_transition_record_fields:
       - source_status
       - target_status

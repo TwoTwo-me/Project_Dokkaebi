@@ -81,22 +81,24 @@ require_file() {
   fi
 }
 
-status OK "repo root: $ROOT"
-require_file "$SCOPE"
-require_file "$POLICY"
-require_file "$WORKFLOW"
-require_file "$SYMPHONY_DIR/elixir/lib/symphony_elixir/cli.ex"
-require_file "$SYMPHONY_DIR/elixir/mix.exs"
-
 if [[ -e "$KILL_SWITCH" ]]; then
   if [[ -f "$KILL_SWITCH" ]]; then
     status BLOCKED "kill switch present: ${KILL_SWITCH#$ROOT/}"
   else
     status BLOCKED "kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}"
   fi
+  printf '\nSummary: ok=%s warn=%s blocked=%s\n' "$ok" "$warn" "$block"
+  exit 2
 else
   status OK "kill switch absent: ${KILL_SWITCH#$ROOT/}"
 fi
+
+status OK "repo root: $ROOT"
+require_file "$SCOPE"
+require_file "$POLICY"
+require_file "$WORKFLOW"
+require_file "$SYMPHONY_DIR/elixir/lib/symphony_elixir/cli.ex"
+require_file "$SYMPHONY_DIR/elixir/mix.exs"
 
 if python3 - <<'PY' "$ROOT" "$SCOPE" "$POLICY" "$WORKFLOW" >/tmp/dokkaebi-symphony-preflight-yaml.out 2>/tmp/dokkaebi-symphony-preflight-yaml.err
 from pathlib import Path
@@ -136,12 +138,24 @@ if 'dokkaebi-codex-worker-app-server.sh' not in codex_command:
     errors.append('codex.command must use the Dokkaebi worker env scrubber')
 if ((workflow.get('github_auth') or {}).get('scopes') or '') != 'project':
     errors.append('github_auth.scopes must be write-capable project, not read:project')
+scope_transition_policy = scope_tracker.get('human_review_transition_policy') or {}
+policy_transition_policy = policy.get('human_review_transition_policy') or {}
 transition_policy = workflow_tracker.get('human_review_transition_policy') or {}
 for required in ['trusted_provenance_verifiers', 'source_verification', 'approval_required_actions']:
     if required not in transition_policy:
         errors.append(f'tracker.human_review_transition_policy missing {required}')
 if 'github_issue_close' not in (transition_policy.get('approval_required_actions') or []):
     errors.append('human_review_transition_policy must explicitly gate github_issue_close')
+for name, expected, actual in [
+    ('source_verification', (scope_transition_policy.get('source_verification') or {}), (transition_policy.get('source_verification') or {})),
+    ('approval_action_aliases', (scope_transition_policy.get('approval_action_aliases') or {}), (transition_policy.get('approval_action_aliases') or {})),
+]:
+    if expected != actual:
+        errors.append(f'tracker.human_review_transition_policy.{name} mismatch: scope={expected!r} workflow={actual!r}')
+if (policy_transition_policy.get('source_verification') or {}) != (transition_policy.get('source_verification') or {}):
+    errors.append('policy/workflow source_verification mismatch')
+if (policy_transition_policy.get('approval_action_aliases') or {}) != (transition_policy.get('approval_action_aliases') or {}):
+    errors.append('policy/workflow approval_action_aliases mismatch')
 wrapper = root / 'scripts' / 'dokkaebi-codex-worker-app-server.sh'
 if not (wrapper.is_file() and wrapper.stat().st_mode & 0o111):
     errors.append('worker env scrubber is missing or not executable')

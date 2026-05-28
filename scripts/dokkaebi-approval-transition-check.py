@@ -42,6 +42,13 @@ DEFAULT_TRUSTED_VERIFIERS = {
     "dokkaebi-human-approval-record-adapter",
     "dokkaebi-approval-broker",
 }
+DEFAULT_ACTION_ALIASES = {
+    "merge_pr": "pr_merge",
+    "repo.pr.merge": "pr_merge",
+    "deploy_or_cutover": "deployment",
+    "repo.deploy": "deployment",
+    "deploy": "deployment",
+}
 
 
 def _load_record(args: argparse.Namespace) -> dict[str, Any]:
@@ -151,6 +158,18 @@ def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, 
     return True, "source-specific JSON provenance verified"
 
 
+def _action_aliases(policy: dict[str, Any]) -> dict[str, str]:
+    aliases = dict(DEFAULT_ACTION_ALIASES)
+    configured = policy.get("approval_action_aliases") or {}
+    if isinstance(configured, dict):
+        for alias, canonical in configured.items():
+            alias_text = str(alias or "").strip()
+            canonical_text = str(canonical or "").strip()
+            if alias_text and canonical_text:
+                aliases[alias_text] = canonical_text
+    return aliases
+
+
 def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str, dict[str, Any]]:
     source = str(record.get("source_status") or record.get("from") or "").strip()
     target = str(record.get("target_status") or record.get("to") or "").strip()
@@ -167,15 +186,17 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if not trusted_verifiers:
         trusted_verifiers = DEFAULT_TRUSTED_VERIFIERS
     source_verification = policy.get("source_verification") or {}
-    allowed_actions = set(policy.get("approval_required_actions") or [])
     approved_action = str(record.get("approved_action") or "").strip()
+    action_aliases = _action_aliases(policy)
+    canonical_approved_action = action_aliases.get(approved_action, approved_action)
+    allowed_actions = set(policy.get("approval_required_actions") or [])
     provenance_record_id = str(record.get("provenance_record_id") or "").strip()
     provenance_checked_by = str(record.get("provenance_checked_by") or "").strip()
     verification_method = str(record.get("provenance_verification_method") or "").strip()
     evidence_file = str(record.get("provenance_evidence_file") or "").strip()
     evidence_sha = str(record.get("provenance_evidence_sha256") or "").strip()
     is_terminal_target = target in terminal_targets
-    is_gated_action = bool(approved_action and approved_action in allowed_actions)
+    is_gated_action = bool(canonical_approved_action and canonical_approved_action in allowed_actions)
 
     details = {
         "source_status": source,
@@ -184,6 +205,7 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
         "actor_origin": actor_origin,
         "provenance_source": provenance_source,
         "approved_action": approved_action,
+        "canonical_approved_action": canonical_approved_action,
         "provenance_record_id": provenance_record_id,
         "provenance_checked_by": provenance_checked_by,
         "provenance_verification_method": verification_method,
@@ -197,8 +219,11 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if not source or not target:
         return False, "missing source_status or target_status", details
 
+    if approved_action and allowed_actions and canonical_approved_action not in allowed_actions:
+        return False, f"unaccepted approved_action {approved_action!r}; expected one of {sorted(allowed_actions)!r}", details
+
     # Non-terminal review/fix transitions are outside this gate only when they do
-    # not carry an approval-required action such as github_issue_close.
+    # not carry a recognized approval-required action such as github_issue_close.
     if not is_terminal_target and not is_gated_action:
         return True, "non-terminal transition does not require terminal approval provenance", details
 
@@ -225,7 +250,7 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if accepted_sources and provenance_source not in accepted_sources:
         return False, f"unaccepted provenance_source {provenance_source!r}; expected one of {sorted(accepted_sources)!r}", details
 
-    if allowed_actions and approved_action not in allowed_actions:
+    if allowed_actions and canonical_approved_action not in allowed_actions:
         return False, f"unaccepted approved_action {approved_action!r}; expected one of {sorted(allowed_actions)!r}", details
 
     if provenance_checked_by not in trusted_verifiers:

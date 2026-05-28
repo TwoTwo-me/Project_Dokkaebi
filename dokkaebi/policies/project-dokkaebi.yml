@@ -41,6 +41,12 @@ human_review_transition_policy:
     - deployment
     - human_review_to_merging_transition
     - human_review_to_done_transition
+  approval_action_aliases:
+    merge_pr: pr_merge
+    repo.pr.merge: pr_merge
+    deploy_or_cutover: deployment
+    repo.deploy: deployment
+    deploy: deployment
 
 allowed_default_automation:
   - draft_or_update_worker_ready_tickets
@@ -108,7 +114,7 @@ runtime_providers:
     allowed_capabilities:
       - container-capable
     requires:
-      - human_approval_record
+      - durable_human_approval_record
       - host_helper_daemon_contract
       - audit_log
       - kill_switch
