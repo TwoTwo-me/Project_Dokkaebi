@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import re
 import sys
 from pathlib import Path
 from urllib.parse import urlparse
@@ -187,16 +186,11 @@ def _verify_linked_result_packet_or_review(value: str, details: dict[str, Any]) 
     value = value.strip()
     parsed = urlparse(value)
     if parsed.scheme in {"http", "https"}:
-        if parsed.netloc != "github.com":
-            return False, "linked_result_packet_or_review URL must be on github.com"
-        if not re.match(r"^/TwoTwo-me/Project_Dokkaebi/(issues|pull)/[0-9]+", parsed.path):
-            return False, "linked_result_packet_or_review URL must point to this repository issue/PR evidence"
-        details["linked_result_packet_or_review_kind"] = "github_url"
-        return True, "linked GitHub review/result URL verified"
+        return False, "linked_result_packet_or_review URL evidence is disabled in v0; use a repository-local durable evidence file"
 
     path = Path(value)
     if path.is_absolute() or ".." in path.parts:
-        return False, "linked_result_packet_or_review must be a repository-relative path or approved GitHub URL"
+        return False, "linked_result_packet_or_review must be a repository-relative path"
     resolved = (ROOT / path).resolve()
     if not resolved.is_relative_to(ROOT):
         return False, "linked_result_packet_or_review must stay inside the repository"
