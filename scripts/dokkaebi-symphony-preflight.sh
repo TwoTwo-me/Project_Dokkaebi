@@ -30,7 +30,17 @@ status() {
 
 has_write_project_scope() {
   local scopes_line="$1"
-  [[ "$scopes_line" =~ (^|[^A-Za-z0-9_:.-])project([^A-Za-z0-9_:.-]|$) ]]
+  local scope
+  local trimmed
+  IFS=',' read -ra scopes <<< "$scopes_line"
+  for scope in "${scopes[@]}"; do
+    trimmed="${scope#"${scope%%[![:space:]]*}"}"
+    trimmed="${trimmed%"${trimmed##*[![:space:]]}"}"
+    if [[ "$trimmed" == "project" ]]; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 verify_github_graphql_token_scope() {

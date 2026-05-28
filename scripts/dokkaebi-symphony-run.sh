@@ -8,11 +8,24 @@ SYMPHONY_ESCRIPT="$SYMPHONY_DIR/elixir/bin/symphony"
 LOGS_ROOT="${DOKKAEBI_SYMPHONY_LOGS_ROOT:-$ROOT/.omx/symphony/logs}"
 PORT="${DOKKAEBI_SYMPHONY_PORT:-4000}"
 ACK_FLAG="--i-understand-that-this-will-be-running-without-the-usual-guardrails"
+KILL_SWITCH="$ROOT/dokkaebi/KILL_SWITCH"
+
+if [[ -e "$KILL_SWITCH" ]]; then
+  if [[ -f "$KILL_SWITCH" ]]; then
+    echo "Dokkaebi kill switch present: ${KILL_SWITCH#$ROOT/}" >&2
+  else
+    echo "Dokkaebi kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}" >&2
+  fi
+  exit 2
+fi
 
 if [[ -z "${GITHUB_GRAPHQL_TOKEN:-}" && "${DOKKAEBI_USE_GH_TOKEN:-1}" == "1" ]]; then
   if command -v gh >/dev/null 2>&1; then
     GITHUB_GRAPHQL_TOKEN="$(gh auth token 2>/dev/null || true)"
     export GITHUB_GRAPHQL_TOKEN
+    if [[ -n "$GITHUB_GRAPHQL_TOKEN" ]]; then
+      echo "Derived GITHUB_GRAPHQL_TOKEN from local gh auth; strict preflight will verify this exact runtime token" >&2
+    fi
   fi
 fi
 
