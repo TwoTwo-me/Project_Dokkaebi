@@ -173,8 +173,15 @@ For v0 scheduling, the custom `Dokkaebi Status` field is authoritative for
 Symphony, and the human-visible GitHub Project `Status` field is a strict mirror
 with the same option set. Manager-controlled result ingestion must update both
 fields to the same semantic state; any mismatch is drift and must be repaired
-with `scripts/dokkaebi-project-status-sync.py --apply` or blocked before
-dispatch. After a Worker produces a complete result packet, result ingestion
+with `scripts/dokkaebi-project-status-sync.py --apply` only for non-terminal
+repair or blocked before dispatch. Always-on Managers run the helper in
+bidirectional observed mode:
+after a clean snapshot, a later change to either field is mirrored to the other
+field, while conflicts and missing snapshots fail closed. Approval-gated
+terminal movements, including Human Review to Merging or Done, use
+`block_without_trusted_provenance` and are not automatically promoted from the
+human mirror into the Symphony-authoritative field. After a Worker
+produces a complete result packet, result ingestion
 must move the item out of active states (`Human Review`, `Fix Requested`, or
 `Blocked`) before unattended polling can safely continue. Leaving a completed
 result in `Dispatchable` is a repeat-dispatch hazard and must be treated as

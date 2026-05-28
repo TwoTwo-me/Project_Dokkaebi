@@ -78,10 +78,14 @@ if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-
   scopes_line="$(grep -E "Token scopes:" /tmp/dokkaebi-manager-gh-auth.out || true)"
   if has_write_project_scope "$scopes_line"; then
     status OK "gh token includes write-capable project scope"
-    if python3 "$ROOT/scripts/dokkaebi-project-status-sync.py" --json >/tmp/dokkaebi-project-status-sync.out 2>/tmp/dokkaebi-project-status-sync.err; then
-      status OK "GitHub Project Status mirrors Dokkaebi Status"
+    if python3 "$ROOT/scripts/dokkaebi-project-status-sync.py" \
+      --direction bidirectional \
+      --apply \
+      --record-state \
+      --json >/tmp/dokkaebi-project-status-sync.out 2>/tmp/dokkaebi-project-status-sync.err; then
+      status OK "GitHub Project Status auto-sync is clean"
     else
-      status BLOCKED "GitHub Project Status mirror drift detected; run scripts/dokkaebi-project-status-sync.py --apply --json"
+      status BLOCKED "GitHub Project Status auto-sync blocked; inspect /tmp/dokkaebi-project-status-sync.out and resolve drift/conflict"
     fi
   else
     status BLOCKED "gh token lacks write-capable project scope; read:project is insufficient for status mutation. Run: gh auth refresh -h github.com -s project"

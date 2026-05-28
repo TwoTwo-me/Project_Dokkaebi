@@ -170,6 +170,28 @@ if (policy_transition_policy.get('enabled_provenance_sources') or []) != (transi
 for name in ['human_status_mirror_field', 'status_mirror_policy']:
     if policy_transition_policy.get(name) != scope_tracker.get(name) or policy_transition_policy.get(name) != workflow_tracker.get(name):
         errors.append(f'policy/scope/workflow {name} mismatch')
+for name in ['status_sync']:
+    if (scope_tracker.get(name) or {}) != (workflow_tracker.get(name) or {}):
+        errors.append(f'tracker.{name} mismatch: scope={scope_tracker.get(name)!r} workflow={workflow_tracker.get(name)!r}')
+    if (policy_transition_policy.get(name) or {}) != (scope_tracker.get(name) or {}):
+        errors.append(f'policy/scope {name} mismatch: policy={policy_transition_policy.get(name)!r} scope={scope_tracker.get(name)!r}')
+status_sync = scope_tracker.get('status_sync') or {}
+if status_sync.get('mode') != 'bidirectional_observed':
+    errors.append('tracker.status_sync.mode must be bidirectional_observed')
+if status_sync.get('manager_preflight_auto_apply') is not True:
+    errors.append('tracker.status_sync.manager_preflight_auto_apply must be true')
+if status_sync.get('bootstrap_source') != 'block':
+    errors.append('tracker.status_sync.bootstrap_source must fail closed with block')
+if status_sync.get('terminal_approval_sync') != 'block_without_trusted_provenance':
+    errors.append('tracker.status_sync.terminal_approval_sync must block without trusted provenance')
+if status_sync.get('race_guard') != 'reread_before_mutation':
+    errors.append('tracker.status_sync.race_guard must reread before mutation')
+if status_sync.get('mutation_plan') != 'all_or_nothing_after_clean_validation':
+    errors.append('tracker.status_sync.mutation_plan must be all_or_nothing_after_clean_validation')
+if status_sync.get('audit_order') != 'append_event_before_state_snapshot':
+    errors.append('tracker.status_sync.audit_order must append events before state snapshots')
+if 'dokkaebi-project-status-sync.py --direction bidirectional --watch --apply --record-state' not in str(status_sync.get('watch_command') or ''):
+    errors.append('tracker.status_sync.watch_command must run bidirectional apply watch with record-state')
 wrapper = root / 'scripts' / 'dokkaebi-codex-worker-app-server.sh'
 if not (wrapper.is_file() and wrapper.stat().st_mode & 0o111):
     errors.append('worker env scrubber is missing or not executable')

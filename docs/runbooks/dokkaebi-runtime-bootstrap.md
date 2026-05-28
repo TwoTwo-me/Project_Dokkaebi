@@ -125,12 +125,52 @@ item. Before starting or resuming a Manager/Symphony loop, run:
 scripts/dokkaebi-project-status-sync.py --json
 ```
 
-If drift is reported and the Dokkaebi field is trusted as authoritative, repair
-the human mirror with:
+If non-terminal drift is reported and the Dokkaebi field is trusted as
+authoritative, repair the human mirror with:
 
 ```bash
 scripts/dokkaebi-project-status-sync.py --apply --json
 ```
+
+Do not use bare `--apply` to approve or normalize terminal `Human Review` →
+`Done` / `Merging` movement; the helper blocks those approval-gated transitions
+until trusted Human approval provenance is available.
+
+For the self-hosted Manager loop, keep the fields aligned continuously:
+
+Command summary: `scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch --apply --record-state`
+
+```bash
+scripts/dokkaebi-project-status-sync.py \
+  --direction bidirectional \
+  --watch \
+  --apply \
+  --record-state
+```
+
+or:
+
+```bash
+scripts/dokkaebi-project-status-sync-loop.sh
+```
+
+Bidirectional observed sync writes its last clean snapshot to
+`.omx/state/project-status-sync/project-dokkaebi.json` and append-only sync
+events to `.omx/state/project-status-sync/events.jsonl`. A later change to the
+human-visible `Status` field is mirrored to `Dokkaebi Status`; a later change to
+`Dokkaebi Status` is mirrored to `Status`. If both fields changed, no field
+changed, the item has no prior clean snapshot, or `dokkaebi/KILL_SWITCH` exists,
+the loop fails closed and the Manager must inspect the conflict before
+dispatching more work. Terminal approval sync is configured as
+`block_without_trusted_provenance`: a board edit such as `Human Review` →
+`Done` or `Human Review` → `Merging` does not become authoritative
+`Dokkaebi Status` until the approval-transition evidence contract passes. The
+helper also re-reads the Project item before mutation and refuses to overwrite a
+concurrent status edit. Remote mutation is planned as
+`all_or_nothing_after_clean_validation`: if any item has a conflict, bad
+snapshot, unknown option, or approval blocker, no item is mutated. When mutation
+does happen, the audit order is `append_event_before_state_snapshot`, so the
+clean local baseline is not advanced before applied sync events are recorded.
 
 ## 5. First test item
 

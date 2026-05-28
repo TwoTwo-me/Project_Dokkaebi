@@ -59,6 +59,19 @@ tracker:
   state_field: Dokkaebi Status
   human_status_mirror_field: Status
   status_mirror_policy: strict_equal
+  status_sync:
+    mode: bidirectional_observed
+    manager_preflight_auto_apply: true
+    bootstrap_source: block
+    terminal_approval_sync: block_without_trusted_provenance
+    race_guard: reread_before_mutation
+    mutation_plan: all_or_nothing_after_clean_validation
+    audit_order: append_event_before_state_snapshot
+    state_file: .omx/state/project-status-sync/project-dokkaebi.json
+    event_log: .omx/state/project-status-sync/events.jsonl
+    watch_command: >-
+      scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch
+      --apply --record-state
   priority_field: Priority
   admission_labels:
     - dokkaebi

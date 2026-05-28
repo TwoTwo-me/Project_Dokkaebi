@@ -80,10 +80,17 @@ request ref, or SHA instead of remote `main`.
 
 The v0 Human approval surface is the GitHub Project state pair:
 `Dokkaebi Status` is the Symphony/Manager state field and the human-visible
-`Status` field is a strict mirror with the same options. Verify or repair the
-mirror with `scripts/dokkaebi-project-status-sync.py --json` or
-`scripts/dokkaebi-project-status-sync.py --apply --json`. The Manager may route
-complete results to `Human Review`, but
+`Status` field is a strict mirror with the same options. Verify the mirror with
+`scripts/dokkaebi-project-status-sync.py --json`; use
+`scripts/dokkaebi-project-status-sync.py --apply --json` only for non-terminal
+repair because approval-gated moves fail closed without provenance. For the
+always-on Manager loop, run
+`scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch --apply --record-state`
+or the wrapper `scripts/dokkaebi-project-status-sync-loop.sh`
+so a later change to either field is mirrored to the other side when the source
+can be inferred from the local sync snapshot. Approval-gated terminal moves are
+not auto-promoted from `Status` to `Dokkaebi Status` without trusted provenance.
+The Manager may route complete results to `Human Review`, but
 `Human Review` → `Merging` and `Human Review` → `Done` require human-origin
 provenance from a trusted verifier with source-specific evidence. Manager
 self-approval, GitHub issue closeout without human-origin approval, and

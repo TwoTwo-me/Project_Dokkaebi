@@ -5,6 +5,19 @@ tracker:
   state_field: Dokkaebi Status
   human_status_mirror_field: Status
   status_mirror_policy: strict_equal
+  status_sync:
+    mode: bidirectional_observed
+    manager_preflight_auto_apply: true
+    bootstrap_source: block
+    terminal_approval_sync: block_without_trusted_provenance
+    race_guard: reread_before_mutation
+    mutation_plan: all_or_nothing_after_clean_validation
+    audit_order: append_event_before_state_snapshot
+    state_file: .omx/state/project-status-sync/project-dokkaebi.json
+    event_log: .omx/state/project-status-sync/events.jsonl
+    watch_command: >-
+      scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch
+      --apply --record-state
   active_states:
     - Dispatchable
     - In Progress
@@ -211,9 +224,15 @@ The custom `Dokkaebi Status` field is authoritative for Symphony dispatch. The
 human-visible GitHub Project `Status` field must mirror the same semantic value
 and expose the same option set for people using the Project board. Any mismatch
 between `Status` and `Dokkaebi Status` is drift; run
-`scripts/dokkaebi-project-status-sync.py --apply` or block dispatch until it is
-fixed. Symphony must not be left to repeat an already-completed `Dispatchable`
-item unattended. After a Worker produces a complete result packet, the
+`scripts/dokkaebi-project-status-sync.py --apply` only for non-terminal repair,
+or block dispatch until terminal Human approval provenance is verified. The
+Manager loop should keep
+`scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch --apply --record-state`
+running beside Symphony; it mirrors whichever field changed since the last
+clean local snapshot and fails closed on conflicts, missing source evidence, or
+approval-gated terminal movement without trusted Human approval provenance.
+Symphony must not be left to repeat an already-completed `Dispatchable` item
+unattended. After a Worker produces a complete result packet, the
 Manager-controlled ingestion step must review the packet and move the status out
 of active states (`Human Review`, `Fix Requested`, or `Blocked`) before
 continued polling is treated as safe.

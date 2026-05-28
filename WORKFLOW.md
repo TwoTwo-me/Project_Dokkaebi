@@ -202,7 +202,23 @@ The human-visible GitHub Project `Status` field must expose the same option set
 as the Dokkaebi state field and mirror its value on every item. Project board
 views should group by `Status` for humans while Symphony reads the configured
 Dokkaebi state field. Any mismatch is drift and must be repaired with
-`scripts/dokkaebi-project-status-sync.py --apply` or blocked before dispatch.
+`scripts/dokkaebi-project-status-sync.py --apply` only when the repair is
+non-terminal, otherwise it must be blocked before dispatch until Human approval
+provenance is verified.
+The Manager preflight now runs the sync helper in bidirectional observed mode:
+it records a local snapshot, then applies the side that changed since the last
+clean snapshot. For continuous operation run
+`scripts/dokkaebi-project-status-sync.py --direction bidirectional --watch --apply --record-state`.
+The equivalent long-running wrapper is
+`scripts/dokkaebi-project-status-sync-loop.sh`.
+If both fields changed, neither side changed, a mismatched item lacks a prior
+snapshot, or `dokkaebi/KILL_SWITCH` exists, the sync fails closed instead of
+guessing. `Status` → `Dokkaebi Status` sync is automatic only for non-gated
+status movement; approval-gated transitions such as `Human Review` → `Merging`
+or `Human Review` → `Done` remain blocked until a trusted provenance verifier
+supplies the required Human approval evidence. Before any mutation, the helper
+re-reads the Project item and aborts if either status field changed after
+planning.
 
 ## Status transition provenance
 

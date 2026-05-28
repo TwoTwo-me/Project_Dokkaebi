@@ -120,8 +120,15 @@ The GitHub Project `Status` field is the human-visible mirror of the configured
 Dokkaebi state field. Managers must keep both fields on the same semantic value
 for every item. Run
 [`scripts/dokkaebi-project-status-sync.py`](../../scripts/dokkaebi-project-status-sync.py)
-in verify mode before dispatch and with `--apply` when the mirror has drifted
-from the Dokkaebi-authoritative field.
+in verify mode before dispatch. The Manager preflight may run it with
+`--direction bidirectional --apply --record-state` so the field that changed
+since the last clean local snapshot is mirrored to the other field. Long-running
+Managers should use the same helper with `--watch` for bidirectional observed
+mode. If the source cannot be inferred or the kill switch exists, status sync
+blocks dispatch. The helper must not turn a human-visible `Status` edit into an
+authoritative approval-gated `Dokkaebi Status` transition unless the required
+Human approval provenance has been verified; bootstrap v0 blocks those terminal
+sync attempts with `block_without_trusted_provenance`.
 
 ### Approval evidence minimum
 
