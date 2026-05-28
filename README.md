@@ -40,6 +40,9 @@ See:
 - [`docs/adapters/codex-omx-bootstrap.md`](docs/adapters/codex-omx-bootstrap.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](docs/templates/worker-result-packet.md)
+- [`docs/research/orchestration-landscape-2026-05-28.md`](docs/research/orchestration-landscape-2026-05-28.md)
+- [`docs/qa/project-dokkaebi-qa-evaluation-2026-05-28.md`](docs/qa/project-dokkaebi-qa-evaluation-2026-05-28.md)
+- [`docs/strategy/project-dokkaebi-status-and-direction-2026-05-28.md`](docs/strategy/project-dokkaebi-status-and-direction-2026-05-28.md)
 
 ## Current scope
 
