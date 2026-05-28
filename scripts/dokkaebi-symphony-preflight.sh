@@ -160,6 +160,8 @@ elif command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaeb
   else
     status BLOCKED "gh auth exists, but project scope is missing; run: gh auth refresh -h github.com -s project"
   fi
+elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
+  status WARN "project mutation auth is intentionally unavailable in sanitized Worker context"
 else
   status BLOCKED "no GITHUB_GRAPHQL_TOKEN and gh auth status failed"
 fi

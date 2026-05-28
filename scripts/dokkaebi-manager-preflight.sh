@@ -30,8 +30,11 @@ else
   status BLOCKED "Codex command not found"
 fi
 
-if [[ -f "$HOME/.codex/auth.json" ]]; then
-  status OK "Codex auth store exists at ~/.codex/auth.json"
+CODEX_AUTH_PATH="${CODEX_HOME:-$HOME/.codex}/auth.json"
+if [[ -f "$CODEX_AUTH_PATH" ]]; then
+  status OK "Codex auth store exists at $CODEX_AUTH_PATH"
+elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
+  status WARN "Codex auth store is intentionally hidden from sanitized Worker HOME"
 else
   status BLOCKED "Codex auth store missing; run codex login"
 fi
@@ -43,6 +46,8 @@ if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-
   else
     status BLOCKED "gh token lacks project scope; run: gh auth refresh -h github.com -s project"
   fi
+elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
+  status WARN "gh auth is intentionally unavailable in sanitized Worker context"
 else
   status BLOCKED "gh auth status failed"
 fi

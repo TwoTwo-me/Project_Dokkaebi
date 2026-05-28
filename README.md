@@ -80,5 +80,5 @@ request ref, or SHA instead of remote `main`.
 
 See [`docs/deep-interview-project-dokkaebi.md`](docs/deep-interview-project-dokkaebi.md)
 for the original clarified initial specification, and
-[`.omx/specs/deep-interview-dokkaebi-final-plan.md`](.omx/specs/deep-interview-dokkaebi-final-plan.md)
-for the Symphony-native planning brief.
+[`docs/adr/0002-symphony-native-execution-layer.md`](docs/adr/0002-symphony-native-execution-layer.md)
+for the Symphony-native planning decision.

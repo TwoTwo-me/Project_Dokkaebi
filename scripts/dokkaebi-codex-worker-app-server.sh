@@ -38,6 +38,7 @@ scrub_forbidden_env() {
 scrub_forbidden_env
 
 export GIT_TERMINAL_PROMPT=0
+export DOKKAEBI_WORKER_SANITIZED=1
 export HOME="$WORKER_ENV_ROOT/home"
 export CODEX_HOME="$ORIGINAL_CODEX_HOME"
 export GH_CONFIG_DIR="$WORKER_ENV_ROOT/gh"

@@ -60,6 +60,7 @@ hooks:
   after_create: |
     git clone --depth 1 git@github.com:TwoTwo-me/Project_Dokkaebi.git repository
     cd repository
+    git submodule update --init --depth 1 symphony-github-project-tracker || git submodule update --init symphony-github-project-tracker
     if [ -n "${DOKKAEBI_WORKER_REF:-}" ]; then
       case "$DOKKAEBI_WORKER_REF" in
         -*|*..*|*[!A-Za-z0-9._/@-]*)
