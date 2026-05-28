@@ -5,3 +5,8 @@
 .DS_Store
 *.swp
 *.swo
+
+# Python runtime noise
+__pycache__/
+**/__pycache__/
+*.py[cod]
