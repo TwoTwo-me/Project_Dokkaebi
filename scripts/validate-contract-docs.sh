@@ -37,7 +37,9 @@ require_file docs/policies/authority-and-safety.md
 require_file docs/adapters/hermes.md
 require_file docs/templates/worker-ticket.md
 require_file docs/templates/worker-result-packet.md
+require_file docs/runbooks/dokkaebi-runtime-bootstrap.md
 require_file README.md
+require_file scripts/dokkaebi-approval-transition-check.py
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -73,6 +75,7 @@ require_text docs/contracts/manager-contract.md 'scope-control statement'
 require_text docs/contracts/manager-contract.md 'approval-gate status'
 require_text docs/contracts/manager-contract.md 'Manager self-approval'
 require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` are human-origin'
+require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-approval-transition-check.py'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -123,6 +126,9 @@ require_text docs/templates/worker-result-packet.md '## Scope control'
 require_text docs/templates/worker-result-packet.md 'Human approval gates reached'
 require_text docs/templates/worker-result-packet.md '## Recommended Manager/Human next action'
 
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 6. Human Review terminal approval gate'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-approval-transition-check.py'
+
 require_text README.md 'ARCHITECTURE.md'
 require_text README.md 'WORKFLOW.md'
 require_text README.md 'docs/adr/0001-hermes-first-manager-contract.md'
@@ -148,6 +154,7 @@ scope = [
     Path('docs/adapters/hermes.md'),
     Path('docs/templates/worker-ticket.md'),
     Path('docs/templates/worker-result-packet.md'),
+    Path('docs/runbooks/dokkaebi-runtime-bootstrap.md'),
 ]
 
 errors = []
@@ -179,6 +186,11 @@ result = Path('docs/templates/worker-result-packet.md').read_text()
 policy_yaml = Path('dokkaebi/policies/project-dokkaebi.yml').read_text()
 scope_yaml = Path('dokkaebi/project-scopes/project-dokkaebi.yml').read_text()
 workflow_contract = Path('dokkaebi/symphony/WORKFLOW.project-dokkaebi.md').read_text()
+approval_checker = Path('scripts/dokkaebi-approval-transition-check.py')
+if not approval_checker.exists():
+    errors.append('approval transition checker script missing')
+elif not (approval_checker.stat().st_mode & 0o111):
+    errors.append('approval transition checker script is not executable')
 for doc_name, doc_text in [
     ('manager contract', contract),
     ('architecture result flow', architecture),

@@ -112,3 +112,18 @@ GitHub Project auth is not available, use the dry-run artifact under
 For validation of new Manager-authored artifacts, dispatch against a committed
 branch or PR by setting `DOKKAEBI_WORKER_REF`. A Worker checkout created from
 remote `main` cannot see uncommitted Manager-local files.
+
+## 6. Human Review terminal approval gate
+
+Before a Manager, Symphony adapter, or future approval broker treats a status
+transition as terminal approval, validate the transition record locally:
+
+```bash
+scripts/dokkaebi-approval-transition-check.py --record transition.json --json
+```
+
+The transition record must include `source_status`, `target_status`, `actor`,
+`actor_origin`, `provenance_source`, `linked_ticket_or_item`, and
+`linked_result_packet_or_review`. `Human Review` → `Merging` and
+`Human Review` → `Done` require `actor_origin: human`. Manager-authored or
+ambiguous terminal transitions are blocked rather than treated as approval.

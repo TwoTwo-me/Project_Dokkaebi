@@ -94,6 +94,12 @@ approval broker, linked ticket/result evidence, and an auditable provenance
 source. Missing, ambiguous, or Manager-authored provenance fails closed and
 blocks merge, deployment, terminal closeout, and any high-impact follow-up.
 
+The local validation gate is
+[`scripts/dokkaebi-approval-transition-check.py`](../../scripts/dokkaebi-approval-transition-check.py).
+Adapters should feed it a transition record from GitHub Project status history,
+a durable Human approval record, or a future approved approval broker before
+acting on terminal approval.
+
 ### Approval evidence minimum
 
 Pre-execution Human approval must record:
