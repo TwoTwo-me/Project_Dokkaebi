@@ -6,6 +6,18 @@ set -euo pipefail
 # for model access; tracker, GitHub, SSH, cloud, and broker credentials must
 # arrive through an approved task-scoped broker path.
 
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+KILL_SWITCH="$ROOT/dokkaebi/KILL_SWITCH"
+
+if [[ -e "$KILL_SWITCH" ]]; then
+  if [[ -f "$KILL_SWITCH" ]]; then
+    echo "Dokkaebi kill switch present: ${KILL_SWITCH#$ROOT/}" >&2
+  else
+    echo "Dokkaebi kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}" >&2
+  fi
+  exit 2
+fi
+
 ORIGINAL_CODEX_HOME="${CODEX_HOME:-${HOME:-}/.codex}"
 WORKER_ENV_ROOT="$PWD/.dokkaebi-worker-env"
 
