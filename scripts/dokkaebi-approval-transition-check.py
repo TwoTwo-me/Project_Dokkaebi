@@ -95,7 +95,7 @@ def _terminal_transitions(policy: dict[str, Any]) -> set[tuple[str, str]]:
     return result
 
 
-def _safe_evidence_path(value: str) -> Path:
+def _safe_evidence_path(value: str, provenance_source: str) -> Path:
     path = Path(value)
     if path.is_absolute() or ".." in path.parts:
         raise ValueError("provenance_evidence_file must be a repository-relative path")
@@ -104,13 +104,26 @@ def _safe_evidence_path(value: str) -> Path:
         raise ValueError("provenance_evidence_file must stay inside the repository")
     if not resolved.is_file():
         raise ValueError(f"provenance_evidence_file is missing: {value}")
+    allowed_prefixes = {
+        "github_project_status_history_actor": [ROOT / ".omx" / "evidence" / "provenance"],
+        "durable_human_approval_record": [
+            ROOT / ".omx" / "evidence" / "provenance",
+            ROOT / "dokkaebi" / "approvals",
+        ],
+        "future_approved_approval_broker": [ROOT / ".omx" / "evidence" / "provenance"],
+    }
+    prefixes = [prefix.resolve() for prefix in allowed_prefixes.get(provenance_source, [])]
+    if prefixes and not any(resolved.is_relative_to(prefix) for prefix in prefixes):
+        allowed = ", ".join(str(prefix.relative_to(ROOT)) for prefix in prefixes)
+        raise ValueError(f"provenance_evidence_file for {provenance_source!r} must be under: {allowed}")
     return resolved
 
 
 def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, Any]) -> tuple[bool, str]:
     evidence_file = str(record.get("provenance_evidence_file") or "").strip()
     expected_sha = str(record.get("provenance_evidence_sha256") or "").strip().lower()
-    path = _safe_evidence_path(evidence_file)
+    provenance_source = str(record.get("provenance_source") or "").strip()
+    path = _safe_evidence_path(evidence_file, provenance_source)
     raw = path.read_bytes()
     actual_sha = hashlib.sha256(raw).hexdigest()
     details["provenance_evidence_sha256_actual"] = actual_sha
@@ -125,17 +138,7 @@ def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, 
             return False, "provenance evidence JSON must be an object"
         evidence = loaded
     else:
-        # Markdown approval records are allowed only when they visibly bind the
-        # action, actor, and record id. This keeps bootstrap records checkable
-        # without making free-form prose the preferred adapter output.
-        for needle in [
-            str(record.get("provenance_record_id") or ""),
-            str(record.get("actor") or ""),
-            str(record.get("approved_action") or ""),
-        ]:
-            if needle and needle not in text:
-                return False, f"provenance markdown evidence missing {needle!r}"
-        return True, "source-specific markdown provenance verified"
+        return False, "provenance_evidence_file must be structured JSON adapter output; durable approval markdown should be referenced from JSON approval_record_path"
 
     expected_pairs = {
         "record_id": record.get("provenance_record_id"),
@@ -154,6 +157,28 @@ def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, 
     for key in ["source_status", "target_status"]:
         if key in evidence and str(evidence.get(key) or "").strip() != str(record.get(key) or "").strip():
             return False, f"provenance evidence {key} mismatch"
+
+    if provenance_source == "github_project_status_history_actor":
+        if evidence.get("source_api") != "github_graphql_project_status_history":
+            return False, "github status provenance must include source_api=github_graphql_project_status_history"
+        for key in ["project_item_id", "status_field", "observed_utc"]:
+            if not str(evidence.get(key) or "").strip():
+                return False, f"github status provenance missing {key}"
+    elif provenance_source == "durable_human_approval_record":
+        approval_record_path = str(evidence.get("approval_record_path") or "").strip()
+        if not approval_record_path:
+            return False, "durable approval provenance missing approval_record_path"
+        approval_path = Path(approval_record_path)
+        if approval_path.is_absolute() or ".." in approval_path.parts:
+            return False, "approval_record_path must be repository-relative"
+        resolved_approval = (ROOT / approval_path).resolve()
+        approvals_root = (ROOT / "dokkaebi" / "approvals").resolve()
+        if not resolved_approval.is_relative_to(approvals_root) or not resolved_approval.is_file():
+            return False, "approval_record_path must point to an existing file under dokkaebi/approvals"
+    elif provenance_source == "future_approved_approval_broker":
+        for key in ["broker_decision_id", "broker_signature"]:
+            if not str(evidence.get(key) or "").strip():
+                return False, f"broker provenance missing {key}"
 
     return True, "source-specific JSON provenance verified"
 
