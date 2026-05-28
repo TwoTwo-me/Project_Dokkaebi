@@ -1,6 +1,6 @@
 # Symphony, GitHub Projects, and always-on Worker direction
 
-Date researched: 2026-05-28  
+Date researched: 2026-05-28
 Scope: external research and documentation direction for Project Dokkaebi only. This document does **not** change runtime policy, mutate `.omx/ultragoal`, grant credentials, enable provider authority, merge PRs, or deploy anything.
 
 ## Executive direction
@@ -80,19 +80,19 @@ Documentation direction:
 
 ## Recommended documentation backlog
 
-1. **`docs/contracts/github-project-tracker-adapter.md`**  
+1. **`docs/contracts/github-project-tracker-adapter.md`**
    Define the GitHub ProjectV2 adapter contract: project/field discovery, status transitions, candidate queries, blocker checks, provenance lookup, workpad/comment/PR result surfaces, rate-limit behavior, and race-safe mutations.
 
-2. **`docs/contracts/always-on-manager-service.md`**  
+2. **`docs/contracts/always-on-manager-service.md`**
    Define the service contract for the long-running Manager/Symphony loop: polling, leases, retries, backoff, concurrency, restart recovery, logs, metrics, kill switch, status-sync preflight, and stop conditions.
 
-3. **`docs/runbooks/github-project-adapter-preflight.md`**  
+3. **`docs/runbooks/github-project-adapter-preflight.md`**
    Turn the current bootstrap scripts into an operator runbook: token-scope checks, project ID/field ID discovery, dry-run status sync, webhook-vs-poll mode, and failure recovery.
 
-4. **`docs/adr/0003-github-projects-v2-tracker-substrate.md`**  
+4. **`docs/adr/0003-github-projects-v2-tracker-substrate.md`**
    Accept GitHub Projects v2 as the v0 tracker substrate while explicitly preserving Symphony's scheduler/runner/tracker-reader boundary and documenting where GitHub differs from Linear.
 
-5. **`docs/strategy/provider-roadmap.md`**  
+5. **`docs/strategy/provider-roadmap.md`**
    Sequence `local-basic` → `container-capable via host helper` → `testbed` → future VM/Kubernetes/cloud/Proxmox providers with approval gates, credential broker dependencies, cleanup, and kill switches.
 
 ## Near-term acceptance criteria for the docs milestone
