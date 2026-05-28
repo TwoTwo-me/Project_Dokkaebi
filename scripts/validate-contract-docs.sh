@@ -40,6 +40,7 @@ require_file docs/templates/worker-result-packet.md
 require_file docs/runbooks/dokkaebi-runtime-bootstrap.md
 require_file README.md
 require_file scripts/dokkaebi-approval-transition-check.py
+require_file scripts/dokkaebi-worker-result-review.py
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -76,6 +77,7 @@ require_text docs/contracts/manager-contract.md 'approval-gate status'
 require_text docs/contracts/manager-contract.md 'Manager self-approval'
 require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` are human-origin'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-approval-transition-check.py'
+require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-worker-result-review.py'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -116,6 +118,7 @@ require_text docs/templates/worker-ticket.md 'approval-gate status'
 require_text docs/templates/worker-ticket.md 'terminal approval requires human-origin provenance'
 
 require_text docs/templates/worker-result-packet.md '# Worker Result Packet Template'
+require_text docs/templates/worker-result-packet.md 'scripts/dokkaebi-worker-result-review.py'
 require_text docs/templates/worker-result-packet.md '## Task identity'
 require_text docs/templates/worker-result-packet.md '## Changed artifacts'
 require_text docs/templates/worker-result-packet.md '## Acceptance criteria evidence'
@@ -128,6 +131,8 @@ require_text docs/templates/worker-result-packet.md '## Recommended Manager/Huma
 
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 6. Human Review terminal approval gate'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-approval-transition-check.py'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 7. Worker result ingestion and Manager review'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-worker-result-review.py'
 
 require_text README.md 'ARCHITECTURE.md'
 require_text README.md 'WORKFLOW.md'
@@ -191,6 +196,11 @@ if not approval_checker.exists():
     errors.append('approval transition checker script missing')
 elif not (approval_checker.stat().st_mode & 0o111):
     errors.append('approval transition checker script is not executable')
+result_reviewer = Path('scripts/dokkaebi-worker-result-review.py')
+if not result_reviewer.exists():
+    errors.append('worker result review script missing')
+elif not (result_reviewer.stat().st_mode & 0o111):
+    errors.append('worker result review script is not executable')
 for doc_name, doc_text in [
     ('manager contract', contract),
     ('architecture result flow', architecture),

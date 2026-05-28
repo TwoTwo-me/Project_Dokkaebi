@@ -127,3 +127,19 @@ The transition record must include `source_status`, `target_status`, `actor`,
 `linked_result_packet_or_review`. `Human Review` → `Merging` and
 `Human Review` → `Done` require `actor_origin: human`. Manager-authored or
 ambiguous terminal transitions are blocked rather than treated as approval.
+
+## 7. Worker result ingestion and Manager review
+
+When Symphony or a Worker returns a packet matching
+[`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md),
+the Manager should review it before changing terminal status:
+
+```bash
+scripts/dokkaebi-worker-result-review.py worker-result.md --json
+```
+
+The review helper checks required packet sections, acceptance statuses,
+validation evidence, blockers, and scope-control signals. It may recommend
+`Human Review`, `Fix Requested`, or `Blocked`. It never authorizes merge,
+deployment, `Done` closeout, or `Human Review` → `Merging` / `Done`; those
+remain guarded by the terminal approval gate above.

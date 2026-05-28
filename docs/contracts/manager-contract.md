@@ -100,6 +100,13 @@ Adapters should feed it a transition record from GitHub Project status history,
 a durable Human approval record, or a future approved approval broker before
 acting on terminal approval.
 
+Worker result ingestion should use the result-packet template plus the local
+review helper
+[`scripts/dokkaebi-worker-result-review.py`](../../scripts/dokkaebi-worker-result-review.py)
+or an adapter-equivalent check. The helper may recommend `Human Review`,
+`Fix Requested`, or `Blocked`, but it does not grant merge, deploy, or terminal
+closeout authority.
+
 ### Approval evidence minimum
 
 Pre-execution Human approval must record:

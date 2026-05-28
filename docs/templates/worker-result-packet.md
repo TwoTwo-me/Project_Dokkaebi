@@ -4,6 +4,11 @@ Workers use this packet to return verifiable results to the Dokkaebi
 Manager through GitHub Project, Symphony workpad comments, PRs, or another
 configured tracker surface.
 
+Managers can ingest and pre-review a completed packet with
+[`../../scripts/dokkaebi-worker-result-review.py`](../../scripts/dokkaebi-worker-result-review.py).
+The review output can route the ticket to `Human Review`, `Fix Requested`, or
+`Blocked`, but it never authorizes merge, deploy, or terminal `Done` closeout.
+
 ## Task identity
 
 - **Task ID:** `<GitHub issue / project item / manager task id>`
