@@ -21,6 +21,18 @@ tracker:
     - Cancelled
   blocker_check_states:
     - Dispatchable
+  human_review_transition_policy:
+    review_state: Human Review
+    manager_may_enter_review_state: true
+    terminal_approval_transitions:
+      - from: Human Review
+        to: Merging
+        required_origin: human
+      - from: Human Review
+        to: Done
+        required_origin: human
+    manager_self_approval: forbidden
+    unknown_or_ambiguous_provenance: fail_closed
   whitelist_labels:
     - dokkaebi
     - symphony
@@ -142,6 +154,17 @@ validation plan, and result-packet requirements.
 - `Human Review`, `Merging`, `Ready`, `Blocked`, `Done`, `Failed`, `Cancelled`:
   do not start new implementation work unless the issue body explicitly says the
   current state is dispatchable under this workflow.
+
+## Human Review provenance
+
+The Manager or Worker may move a complete result packet into `Human Review`.
+That transition is a request for review, not terminal approval. The
+`Human Review` → `Merging` and `Human Review` → `Done` transitions count as
+approval only when the transition provenance is human-origin and linked to the
+ticket/result evidence. A Manager-authored terminal transition is self-approval
+and must fail closed. If the actor, origin, or evidence source is unavailable or
+ambiguous, leave the item in `Human Review` or move it to `Blocked` with the
+missing provenance condition.
 
 ## Execution checklist
 

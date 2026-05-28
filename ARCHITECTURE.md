@@ -158,6 +158,9 @@ Authority flows downward only through explicit artifacts:
 6. Credential broker grants only the scoped capabilities required by the ticket.
 7. Worker returns evidence; Manager reviews it before asking the Human for any
    next high-impact decision.
+8. Terminal status transitions out of `Human Review` require human-origin
+   provenance; Manager-authored transitions to `Merging` or `Done` are
+   self-approval and fail closed.
 
 Authority does not flow by implication from tool availability, local filesystem
 access, credential presence, environment access, or a Worker discovering adjacent
@@ -225,7 +228,7 @@ Portability requirements:
 | Manager ambiguity | Manager emits vague tickets that Workers cannot safely execute. | Clarify before dispatch and require worker-ready fields. |
 | Symphony coupling confusion | Future contributors try to make Managers own scheduler behavior or treat Symphony as generic plumbing again. | Cite ADR 0002, keep Manager replaceability separate from Symphony execution ownership, and model multi-project support as ProjectScopes above Symphony. |
 | Provider authority leakage | Environment providers expose broad Docker, VM, cloud, or Proxmox power. | Use the runtime provider contract, host helper daemon boundaries, approval gates, audit, rollback, and kill switches. |
-| Human review bypass | Merge, deploy, infra, or production writes happen without approval. | Treat high-impact actions as approval-required unless policy explicitly grants a narrow exception. |
+| Human review bypass | Merge, deploy, infra, production writes, or terminal closeout happen without human-origin approval provenance. | Treat high-impact actions as approval-required, reject Manager self-approval of `Human Review` → `Merging` / `Done`, and fail closed on ambiguous provenance. |
 
 ## Current milestone boundary
 

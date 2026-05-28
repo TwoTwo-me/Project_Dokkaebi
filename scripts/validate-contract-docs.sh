@@ -44,18 +44,25 @@ require_text ARCHITECTURE.md 'Dokkaebi Manager'
 require_text ARCHITECTURE.md 'Credential broker'
 require_text ARCHITECTURE.md 'Trust boundaries'
 require_text ARCHITECTURE.md 'Critical risks'
+require_text ARCHITECTURE.md 'human-origin approval provenance'
+require_text ARCHITECTURE.md 'Manager-authored transitions to `Merging` or `Done` are'
 
 require_text WORKFLOW.md '# Project Dokkaebi Workflow'
 require_text WORKFLOW.md '## Phase 1: Manager intake'
 require_text WORKFLOW.md '## Phase 3: Approval and readiness gate'
 require_text WORKFLOW.md '## Status model'
+require_text WORKFLOW.md '## Status transition provenance'
 require_text WORKFLOW.md '| Reopened |'
+require_text WORKFLOW.md 'Human Review` → `Merging`'
+require_text WORKFLOW.md 'Human Review` → `Done`'
+require_text WORKFLOW.md 'Unknown or ambiguous provenance fails closed'
 
 require_text docs/contracts/manager-contract.md '# Dokkaebi Manager Contract'
 require_text docs/contracts/manager-contract.md '## Fail-closed preflight'
 require_text docs/contracts/manager-contract.md '## Credential broker boundary'
 require_text docs/contracts/manager-contract.md '## Symphony compatibility'
 require_text docs/contracts/manager-contract.md '## Adapter conformance'
+require_text docs/contracts/manager-contract.md '### GitHub Project status approval surface'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -64,11 +71,14 @@ require_text docs/contracts/manager-contract.md 'closeout evidence'
 require_text docs/contracts/manager-contract.md 'acceptance-criteria evidence'
 require_text docs/contracts/manager-contract.md 'scope-control statement'
 require_text docs/contracts/manager-contract.md 'approval-gate status'
+require_text docs/contracts/manager-contract.md 'Manager self-approval'
+require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` are human-origin'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
 require_text docs/policies/authority-and-safety.md '# Dokkaebi Authority and Safety Policy'
 require_text docs/policies/authority-and-safety.md '## Human approval required'
+require_text docs/policies/authority-and-safety.md '## Human-origin terminal approvals'
 require_text docs/policies/authority-and-safety.md '## Approval evidence record'
 require_text docs/policies/authority-and-safety.md '## Fail-closed preflight'
 require_text docs/policies/authority-and-safety.md '## Credential broker boundary'
@@ -77,6 +87,8 @@ require_text docs/policies/authority-and-safety.md 'planned result-packet or Man
 require_text docs/policies/authority-and-safety.md 'required at closeout'
 require_text docs/policies/authority-and-safety.md 'control-plane writes'
 require_text docs/policies/authority-and-safety.md 'approved setup authority'
+require_text docs/policies/authority-and-safety.md 'Manager-authored terminal transition is self-approval'
+require_text docs/policies/authority-and-safety.md 'Unknown, ambiguous, missing, or contradictory provenance fails closed'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
@@ -98,6 +110,7 @@ require_text docs/templates/worker-ticket.md 'acceptance-criteria evidence'
 require_text docs/templates/worker-ticket.md 'whether acceptance criteria were met'
 require_text docs/templates/worker-ticket.md 'scope-control statement'
 require_text docs/templates/worker-ticket.md 'approval-gate status'
+require_text docs/templates/worker-ticket.md 'terminal approval requires human-origin provenance'
 
 require_text docs/templates/worker-result-packet.md '# Worker Result Packet Template'
 require_text docs/templates/worker-result-packet.md '## Task identity'
@@ -119,6 +132,7 @@ require_text README.md 'docs/policies/authority-and-safety.md'
 require_text README.md 'docs/adapters/hermes.md'
 require_text README.md 'docs/templates/worker-ticket.md'
 require_text README.md 'docs/templates/worker-result-packet.md'
+require_text README.md 'human-origin'
 
 python3 - <<'PY'
 from pathlib import Path
@@ -162,6 +176,9 @@ for term in ['Intake', 'Clarifying', 'Ready', 'Dispatchable', 'In Progress',
 contract = Path('docs/contracts/manager-contract.md').read_text()
 architecture = Path('ARCHITECTURE.md').read_text()
 result = Path('docs/templates/worker-result-packet.md').read_text()
+policy_yaml = Path('dokkaebi/policies/project-dokkaebi.yml').read_text()
+scope_yaml = Path('dokkaebi/project-scopes/project-dokkaebi.yml').read_text()
+workflow_contract = Path('dokkaebi/symphony/WORKFLOW.project-dokkaebi.md').read_text()
 for doc_name, doc_text in [
     ('manager contract', contract),
     ('architecture result flow', architecture),
@@ -188,6 +205,23 @@ for path in [Path('docs/contracts/manager-contract.md'), Path('docs/policies/aut
         errors.append(f'credential broker requirement is weak in {path}')
     if 'should include' in text:
         errors.append(f'result packet requirement is weak in {path}')
+
+for doc_name, doc_text in [
+    ('policy yaml', policy_yaml),
+    ('project scope yaml', scope_yaml),
+    ('symphony workflow', workflow_contract),
+]:
+    for term in [
+        'human_review_transition_policy',
+        'Human Review',
+        'Merging',
+        'Done',
+        'required_origin: human',
+        'manager_self_approval: forbidden',
+        'unknown_or_ambiguous_provenance: fail_closed',
+    ]:
+        if term not in doc_text:
+            errors.append(f'{doc_name} missing human-origin transition invariant: {term}')
 
 if errors:
     for error in errors:

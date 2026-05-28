@@ -93,6 +93,22 @@ tracker:
     - Cancelled
   blocker_check_states:
     - Dispatchable
+  human_review_transition_policy:
+    review_state: Human Review
+    manager_may_enter_review_state: true
+    terminal_approval_transitions:
+      - from: Human Review
+        to: Merging
+        required_origin: human
+      - from: Human Review
+        to: Done
+        required_origin: human
+    manager_self_approval: forbidden
+    unknown_or_ambiguous_provenance: fail_closed
+    provenance_sources:
+      - github_project_status_history_actor
+      - human_approval_record
+      - future_approved_approval_broker
 
 worker_routing:
   default_required_capability: basic

@@ -41,6 +41,21 @@ Dokkaebi must obtain explicit Human approval before any of these actions:
 Approval is specific to the task, scope, actor, and time window. Approval for one
 ticket does not grant standing authority to future tickets.
 
+## Human-origin terminal approvals
+
+GitHub Project status transitions are the v0 approval interface, but the status
+value is not enough to prove approval. The Manager may move complete Worker
+results into `Human Review` for a Human decision. Terminal transitions out of
+that state require human-origin provenance:
+
+- `Human Review` → `Merging`
+- `Human Review` → `Done`
+
+Accepted provenance sources are GitHub Project status history with an
+identifiable Human actor, a durable Human approval record, or a future approved
+approval broker. A Manager-authored terminal transition is self-approval and is
+forbidden. Unknown, ambiguous, missing, or contradictory provenance fails closed.
+
 ## Automation allowed by default
 
 The Manager may automate these actions when scope and acceptance criteria are
@@ -51,6 +66,8 @@ clear:
 - requesting Worker validation evidence;
 - preparing commits or PRs for review;
 - summarizing Worker results and residual risks for the Human.
+- moving a complete result packet into `Human Review` without treating that move
+  as terminal approval.
 
 ## Forbidden default actions
 
@@ -70,6 +87,8 @@ Every approval-gated action must leave durable pre-execution evidence. Minimum
 fields:
 
 - approver identity or Human decision source;
+- actor identity, actor origin, and provenance source;
+- source status and target status for status-transition approvals;
 - approved action and explicit non-approved adjacent actions;
 - ticket/project item or request id;
 - affected repository, environment, infrastructure, data, or credential scope;
@@ -95,7 +114,9 @@ preflight:
 5. Verify approval evidence exists for every gated action.
 6. Verify credentials, if any, are issued through a credential broker with least
    privilege and expiry.
-7. Verify no policy item requires Human review before continuing.
+7. Verify terminal status approvals are human-origin and not Manager
+   self-approval.
+8. Verify no policy item requires Human review before continuing.
 
 Any failed or unknown check blocks dispatch. The blocked state must name the
 missing condition rather than starting best-effort work.

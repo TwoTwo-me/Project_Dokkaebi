@@ -198,6 +198,25 @@ the semantic states should remain stable.
 | Failed | Manager | Work cannot be completed under current constraints. | Reopened, Cancelled |
 | Cancelled | Human / Manager | Work is intentionally stopped. | Reopened |
 
+## Status transition provenance
+
+GitHub Project status is the first v0 approval surface, but a status value alone
+is not proof of Human approval. The Manager may move a complete Worker result to
+`Human Review`; that action asks for review and does not authorize merge,
+deployment, terminal closeout, or adjacent high-impact work.
+
+These terminal approval transitions require human-origin provenance:
+
+- `Human Review` → `Merging`
+- `Human Review` → `Done`
+
+The approval record must identify the actor, actor origin, source transition,
+target transition, linked ticket/project item, linked Worker result packet or
+Manager review, and provenance source such as GitHub Project status history, a
+durable Human approval record, or a future approved approval broker. A
+Manager-authored `Human Review` → `Merging` or `Human Review` → `Done`
+transition is self-approval and must be rejected. Unknown or ambiguous provenance fails closed.
+
 ## Exception and escalation rules
 
 Escalate to Manager/Human instead of continuing when:
@@ -210,6 +229,7 @@ Escalate to Manager/Human instead of continuing when:
 - acceptance criteria conflict with safety policy;
 - validation cannot run and no equivalent evidence is available;
 - tracker state and actual repository/workspace state disagree.
+- terminal status approval provenance is missing, ambiguous, or Manager-authored.
 
 ## End-to-end example
 

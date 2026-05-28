@@ -83,6 +83,12 @@ Human approval is required before any of these actions:
 - PR merge, deployment, production data writes, or production infrastructure
   writes unless a later ADR explicitly narrows this gate.
 
+If this ticket reaches `Human Review`, a Manager or Worker may request review,
+but terminal approval requires human-origin provenance. `Human Review` →
+`Merging` and `Human Review` → `Done` must not be performed or interpreted as
+approved when authored by the Manager runtime, and ambiguous provenance must be
+reported as blocked.
+
 ## Worker instructions
 
 1. Restate the goal and constraints before implementation.

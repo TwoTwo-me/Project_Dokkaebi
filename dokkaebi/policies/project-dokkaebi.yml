@@ -10,12 +10,31 @@ mode:
   default_decision: fail_closed
   human_review_required_for_closeout: true
 
+human_review_transition_policy:
+  status_field: Dokkaebi Status
+  review_state: Human Review
+  manager_may_enter_review_state: true
+  terminal_approval_transitions:
+    - from: Human Review
+      to: Merging
+      required_origin: human
+    - from: Human Review
+      to: Done
+      required_origin: human
+  manager_self_approval: forbidden
+  unknown_or_ambiguous_provenance: fail_closed
+  accepted_provenance_sources:
+    - github_project_status_history_actor
+    - durable_human_approval_record
+    - future_approved_approval_broker
+
 allowed_default_automation:
   - draft_or_update_worker_ready_tickets
   - update_workpad_or_progress_comments
   - update_project_item_status_when_policy_allows
   - prepare_local_commits_or_prs_for_human_review
   - summarize_worker_results_with_evidence
+  - move_complete_result_packets_to_human_review
 
 approval_required:
   - credential_or_secret_access
@@ -27,6 +46,8 @@ approval_required:
   - pr_merge
   - deployment
   - production_data_or_infrastructure_write
+  - human_review_to_merging_transition
+  - human_review_to_done_transition
 
 credential_broker:
   required: true
@@ -98,6 +119,19 @@ validation_gates:
     - residual_risks
     - scope_control_statement
     - recommended_next_action
+  terminal_status_transition_must_include:
+    - source_status
+    - target_status
+    - actor
+    - actor_origin
+    - provenance_source
+    - linked_ticket_or_item
+    - linked_result_packet_or_review
+  reject_when:
+    - manager_authored_human_review_to_merging
+    - manager_authored_human_review_to_done
+    - ambiguous_transition_provenance
+    - missing_result_packet_or_manager_review_evidence
 
 audit_and_rollback:
   approvals_dir: dokkaebi/approvals

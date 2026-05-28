@@ -78,12 +78,28 @@ for the binding safety policy.
 - Updating workpad/progress comments.
 - Posting validation evidence.
 - Preparing PRs for review.
+- Moving a complete result packet into Human Review for a Human decision.
+
+### GitHub Project status approval surface
+
+For v0, Dokkaebi may use GitHub Project status transitions as the Human approval
+surface. Status values are not sufficient by themselves: terminal approval must
+be proven by human-origin transition provenance.
+
+The Manager may move a ticket into `Human Review` after reviewing a complete
+Worker result packet. The Manager must not treat its own subsequent
+`Human Review` → `Merging` or `Human Review` → `Done` status mutation as Human
+approval. That mutation is Manager self-approval. Those transitions require a human-origin actor or a future approved
+approval broker, linked ticket/result evidence, and an auditable provenance
+source. Missing, ambiguous, or Manager-authored provenance fails closed and
+blocks merge, deployment, terminal closeout, and any high-impact follow-up.
 
 ### Approval evidence minimum
 
 Pre-execution Human approval must record:
 
 - approver identity or Human decision source;
+- actor origin and provenance source;
 - approved action and explicit non-approved adjacent actions;
 - ticket id;
 - affected system;
@@ -108,7 +124,9 @@ A Manager adapter must block dispatch when any required condition is unknown:
 5. Human approval evidence exists for every gated action.
 6. Credential grants, if needed, are brokered, least-privilege, task-scoped, and
    time-bound.
-7. No policy item requires Human review before continuing.
+7. Terminal status transitions out of `Human Review` are human-origin, not
+   Manager self-approval.
+8. No policy item requires Human review before continuing.
 
 A failed preflight creates a blocked ticket with a specific missing condition. It
 does not authorize best-effort Worker dispatch.
