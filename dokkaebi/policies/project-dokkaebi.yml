@@ -27,6 +27,20 @@ human_review_transition_policy:
     - github_project_status_history_actor
     - durable_human_approval_record
     - future_approved_approval_broker
+  trusted_provenance_verifiers:
+    - dokkaebi-github-project-status-adapter
+    - dokkaebi-human-approval-record-adapter
+    - dokkaebi-approval-broker
+  source_verification:
+    github_project_status_history_actor: github_project_status_history_query
+    durable_human_approval_record: approval_record_path
+    future_approved_approval_broker: broker_signed_decision
+  approval_required_actions:
+    - pr_merge
+    - github_issue_close
+    - deployment
+    - human_review_to_merging_transition
+    - human_review_to_done_transition
 
 allowed_default_automation:
   - draft_or_update_worker_ready_tickets
@@ -44,6 +58,7 @@ approval_required:
   - cloud_vm_kubernetes_iac_or_proxmox_mutation
   - manager_runtime_replacement
   - pr_merge
+  - github_issue_close
   - deployment
   - production_data_or_infrastructure_write
   - human_review_to_merging_transition
@@ -125,12 +140,19 @@ validation_gates:
     - actor
     - actor_origin
     - provenance_source
+    - approved_action
     - linked_ticket_or_item
     - linked_result_packet_or_review
+    - provenance_record_id
+    - provenance_checked_by
+    - provenance_verification_method
   reject_when:
     - manager_authored_human_review_to_merging
     - manager_authored_human_review_to_done
+    - manager_authored_github_issue_close
     - ambiguous_transition_provenance
+    - untrusted_provenance_verifier
+    - missing_source_specific_provenance_record
     - missing_result_packet_or_manager_review_evidence
 
 audit_and_rollback:

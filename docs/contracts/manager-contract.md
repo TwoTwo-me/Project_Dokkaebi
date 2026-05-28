@@ -89,16 +89,21 @@ be proven by human-origin transition provenance.
 The Manager may move a ticket into `Human Review` after reviewing a complete
 Worker result packet. The Manager must not treat its own subsequent
 `Human Review` → `Merging` or `Human Review` → `Done` status mutation as Human
-approval. That mutation is Manager self-approval. Those transitions require a human-origin actor or a future approved
-approval broker, linked ticket/result evidence, and an auditable provenance
-source. Missing, ambiguous, or Manager-authored provenance fails closed and
-blocks merge, deployment, terminal closeout, and any high-impact follow-up.
+approval. That mutation is Manager self-approval. Those transitions and GitHub
+issue closeout require a human-origin actor or a future approved approval
+broker, linked ticket/result evidence, a trusted provenance verifier, a
+source-specific record id, and an auditable provenance source. Caller-supplied
+`actor_origin: human` JSON is not approval by itself. Missing, ambiguous,
+untrusted, or Manager-authored provenance fails closed and blocks merge,
+deployment, issue close, terminal closeout, and any high-impact follow-up.
 
 The local validation gate is
 [`scripts/dokkaebi-approval-transition-check.py`](../../scripts/dokkaebi-approval-transition-check.py).
-Adapters should feed it a transition record from GitHub Project status history,
-a durable Human approval record, or a future approved approval broker before
-acting on terminal approval.
+Adapters must feed it a transition record produced or checked by a trusted
+provenance verifier: GitHub Project status history query, a durable Human
+approval record adapter, or a future approved approval broker. Arbitrary
+Manager-authored records are fixtures only and must not be used as terminal
+approval evidence.
 
 Worker result ingestion should use the result-packet template plus the local
 review helper
@@ -112,7 +117,8 @@ closeout authority.
 Pre-execution Human approval must record:
 
 - approver identity or Human decision source;
-- actor origin and provenance source;
+- actor origin, provenance source, trusted verifier, verification method, and
+  source-specific record id;
 - approved action and explicit non-approved adjacent actions;
 - ticket id;
 - affected system;
@@ -137,9 +143,10 @@ A Manager adapter must block dispatch when any required condition is unknown:
 5. Human approval evidence exists for every gated action.
 6. Credential grants, if needed, are brokered, least-privilege, task-scoped, and
    time-bound.
-7. Terminal status transitions out of `Human Review` are human-origin, not
-   Manager self-approval.
-8. No policy item requires Human review before continuing.
+7. Terminal status transitions out of `Human Review` and GitHub issue closeout
+   are human-origin, source-specific, and not Manager self-approval.
+8. No `dokkaebi/KILL_SWITCH` file is present.
+9. No policy item requires Human review before continuing.
 
 A failed preflight creates a blocked ticket with a specific missing condition. It
 does not authorize best-effort Worker dispatch.

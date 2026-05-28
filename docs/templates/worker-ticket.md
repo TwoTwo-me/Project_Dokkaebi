@@ -80,14 +80,16 @@ Human approval is required before any of these actions:
 - secret, credential, token, SSH key, or admin-account access;
 - Worker creation, scaling, privilege elevation, or broader tool/network access;
 - Manager runtime replacement;
-- PR merge, deployment, production data writes, or production infrastructure
-  writes unless a later ADR explicitly narrows this gate.
+- PR merge, GitHub issue close, deployment, production data writes, or
+  production infrastructure writes unless a later ADR explicitly narrows this
+  gate.
 
 If this ticket reaches `Human Review`, a Manager or Worker may request review,
 but terminal approval requires human-origin provenance. `Human Review` →
 `Merging` and `Human Review` → `Done` must not be performed or interpreted as
-approved when authored by the Manager runtime, and ambiguous provenance must be
-reported as blocked.
+approved when authored by the Manager runtime. GitHub issue closeout also
+requires a human approval record with a trusted provenance verifier and
+source-specific record id. Ambiguous provenance must be reported as blocked.
 
 ## Worker instructions
 

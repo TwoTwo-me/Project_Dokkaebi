@@ -7,6 +7,7 @@ SCOPE="$ROOT/dokkaebi/project-scopes/project-dokkaebi.yml"
 POLICY="$ROOT/dokkaebi/policies/project-dokkaebi.yml"
 SYMPHONY_DIR="$ROOT/symphony-github-project-tracker"
 SYMPHONY_ESCRIPT="$SYMPHONY_DIR/elixir/bin/symphony"
+KILL_SWITCH="$ROOT/dokkaebi/KILL_SWITCH"
 STRICT=0
 
 if [[ "${1:-}" == "--strict" ]]; then
@@ -27,6 +28,11 @@ status() {
   esac
 }
 
+has_write_project_scope() {
+  local scopes_line="$1"
+  [[ "$scopes_line" =~ (^|[^A-Za-z0-9_:.-])project([^A-Za-z0-9_:.-]|$) ]]
+}
+
 require_file() {
   local path="$1"
   if [[ -f "$path" ]]; then
@@ -42,6 +48,16 @@ require_file "$POLICY"
 require_file "$WORKFLOW"
 require_file "$SYMPHONY_DIR/elixir/lib/symphony_elixir/cli.ex"
 require_file "$SYMPHONY_DIR/elixir/mix.exs"
+
+if [[ -e "$KILL_SWITCH" ]]; then
+  if [[ -f "$KILL_SWITCH" ]]; then
+    status BLOCKED "kill switch present: ${KILL_SWITCH#$ROOT/}"
+  else
+    status BLOCKED "kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}"
+  fi
+else
+  status OK "kill switch absent: ${KILL_SWITCH#$ROOT/}"
+fi
 
 if python3 - <<'PY' "$ROOT" "$SCOPE" "$POLICY" "$WORKFLOW" >/tmp/dokkaebi-symphony-preflight-yaml.out 2>/tmp/dokkaebi-symphony-preflight-yaml.err
 from pathlib import Path
@@ -79,6 +95,14 @@ if 'shell_environment_policy.inherit=all' in codex_command:
     errors.append('codex.command must not use shell_environment_policy.inherit=all')
 if 'dokkaebi-codex-worker-app-server.sh' not in codex_command:
     errors.append('codex.command must use the Dokkaebi worker env scrubber')
+if ((workflow.get('github_auth') or {}).get('scopes') or '') != 'project':
+    errors.append('github_auth.scopes must be write-capable project, not read:project')
+transition_policy = workflow_tracker.get('human_review_transition_policy') or {}
+for required in ['trusted_provenance_verifiers', 'source_verification', 'approval_required_actions']:
+    if required not in transition_policy:
+        errors.append(f'tracker.human_review_transition_policy missing {required}')
+if 'github_issue_close' not in (transition_policy.get('approval_required_actions') or []):
+    errors.append('human_review_transition_policy must explicitly gate github_issue_close')
 wrapper = root / 'scripts' / 'dokkaebi-codex-worker-app-server.sh'
 if not (wrapper.is_file() and wrapper.stat().st_mode & 0o111):
     errors.append('worker env scrubber is missing or not executable')
@@ -151,17 +175,17 @@ else
   status BLOCKED "worker env sanitizer failed: $(cat /tmp/dokkaebi-worker-env-sanitizer.err)"
 fi
 
-if [[ -n "${GITHUB_GRAPHQL_TOKEN:-}" ]]; then
-  status OK "GITHUB_GRAPHQL_TOKEN is set in environment"
-elif command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-gh-auth-status.out 2>&1; then
+if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-gh-auth-status.out 2>&1; then
   scopes_line="$(grep -E "Token scopes:" /tmp/dokkaebi-gh-auth-status.out || true)"
-  if [[ "$scopes_line" == *"project"* || "$scopes_line" == *"read:project"* ]]; then
-    status OK "gh auth token scopes include project access"
+  if has_write_project_scope "$scopes_line"; then
+    status OK "gh auth token scopes include write-capable project access"
   else
-    status BLOCKED "gh auth exists, but project scope is missing; run: gh auth refresh -h github.com -s project"
+    status BLOCKED "gh auth exists, but write-capable project scope is missing; read:project is insufficient for status mutation. Run: gh auth refresh -h github.com -s project"
   fi
 elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
   status WARN "project mutation auth is intentionally unavailable in sanitized Worker context"
+elif [[ -n "${GITHUB_GRAPHQL_TOKEN:-}" ]]; then
+  status BLOCKED "GITHUB_GRAPHQL_TOKEN is set, but write-capable project scope cannot be verified without gh auth; use gh auth refresh -h github.com -s project or a brokered token verifier"
 else
   status BLOCKED "no GITHUB_GRAPHQL_TOKEN and gh auth status failed"
 fi

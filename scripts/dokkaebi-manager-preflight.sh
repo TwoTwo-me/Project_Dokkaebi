@@ -4,6 +4,8 @@ set -u
 ok=0
 warn=0
 block=0
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+KILL_SWITCH="$ROOT/dokkaebi/KILL_SWITCH"
 
 status() {
   local level="$1"; shift
@@ -13,6 +15,11 @@ status() {
     WARN) warn=$((warn + 1)) ;;
     BLOCKED) block=$((block + 1)) ;;
   esac
+}
+
+has_write_project_scope() {
+  local scopes_line="$1"
+  [[ "$scopes_line" =~ (^|[^A-Za-z0-9_:.-])project([^A-Za-z0-9_:.-]|$) ]]
 }
 
 if command -v hermes >/dev/null 2>&1; then
@@ -30,6 +37,16 @@ else
   status BLOCKED "Codex command not found"
 fi
 
+if [[ -e "$KILL_SWITCH" ]]; then
+  if [[ -f "$KILL_SWITCH" ]]; then
+    status BLOCKED "kill switch present: ${KILL_SWITCH#$ROOT/}"
+  else
+    status BLOCKED "kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}"
+  fi
+else
+  status OK "kill switch absent: ${KILL_SWITCH#$ROOT/}"
+fi
+
 CODEX_AUTH_PATH="${CODEX_HOME:-$HOME/.codex}/auth.json"
 if [[ -f "$CODEX_AUTH_PATH" ]]; then
   status OK "Codex auth store exists at $CODEX_AUTH_PATH"
@@ -41,13 +58,15 @@ fi
 
 if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-manager-gh-auth.out 2>&1; then
   scopes_line="$(grep -E "Token scopes:" /tmp/dokkaebi-manager-gh-auth.out || true)"
-  if [[ "$scopes_line" == *"project"* || "$scopes_line" == *"read:project"* ]]; then
-    status OK "gh token includes project scope"
+  if has_write_project_scope "$scopes_line"; then
+    status OK "gh token includes write-capable project scope"
   else
-    status BLOCKED "gh token lacks project scope; run: gh auth refresh -h github.com -s project"
+    status BLOCKED "gh token lacks write-capable project scope; read:project is insufficient for status mutation. Run: gh auth refresh -h github.com -s project"
   fi
 elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
   status WARN "gh auth is intentionally unavailable in sanitized Worker context"
+elif [[ -n "${GITHUB_GRAPHQL_TOKEN:-}" ]]; then
+  status BLOCKED "GITHUB_GRAPHQL_TOKEN is set, but write-capable project scope cannot be verified without gh auth; use gh auth refresh -h github.com -s project or a brokered token verifier"
 else
   status BLOCKED "gh auth status failed"
 fi

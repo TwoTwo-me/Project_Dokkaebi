@@ -35,8 +35,8 @@ Dokkaebi must obtain explicit Human approval before any of these actions:
 - secret, credential, token, SSH key, admin-account, or production-account access;
 - Worker creation, scaling, privilege elevation, or broader network/tool access;
 - Manager runtime replacement or switching the active root Manager adapter;
-- PR merge, deployment, production data writes, or production infrastructure
-  writes unless a later ADR grants a narrow exception.
+- PR merge, GitHub issue close, deployment, production data writes, or
+  production infrastructure writes unless a later ADR grants a narrow exception.
 
 Approval is specific to the task, scope, actor, and time window. Approval for one
 ticket does not grant standing authority to future tickets.
@@ -53,8 +53,12 @@ that state require human-origin provenance:
 
 Accepted provenance sources are GitHub Project status history with an
 identifiable Human actor, a durable Human approval record, or a future approved
-approval broker. A Manager-authored terminal transition is self-approval and is
-forbidden. Unknown, ambiguous, missing, or contradictory provenance fails closed.
+approval broker. They must be produced or checked by a trusted provenance
+verifier such as a GitHub Project status-history adapter, a durable approval
+record adapter, or a broker-signed approval decision; caller-supplied
+`actor_origin: human` JSON is not approval by itself. A Manager-authored terminal
+transition or GitHub issue close is self-approval and is forbidden. Unknown,
+ambiguous, missing, untrusted, or contradictory provenance fails closed.
 
 ## Automation allowed by default
 
@@ -88,6 +92,8 @@ fields:
 
 - approver identity or Human decision source;
 - actor identity, actor origin, and provenance source;
+- trusted provenance verifier, verification method, and source-specific record
+  id;
 - source status and target status for status-transition approvals;
 - approved action and explicit non-approved adjacent actions;
 - ticket/project item or request id;
@@ -114,9 +120,10 @@ preflight:
 5. Verify approval evidence exists for every gated action.
 6. Verify credentials, if any, are issued through a credential broker with least
    privilege and expiry.
-7. Verify terminal status approvals are human-origin and not Manager
-   self-approval.
-8. Verify no policy item requires Human review before continuing.
+7. Verify terminal status approvals and GitHub issue closeout are human-origin,
+   source-specific, and not Manager self-approval.
+8. Verify no `dokkaebi/KILL_SWITCH` file is present.
+9. Verify no policy item requires Human review before continuing.
 
 Any failed or unknown check blocks dispatch. The blocked state must name the
 missing condition rather than starting best-effort work.
@@ -155,6 +162,14 @@ updates remain automation candidates when the ticket is already approved.
 If project status fields, labels, workpad conventions, or Worker metadata cannot
 be mapped, the Manager must mark the ticket blocked and request a mapping or
 project setup change.
+
+For v0 scheduling, the custom `Dokkaebi Status` field is authoritative; the
+native GitHub Project `status` field is informational. After a Worker produces a
+complete result packet, Manager-controlled result ingestion must move `Dokkaebi
+Status` out of active states (`Human Review`, `Fix Requested`, or `Blocked`)
+before unattended polling can safely continue. Leaving a completed result in
+`Dispatchable` is a repeat-dispatch hazard and must be treated as blocked or
+operator-interrupted.
 
 ## Trusted automation gates
 

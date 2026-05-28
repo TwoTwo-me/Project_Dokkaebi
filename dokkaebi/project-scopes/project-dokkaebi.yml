@@ -109,6 +109,32 @@ tracker:
       - github_project_status_history_actor
       - human_approval_record
       - future_approved_approval_broker
+    trusted_provenance_verifiers:
+      - dokkaebi-github-project-status-adapter
+      - dokkaebi-human-approval-record-adapter
+      - dokkaebi-approval-broker
+    source_verification:
+      github_project_status_history_actor: github_project_status_history_query
+      human_approval_record: approval_record_path
+      future_approved_approval_broker: broker_signed_decision
+    approval_required_actions:
+      - pr_merge
+      - github_issue_close
+      - deployment
+      - human_review_to_merging_transition
+      - human_review_to_done_transition
+    required_transition_record_fields:
+      - source_status
+      - target_status
+      - actor
+      - actor_origin
+      - provenance_source
+      - approved_action
+      - linked_ticket_or_item
+      - linked_result_packet_or_review
+      - provenance_record_id
+      - provenance_checked_by
+      - provenance_verification_method
 
 worker_routing:
   default_required_capability: basic
@@ -145,11 +171,15 @@ runtime_provider:
         Must go through a narrow audited host helper daemon; do not mount a broad
         host Docker socket into Dokkaebi or Worker containers by default.
 
-policy:
-  file: dokkaebi/policies/project-dokkaebi.yml
-  fail_closed: true
-  credential_broker_required_for_credentials: true
-  kill_switch_file: dokkaebi/KILL_SWITCH
+  policy:
+    file: dokkaebi/policies/project-dokkaebi.yml
+    fail_closed: true
+    credential_broker_required_for_credentials: true
+    kill_switch_file: dokkaebi/KILL_SWITCH
+    repeat_dispatch_guard: >-
+      Manager result ingestion must move completed Worker output out of active
+      states, normally to Human Review, before an unattended loop is allowed to
+      continue polling the same item.
 
 audit:
   approvals_dir: dokkaebi/approvals

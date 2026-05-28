@@ -81,8 +81,9 @@ request ref, or SHA instead of remote `main`.
 The v0 Human approval surface is the GitHub Project `Dokkaebi Status` field.
 The Manager may route complete results to `Human Review`, but
 `Human Review` → `Merging` and `Human Review` → `Done` require human-origin
-provenance. Manager self-approval and ambiguous transition provenance fail
-closed.
+provenance from a trusted verifier with source-specific evidence. Manager
+self-approval, GitHub issue closeout without human-origin approval, and
+ambiguous provenance fail closed.
 
 See [`docs/deep-interview-project-dokkaebi.md`](docs/deep-interview-project-dokkaebi.md)
 for the original clarified initial specification, and

@@ -4,7 +4,7 @@
 This script is an ingestion/checkpoint helper for Symphony result surfaces. It
 checks the packet shape, extracts coarse evidence signals, and emits a Manager
 review recommendation that can route work to Human Review/Fix Requested/Blocked
-without granting merge, deploy, or terminal closeout authority.
+without granting merge, deploy, GitHub issue close, or terminal closeout authority.
 """
 from __future__ import annotations
 
@@ -29,6 +29,8 @@ REQUIRED_HEADINGS = [
 FORBIDDEN_MANAGER_ACTIONS = [
     "merge_pr",
     "deploy_or_cutover",
+    "github_issue_close",
+    "issue_close_without_human_origin",
     "terminal_closeout_done",
     "human_review_to_merging_without_human_origin",
     "human_review_to_done_without_human_origin",
@@ -126,7 +128,7 @@ def review_packet(path: Path) -> dict[str, Any]:
         recommended_action = "return to Worker with scoped fix/validation requirements"
     else:
         recommended_status = "Human Review"
-        recommended_action = "summarize evidence for Human review; do not merge, deploy, or close terminally"
+        recommended_action = "summarize evidence for Human review; do not merge, deploy, close GitHub issues, or close terminally"
 
     return {
         "ok": recommended_status in {"Human Review", "Fix Requested", "Blocked"},
@@ -139,7 +141,14 @@ def review_packet(path: Path) -> dict[str, Any]:
             "create_followup_ticket_if_needed",
         ],
         "forbidden_manager_actions": FORBIDDEN_MANAGER_ACTIONS,
-        "human_approval_required_before": ["merge", "deploy", "terminal Done closeout", "Human Review -> Merging", "Human Review -> Done"],
+        "human_approval_required_before": [
+            "merge",
+            "deploy",
+            "GitHub issue close",
+            "terminal Done closeout",
+            "Human Review -> Merging",
+            "Human Review -> Done",
+        ],
         "signals": {
             "missing_sections": missing,
             "placeholder_sections": sorted(placeholder_sections),

@@ -49,6 +49,8 @@ require_text ARCHITECTURE.md 'Trust boundaries'
 require_text ARCHITECTURE.md 'Critical risks'
 require_text ARCHITECTURE.md 'human-origin approval provenance'
 require_text ARCHITECTURE.md 'Manager-authored transitions to `Merging` or `Done` are'
+require_text ARCHITECTURE.md 'GitHub issue close'
+require_text ARCHITECTURE.md 'Repeat dispatch'
 
 require_text WORKFLOW.md '# Project Dokkaebi Workflow'
 require_text WORKFLOW.md '## Phase 1: Manager intake'
@@ -58,7 +60,10 @@ require_text WORKFLOW.md '## Status transition provenance'
 require_text WORKFLOW.md '| Reopened |'
 require_text WORKFLOW.md 'Human Review` → `Merging`'
 require_text WORKFLOW.md 'Human Review` → `Done`'
-require_text WORKFLOW.md 'Unknown or ambiguous provenance fails closed'
+require_text WORKFLOW.md 'Unknown, untrusted, or ambiguous provenance fails closed'
+require_text WORKFLOW.md 'GitHub issue closeout is also terminal closeout'
+require_text WORKFLOW.md 'trusted provenance verifier'
+require_text WORKFLOW.md 'dokkaebi/KILL_SWITCH'
 
 require_text docs/contracts/manager-contract.md '# Dokkaebi Manager Contract'
 require_text docs/contracts/manager-contract.md '## Fail-closed preflight'
@@ -75,7 +80,10 @@ require_text docs/contracts/manager-contract.md 'acceptance-criteria evidence'
 require_text docs/contracts/manager-contract.md 'scope-control statement'
 require_text docs/contracts/manager-contract.md 'approval-gate status'
 require_text docs/contracts/manager-contract.md 'Manager self-approval'
-require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` are human-origin'
+require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` and GitHub issue closeout'
+require_text docs/contracts/manager-contract.md 'GitHub issue closeout'
+require_text docs/contracts/manager-contract.md 'trusted provenance verifier'
+require_text docs/contracts/manager-contract.md 'Caller-supplied'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-approval-transition-check.py'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-worker-result-review.py'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
@@ -92,8 +100,11 @@ require_text docs/policies/authority-and-safety.md 'planned result-packet or Man
 require_text docs/policies/authority-and-safety.md 'required at closeout'
 require_text docs/policies/authority-and-safety.md 'control-plane writes'
 require_text docs/policies/authority-and-safety.md 'approved setup authority'
-require_text docs/policies/authority-and-safety.md 'Manager-authored terminal transition is self-approval'
-require_text docs/policies/authority-and-safety.md 'Unknown, ambiguous, missing, or contradictory provenance fails closed'
+require_text docs/policies/authority-and-safety.md 'Manager-authored terminal'
+require_text docs/policies/authority-and-safety.md 'untrusted, or contradictory provenance fails closed'
+require_text docs/policies/authority-and-safety.md 'caller-supplied'
+require_text docs/policies/authority-and-safety.md 'GitHub issue close'
+require_text docs/policies/authority-and-safety.md 'repeat-dispatch hazard'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
@@ -116,6 +127,8 @@ require_text docs/templates/worker-ticket.md 'whether acceptance criteria were m
 require_text docs/templates/worker-ticket.md 'scope-control statement'
 require_text docs/templates/worker-ticket.md 'approval-gate status'
 require_text docs/templates/worker-ticket.md 'terminal approval requires human-origin provenance'
+require_text docs/templates/worker-ticket.md 'GitHub issue closeout'
+require_text docs/templates/worker-ticket.md 'trusted provenance verifier'
 
 require_text docs/templates/worker-result-packet.md '# Worker Result Packet Template'
 require_text docs/templates/worker-result-packet.md 'scripts/dokkaebi-worker-result-review.py'
@@ -127,12 +140,15 @@ require_text docs/templates/worker-result-packet.md '## Blockers or missing perm
 require_text docs/templates/worker-result-packet.md '## Residual risks'
 require_text docs/templates/worker-result-packet.md '## Scope control'
 require_text docs/templates/worker-result-packet.md 'Human approval gates reached'
+require_text docs/templates/worker-result-packet.md 'GitHub issue close'
 require_text docs/templates/worker-result-packet.md '## Recommended Manager/Human next action'
 
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 6. Human Review terminal approval gate'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-approval-transition-check.py'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 7. Worker result ingestion and Manager review'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-worker-result-review.py'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'dokkaebi/KILL_SWITCH'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'unattended poll loop'
 
 require_text README.md 'ARCHITECTURE.md'
 require_text README.md 'WORKFLOW.md'
@@ -241,9 +257,30 @@ for doc_name, doc_text in [
         'required_origin: human',
         'manager_self_approval: forbidden',
         'unknown_or_ambiguous_provenance: fail_closed',
+        'trusted_provenance_verifiers',
+        'source_verification',
+        'github_issue_close',
     ]:
         if term not in doc_text:
             errors.append(f'{doc_name} missing human-origin transition invariant: {term}')
+
+for doc_name, doc_text in [
+    ('policy yaml', policy_yaml),
+    ('symphony workflow', workflow_contract),
+]:
+    for term in [
+        'approved_action',
+        'provenance_record_id',
+        'provenance_checked_by',
+        'provenance_verification_method',
+    ]:
+        if term not in doc_text:
+            errors.append(f'{doc_name} missing provenance evidence field: {term}')
+
+if 'scopes: project' not in workflow_contract:
+    errors.append('symphony workflow must require write-capable github_auth scope: project')
+if 'read:project' in workflow_contract:
+    errors.append('symphony workflow must not request read-only read:project for mutating runtime')
 
 if errors:
     for error in errors:

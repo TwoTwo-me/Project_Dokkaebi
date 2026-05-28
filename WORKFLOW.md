@@ -210,12 +210,16 @@ These terminal approval transitions require human-origin provenance:
 - `Human Review` → `Merging`
 - `Human Review` → `Done`
 
-The approval record must identify the actor, actor origin, source transition,
-target transition, linked ticket/project item, linked Worker result packet or
-Manager review, and provenance source such as GitHub Project status history, a
-durable Human approval record, or a future approved approval broker. A
-Manager-authored `Human Review` → `Merging` or `Human Review` → `Done`
-transition is self-approval and must be rejected. Unknown or ambiguous provenance fails closed.
+GitHub issue closeout is also terminal closeout and requires the same approval
+class. The approval record must identify the actor, actor origin, source
+transition, target transition, approved action, linked ticket/project item,
+linked Worker result packet or Manager review, trusted provenance verifier,
+source-specific record id, verification method, and provenance source such as
+GitHub Project status history, a durable Human approval record, or a future
+approved approval broker. Caller-supplied `actor_origin: human` JSON is not
+approval by itself. A Manager-authored `Human Review` → `Merging`,
+`Human Review` → `Done`, or GitHub issue close transition is self-approval and
+must be rejected. Unknown, untrusted, or ambiguous provenance fails closed.
 
 ## Exception and escalation rules
 
@@ -229,7 +233,9 @@ Escalate to Manager/Human instead of continuing when:
 - acceptance criteria conflict with safety policy;
 - validation cannot run and no equivalent evidence is available;
 - tracker state and actual repository/workspace state disagree.
-- terminal status approval provenance is missing, ambiguous, or Manager-authored.
+- `dokkaebi/KILL_SWITCH` is present;
+- terminal status approval or GitHub issue closeout provenance is missing,
+  untrusted, ambiguous, or Manager-authored.
 
 ## End-to-end example
 

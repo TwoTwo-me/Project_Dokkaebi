@@ -27,9 +27,18 @@ REQUIRED_EVIDENCE_FIELDS = [
     "actor",
     "actor_origin",
     "provenance_source",
+    "approved_action",
     "linked_ticket_or_item",
     "linked_result_packet_or_review",
+    "provenance_record_id",
+    "provenance_checked_by",
+    "provenance_verification_method",
 ]
+DEFAULT_TRUSTED_VERIFIERS = {
+    "dokkaebi-github-project-status-adapter",
+    "dokkaebi-human-approval-record-adapter",
+    "dokkaebi-approval-broker",
+}
 
 
 def _load_record(args: argparse.Namespace) -> dict[str, Any]:
@@ -88,6 +97,15 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     terminal_targets = {target for _, target in transitions}
     accepted_sources = set(policy.get("accepted_provenance_sources") or [])
     accepted_sources.update(policy.get("provenance_sources") or [])
+    trusted_verifiers = set(policy.get("trusted_provenance_verifiers") or [])
+    if not trusted_verifiers:
+        trusted_verifiers = DEFAULT_TRUSTED_VERIFIERS
+    source_verification = policy.get("source_verification") or {}
+    allowed_actions = set(policy.get("approval_required_actions") or [])
+    approved_action = str(record.get("approved_action") or "").strip()
+    provenance_record_id = str(record.get("provenance_record_id") or "").strip()
+    provenance_checked_by = str(record.get("provenance_checked_by") or "").strip()
+    verification_method = str(record.get("provenance_verification_method") or "").strip()
 
     details = {
         "source_status": source,
@@ -95,6 +113,10 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
         "actor": actor,
         "actor_origin": actor_origin,
         "provenance_source": provenance_source,
+        "approved_action": approved_action,
+        "provenance_record_id": provenance_record_id,
+        "provenance_checked_by": provenance_checked_by,
+        "provenance_verification_method": verification_method,
         "review_state": review_state,
         "terminal_approval_transitions": sorted([{"from": a, "to": b} for a, b in transitions], key=lambda x: (x["from"], x["to"])),
     }
@@ -128,6 +150,21 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
 
     if accepted_sources and provenance_source not in accepted_sources:
         return False, f"unaccepted provenance_source {provenance_source!r}; expected one of {sorted(accepted_sources)!r}", details
+
+    if allowed_actions and approved_action not in allowed_actions:
+        return False, f"unaccepted approved_action {approved_action!r}; expected one of {sorted(allowed_actions)!r}", details
+
+    if provenance_checked_by not in trusted_verifiers:
+        return False, f"untrusted provenance_checked_by {provenance_checked_by!r}; expected one of {sorted(trusted_verifiers)!r}", details
+
+    expected_method = ""
+    if isinstance(source_verification, dict):
+        expected_method = str(source_verification.get(provenance_source) or "").strip()
+    if expected_method and verification_method != expected_method:
+        return False, f"provenance_verification_method for {provenance_source!r} must be {expected_method!r}", details
+
+    if provenance_record_id.lower() in {"n/a", "none", "null", "unknown"}:
+        return False, "provenance_record_id must identify source-specific durable evidence", details
 
     linked_result = str(record.get("linked_result_packet_or_review") or "").strip()
     if linked_result.lower() in {"n/a", "none", "null", "unknown"}:

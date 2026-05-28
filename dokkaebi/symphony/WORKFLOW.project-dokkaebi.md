@@ -33,6 +33,32 @@ tracker:
         required_origin: human
     manager_self_approval: forbidden
     unknown_or_ambiguous_provenance: fail_closed
+    trusted_provenance_verifiers:
+      - dokkaebi-github-project-status-adapter
+      - dokkaebi-human-approval-record-adapter
+      - dokkaebi-approval-broker
+    source_verification:
+      github_project_status_history_actor: github_project_status_history_query
+      durable_human_approval_record: approval_record_path
+      future_approved_approval_broker: broker_signed_decision
+    approval_required_actions:
+      - pr_merge
+      - github_issue_close
+      - deployment
+      - human_review_to_merging_transition
+      - human_review_to_done_transition
+    required_transition_record_fields:
+      - source_status
+      - target_status
+      - actor
+      - actor_origin
+      - provenance_source
+      - approved_action
+      - linked_ticket_or_item
+      - linked_result_packet_or_review
+      - provenance_record_id
+      - provenance_checked_by
+      - provenance_verification_method
   whitelist_labels:
     - dokkaebi
     - symphony
@@ -40,7 +66,7 @@ tracker:
   api_key: $GITHUB_GRAPHQL_TOKEN
 github_auth:
   client_id: $SYMPHONY_GITHUB_OAUTH_CLIENT_ID
-  scopes: read:project
+  scopes: project
   token_path: $SYMPHONY_GITHUB_AUTH_TOKEN_PATH
 credential_broker:
   enabled: false
@@ -161,10 +187,21 @@ The Manager or Worker may move a complete result packet into `Human Review`.
 That transition is a request for review, not terminal approval. The
 `Human Review` → `Merging` and `Human Review` → `Done` transitions count as
 approval only when the transition provenance is human-origin and linked to the
-ticket/result evidence. A Manager-authored terminal transition is self-approval
-and must fail closed. If the actor, origin, or evidence source is unavailable or
-ambiguous, leave the item in `Human Review` or move it to `Blocked` with the
-missing provenance condition.
+ticket/result evidence through a trusted provenance verifier. A Manager-authored
+terminal transition or GitHub issue close is self-approval and must fail closed.
+If the actor, origin, verifier, source-specific record id, or evidence source is
+unavailable or ambiguous, leave the item in `Human Review` or move it to
+`Blocked` with the missing provenance condition.
+
+## Repeat-dispatch guard
+
+The custom `Dokkaebi Status` field is authoritative for this workflow; the native
+GitHub Project `status` field is informational. Symphony must not be left to
+repeat an already-completed `Dispatchable` item unattended. After a Worker
+produces a complete result packet, the Manager-controlled ingestion step must
+review the packet and move the custom `Dokkaebi Status` out of active states
+(`Human Review`, `Fix Requested`, or `Blocked`) before continued polling is
+treated as safe.
 
 ## Execution checklist
 

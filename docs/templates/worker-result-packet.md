@@ -7,7 +7,8 @@ configured tracker surface.
 Managers can ingest and pre-review a completed packet with
 [`../../scripts/dokkaebi-worker-result-review.py`](../../scripts/dokkaebi-worker-result-review.py).
 The review output can route the ticket to `Human Review`, `Fix Requested`, or
-`Blocked`, but it never authorizes merge, deploy, or terminal `Done` closeout.
+`Blocked`, but it never authorizes merge, deploy, GitHub issue close, or
+terminal `Done` closeout.
 
 ## Task identity
 
@@ -69,7 +70,7 @@ If a check was not run, explain why and provide the next-best evidence.
 
 Choose one and add a short rationale:
 
-- Accept result and close ticket.
+- Move/keep the ticket in `Human Review` for human-origin closeout approval.
 - Request Worker follow-up.
 - Start Human review.
 - Approve/deny a blocked action.

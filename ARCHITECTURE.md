@@ -228,7 +228,8 @@ Portability requirements:
 | Manager ambiguity | Manager emits vague tickets that Workers cannot safely execute. | Clarify before dispatch and require worker-ready fields. |
 | Symphony coupling confusion | Future contributors try to make Managers own scheduler behavior or treat Symphony as generic plumbing again. | Cite ADR 0002, keep Manager replaceability separate from Symphony execution ownership, and model multi-project support as ProjectScopes above Symphony. |
 | Provider authority leakage | Environment providers expose broad Docker, VM, cloud, or Proxmox power. | Use the runtime provider contract, host helper daemon boundaries, approval gates, audit, rollback, and kill switches. |
-| Human review bypass | Merge, deploy, infra, production writes, or terminal closeout happen without human-origin approval provenance. | Treat high-impact actions as approval-required, reject Manager self-approval of `Human Review` → `Merging` / `Done`, and fail closed on ambiguous provenance. |
+| Human review bypass | Merge, deploy, infra, production writes, GitHub issue close, or terminal closeout happen without human-origin approval provenance. | Treat high-impact actions as approval-required, reject Manager self-approval of `Human Review` → `Merging` / `Done`, require trusted provenance verification plus source-specific record ids, and fail closed on ambiguous provenance. |
+| Repeat dispatch | Symphony sees a completed item still in an active custom status and starts another Worker loop. | Treat custom `Dokkaebi Status` as authoritative; Manager-controlled result ingestion must move completed packets to `Human Review`, `Fix Requested`, or `Blocked` before unattended polling continues. |
 
 ## Current milestone boundary
 

@@ -73,6 +73,8 @@ workspaces. Worker credentials must later come from a broker. The configured
 Codex Worker command uses `scripts/dokkaebi-codex-worker-app-server.sh`, which
 scrubs GitHub, SSH, cloud, provider, Hermes, and Symphony control-plane
 credentials before launching `codex app-server`.
+It still preserves Codex model-runtime auth via `CODEX_HOME`; that is not a
+general-purpose credential grant to Workers.
 
 Validate the scrubber without printing secrets:
 
@@ -100,6 +102,14 @@ passes `dokkaebi/symphony/WORKFLOW.project-dokkaebi.md` to the existing escript.
 When `DOKKAEBI_WORKER_REF` is set, the `after_create` hook fetches that branch,
 SHA, or pull-request ref into the Worker checkout before execution. Unsafe ref
 syntax fails closed.
+`scripts/dokkaebi-symphony-preflight.sh --strict` also blocks when
+`dokkaebi/KILL_SWITCH` exists.
+
+After a Worker produces a result packet, the Manager must ingest the packet and
+move the custom `Dokkaebi Status` field out of active states before continuing an
+unattended poll loop. `Human Review`, `Fix Requested`, or `Blocked` are the safe
+post-result states; leaving a completed item as `Dispatchable` can repeat
+dispatch.
 
 ## 5. First test item
 
@@ -123,10 +133,13 @@ scripts/dokkaebi-approval-transition-check.py --record transition.json --json
 ```
 
 The transition record must include `source_status`, `target_status`, `actor`,
-`actor_origin`, `provenance_source`, `linked_ticket_or_item`, and
-`linked_result_packet_or_review`. `Human Review` → `Merging` and
-`Human Review` → `Done` require `actor_origin: human`. Manager-authored or
-ambiguous terminal transitions are blocked rather than treated as approval.
+`actor_origin`, `provenance_source`, `approved_action`,
+`linked_ticket_or_item`, `linked_result_packet_or_review`,
+`provenance_record_id`, `provenance_checked_by`, and
+`provenance_verification_method`. `Human Review` → `Merging`,
+`Human Review` → `Done`, and GitHub issue close require human-origin,
+source-specific provenance. Manager-authored, untrusted, or ambiguous terminal
+transitions are blocked rather than treated as approval.
 
 ## 7. Worker result ingestion and Manager review
 
@@ -141,5 +154,5 @@ scripts/dokkaebi-worker-result-review.py worker-result.md --json
 The review helper checks required packet sections, acceptance statuses,
 validation evidence, blockers, and scope-control signals. It may recommend
 `Human Review`, `Fix Requested`, or `Blocked`. It never authorizes merge,
-deployment, `Done` closeout, or `Human Review` → `Merging` / `Done`; those
-remain guarded by the terminal approval gate above.
+deployment, GitHub issue close, `Done` closeout, or `Human Review` → `Merging` /
+`Done`; those remain guarded by the terminal approval gate above.
