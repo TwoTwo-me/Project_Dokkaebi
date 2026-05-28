@@ -17,9 +17,31 @@ status() {
   esac
 }
 
+if [[ -e "$KILL_SWITCH" ]]; then
+  if [[ -f "$KILL_SWITCH" ]]; then
+    status BLOCKED "kill switch present: ${KILL_SWITCH#$ROOT/}"
+  else
+    status BLOCKED "kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}"
+  fi
+  printf '\nSummary: ok=%s warn=%s blocked=%s\n' "$ok" "$warn" "$block"
+  exit 2
+else
+  status OK "kill switch absent: ${KILL_SWITCH#$ROOT/}"
+fi
+
 has_write_project_scope() {
   local scopes_line="$1"
-  [[ "$scopes_line" =~ (^|[^A-Za-z0-9_:.-])project([^A-Za-z0-9_:.-]|$) ]]
+  local scope
+  local trimmed
+  IFS=',' read -ra scopes <<< "$scopes_line"
+  for scope in "${scopes[@]}"; do
+    trimmed="${scope#"${scope%%[![:space:]]*}"}"
+    trimmed="${trimmed%"${trimmed##*[![:space:]]}"}"
+    if [[ "$trimmed" == "project" ]]; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 if command -v hermes >/dev/null 2>&1; then
@@ -35,16 +57,6 @@ if command -v codex >/dev/null 2>&1; then
   status OK "Codex command available: $(codex --version 2>&1)"
 else
   status BLOCKED "Codex command not found"
-fi
-
-if [[ -e "$KILL_SWITCH" ]]; then
-  if [[ -f "$KILL_SWITCH" ]]; then
-    status BLOCKED "kill switch present: ${KILL_SWITCH#$ROOT/}"
-  else
-    status BLOCKED "kill switch path is ambiguous/non-file: ${KILL_SWITCH#$ROOT/}"
-  fi
-else
-  status OK "kill switch absent: ${KILL_SWITCH#$ROOT/}"
 fi
 
 CODEX_AUTH_PATH="${CODEX_HOME:-$HOME/.codex}/auth.json"
