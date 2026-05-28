@@ -33,10 +33,16 @@ has_write_project_scope() {
   local scopes_line="$1"
   local scope
   local trimmed
+  # `gh auth status` emits a human line such as:
+  #   Token scopes: 'gist', 'project', 'read:org', 'repo'
+  # Keep the gate exact: quoted `project` is accepted, `read:project` is not.
+  scopes_line="${scopes_line#*Token scopes:}"
   IFS=',' read -ra scopes <<< "$scopes_line"
   for scope in "${scopes[@]}"; do
     trimmed="${scope#"${scope%%[![:space:]]*}"}"
     trimmed="${trimmed%"${trimmed##*[![:space:]]}"}"
+    trimmed="${trimmed//\'/}"
+    trimmed="${trimmed//\"/}"
     if [[ "$trimmed" == "project" ]]; then
       return 0
     fi
