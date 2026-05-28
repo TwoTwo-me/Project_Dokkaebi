@@ -9,6 +9,13 @@ LOGS_ROOT="${DOKKAEBI_SYMPHONY_LOGS_ROOT:-$ROOT/.omx/symphony/logs}"
 PORT="${DOKKAEBI_SYMPHONY_PORT:-4000}"
 ACK_FLAG="--i-understand-that-this-will-be-running-without-the-usual-guardrails"
 
+if [[ -z "${GITHUB_GRAPHQL_TOKEN:-}" && "${DOKKAEBI_USE_GH_TOKEN:-1}" == "1" ]]; then
+  if command -v gh >/dev/null 2>&1; then
+    GITHUB_GRAPHQL_TOKEN="$(gh auth token 2>/dev/null || true)"
+    export GITHUB_GRAPHQL_TOKEN
+  fi
+fi
+
 "$ROOT/scripts/dokkaebi-symphony-preflight.sh" --strict
 
 if [[ ! -x "$SYMPHONY_ESCRIPT" ]]; then

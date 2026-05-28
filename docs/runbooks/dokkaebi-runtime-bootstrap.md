@@ -62,11 +62,17 @@ the Symphony tracker process:
 export GITHUB_GRAPHQL_TOKEN='...'
 ```
 
-If using `gh`, the token must include project scope:
+If using `gh`, the token must include project scope, and
+`scripts/dokkaebi-symphony-run.sh` may derive the exact Symphony runtime token
+from `gh auth token` when `GITHUB_GRAPHQL_TOKEN` is not already exported:
 
 ```bash
 gh auth refresh -h github.com -s project
 ```
+
+Strict preflight verifies the exact `GITHUB_GRAPHQL_TOKEN` that Symphony will use
+by querying GitHub's token-scope response headers. Verifying unrelated `gh auth`
+state is not sufficient for a mutating runtime.
 
 The current bootstrap policy forbids copying this Manager token into Worker
 workspaces. Worker credentials must later come from a broker. The configured
@@ -136,10 +142,18 @@ The transition record must include `source_status`, `target_status`, `actor`,
 `actor_origin`, `provenance_source`, `approved_action`,
 `linked_ticket_or_item`, `linked_result_packet_or_review`,
 `provenance_record_id`, `provenance_checked_by`, and
-`provenance_verification_method`. `Human Review` → `Merging`,
+`provenance_verification_method`, `provenance_evidence_file`, and
+`provenance_evidence_sha256`. `Human Review` → `Merging`,
 `Human Review` → `Done`, and GitHub issue close require human-origin,
 source-specific provenance. Manager-authored, untrusted, or ambiguous terminal
 transitions are blocked rather than treated as approval.
+
+For local/bootstrap validation, source-specific provenance must be represented
+by a durable evidence file and SHA-256 hash. GitHub status-history records should
+come from a status-history adapter output, durable approval records from an
+approval-record adapter, and future broker decisions from signed broker output.
+The checker rejects forged records that only copy accepted verifier/source
+strings without matching evidence.
 
 ## 7. Worker result ingestion and Manager review
 

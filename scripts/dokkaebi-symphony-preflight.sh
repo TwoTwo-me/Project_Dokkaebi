@@ -33,6 +33,35 @@ has_write_project_scope() {
   [[ "$scopes_line" =~ (^|[^A-Za-z0-9_:.-])project([^A-Za-z0-9_:.-]|$) ]]
 }
 
+verify_github_graphql_token_scope() {
+  if [[ -z "${GITHUB_GRAPHQL_TOKEN:-}" ]]; then
+    return 3
+  fi
+  if ! command -v curl >/dev/null 2>&1; then
+    return 4
+  fi
+  local headers
+  headers="$(mktemp)"
+  if ! curl -fsS -D "$headers" -o /dev/null \
+      -H "Authorization: Bearer ${GITHUB_GRAPHQL_TOKEN}" \
+      -H "Accept: application/vnd.github+json" \
+      -H "X-GitHub-Api-Version: 2022-11-28" \
+      https://api.github.com/user >/tmp/dokkaebi-token-curl.out 2>/tmp/dokkaebi-token-curl.err; then
+    rm -f "$headers"
+    return 5
+  fi
+  local scopes_line
+  scopes_line="$(tr -d '\r' < "$headers" | awk -F': ' 'tolower($1) == "x-oauth-scopes" {print $2; exit}')"
+  rm -f "$headers"
+  if [[ -z "$scopes_line" ]]; then
+    return 6
+  fi
+  if has_write_project_scope "$scopes_line"; then
+    return 0
+  fi
+  return 7
+}
+
 require_file() {
   local path="$1"
   if [[ -f "$path" ]]; then
@@ -175,19 +204,22 @@ else
   status BLOCKED "worker env sanitizer failed: $(cat /tmp/dokkaebi-worker-env-sanitizer.err)"
 fi
 
-if command -v gh >/dev/null 2>&1 && gh auth status -h github.com >/tmp/dokkaebi-gh-auth-status.out 2>&1; then
-  scopes_line="$(grep -E "Token scopes:" /tmp/dokkaebi-gh-auth-status.out || true)"
-  if has_write_project_scope "$scopes_line"; then
-    status OK "gh auth token scopes include write-capable project access"
-  else
-    status BLOCKED "gh auth exists, but write-capable project scope is missing; read:project is insufficient for status mutation. Run: gh auth refresh -h github.com -s project"
-  fi
-elif [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
+if [[ "${DOKKAEBI_WORKER_SANITIZED:-}" == "1" ]]; then
   status WARN "project mutation auth is intentionally unavailable in sanitized Worker context"
-elif [[ -n "${GITHUB_GRAPHQL_TOKEN:-}" ]]; then
-  status BLOCKED "GITHUB_GRAPHQL_TOKEN is set, but write-capable project scope cannot be verified without gh auth; use gh auth refresh -h github.com -s project or a brokered token verifier"
 else
-  status BLOCKED "no GITHUB_GRAPHQL_TOKEN and gh auth status failed"
+  if verify_github_graphql_token_scope; then
+    status OK "GITHUB_GRAPHQL_TOKEN is the verified write-capable project runtime token"
+  else
+    token_rc=$?
+    case "$token_rc" in
+      3) status BLOCKED "GITHUB_GRAPHQL_TOKEN is missing; scripts/dokkaebi-symphony-run.sh can derive it from gh auth, or export a broker-verified token" ;;
+      4) status BLOCKED "curl is missing; cannot verify the exact GITHUB_GRAPHQL_TOKEN used by Symphony" ;;
+      5) status BLOCKED "GITHUB_GRAPHQL_TOKEN failed GitHub API verification" ;;
+      6) status BLOCKED "GitHub API did not return OAuth scopes for GITHUB_GRAPHQL_TOKEN; use a classic OAuth/PAT token with project scope or a broker verifier" ;;
+      7) status BLOCKED "GITHUB_GRAPHQL_TOKEN lacks write-capable project scope; read:project is insufficient for status mutation" ;;
+      *) status BLOCKED "GITHUB_GRAPHQL_TOKEN scope verification failed with rc=$token_rc" ;;
+    esac
+  fi
 fi
 
 printf '\nSummary: ok=%s warn=%s blocked=%s\n' "$ok" "$warn" "$block"

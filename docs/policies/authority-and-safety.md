@@ -59,6 +59,9 @@ record adapter, or a broker-signed approval decision; caller-supplied
 `actor_origin: human` JSON is not approval by itself. A Manager-authored terminal
 transition or GitHub issue close is self-approval and is forbidden. Unknown,
 ambiguous, missing, untrusted, or contradictory provenance fails closed.
+Bootstrap evidence must include a source-specific evidence file and SHA-256 hash;
+future production evidence should replace that local file binding with signed
+adapter or broker output.
 
 ## Automation allowed by default
 
@@ -92,8 +95,8 @@ fields:
 
 - approver identity or Human decision source;
 - actor identity, actor origin, and provenance source;
-- trusted provenance verifier, verification method, and source-specific record
-  id;
+- trusted provenance verifier, verification method, source-specific record id,
+  and evidence file hash;
 - source status and target status for status-transition approvals;
 - approved action and explicit non-approved adjacent actions;
 - ticket/project item or request id;

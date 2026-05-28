@@ -59,6 +59,8 @@ tracker:
       - provenance_record_id
       - provenance_checked_by
       - provenance_verification_method
+      - provenance_evidence_file
+      - provenance_evidence_sha256
   whitelist_labels:
     - dokkaebi
     - symphony

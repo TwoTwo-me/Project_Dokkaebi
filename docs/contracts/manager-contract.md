@@ -92,7 +92,7 @@ Worker result packet. The Manager must not treat its own subsequent
 approval. That mutation is Manager self-approval. Those transitions and GitHub
 issue closeout require a human-origin actor or a future approved approval
 broker, linked ticket/result evidence, a trusted provenance verifier, a
-source-specific record id, and an auditable provenance source. Caller-supplied
+source-specific record id, evidence file hash, and an auditable provenance source. Caller-supplied
 `actor_origin: human` JSON is not approval by itself. Missing, ambiguous,
 untrusted, or Manager-authored provenance fails closed and blocks merge,
 deployment, issue close, terminal closeout, and any high-impact follow-up.
@@ -103,7 +103,9 @@ Adapters must feed it a transition record produced or checked by a trusted
 provenance verifier: GitHub Project status history query, a durable Human
 approval record adapter, or a future approved approval broker. Arbitrary
 Manager-authored records are fixtures only and must not be used as terminal
-approval evidence.
+approval evidence. The local checker requires a source-specific evidence file
+and SHA-256 hash for bootstrap verification; future brokered approvals should
+use signed adapter output.
 
 Worker result ingestion should use the result-packet template plus the local
 review helper
@@ -117,8 +119,8 @@ closeout authority.
 Pre-execution Human approval must record:
 
 - approver identity or Human decision source;
-- actor origin, provenance source, trusted verifier, verification method, and
-  source-specific record id;
+- actor origin, provenance source, trusted verifier, verification method,
+  source-specific record id, evidence file, and evidence hash;
 - approved action and explicit non-approved adjacent actions;
 - ticket id;
 - affected system;

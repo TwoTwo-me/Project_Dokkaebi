@@ -10,6 +10,7 @@ approval broker.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -33,6 +34,8 @@ REQUIRED_EVIDENCE_FIELDS = [
     "provenance_record_id",
     "provenance_checked_by",
     "provenance_verification_method",
+    "provenance_evidence_file",
+    "provenance_evidence_sha256",
 ]
 DEFAULT_TRUSTED_VERIFIERS = {
     "dokkaebi-github-project-status-adapter",
@@ -85,6 +88,69 @@ def _terminal_transitions(policy: dict[str, Any]) -> set[tuple[str, str]]:
     return result
 
 
+def _safe_evidence_path(value: str) -> Path:
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts:
+        raise ValueError("provenance_evidence_file must be a repository-relative path")
+    resolved = (ROOT / path).resolve()
+    if not resolved.is_relative_to(ROOT):
+        raise ValueError("provenance_evidence_file must stay inside the repository")
+    if not resolved.is_file():
+        raise ValueError(f"provenance_evidence_file is missing: {value}")
+    return resolved
+
+
+def _verify_source_specific_evidence(record: dict[str, Any], details: dict[str, Any]) -> tuple[bool, str]:
+    evidence_file = str(record.get("provenance_evidence_file") or "").strip()
+    expected_sha = str(record.get("provenance_evidence_sha256") or "").strip().lower()
+    path = _safe_evidence_path(evidence_file)
+    raw = path.read_bytes()
+    actual_sha = hashlib.sha256(raw).hexdigest()
+    details["provenance_evidence_sha256_actual"] = actual_sha
+    if actual_sha != expected_sha:
+        return False, "provenance_evidence_sha256 does not match the evidence file"
+
+    text = raw.decode("utf-8")
+    evidence: dict[str, Any] = {}
+    if path.suffix == ".json":
+        loaded = json.loads(text)
+        if not isinstance(loaded, dict):
+            return False, "provenance evidence JSON must be an object"
+        evidence = loaded
+    else:
+        # Markdown approval records are allowed only when they visibly bind the
+        # action, actor, and record id. This keeps bootstrap records checkable
+        # without making free-form prose the preferred adapter output.
+        for needle in [
+            str(record.get("provenance_record_id") or ""),
+            str(record.get("actor") or ""),
+            str(record.get("approved_action") or ""),
+        ]:
+            if needle and needle not in text:
+                return False, f"provenance markdown evidence missing {needle!r}"
+        return True, "source-specific markdown provenance verified"
+
+    expected_pairs = {
+        "record_id": record.get("provenance_record_id"),
+        "provenance_source": record.get("provenance_source"),
+        "verified_by": record.get("provenance_checked_by"),
+        "verification_method": record.get("provenance_verification_method"),
+        "actor": record.get("actor"),
+        "actor_origin": record.get("actor_origin"),
+        "approved_action": record.get("approved_action"),
+    }
+    for key, expected in expected_pairs.items():
+        actual = evidence.get(key)
+        if str(actual or "").strip() != str(expected or "").strip():
+            return False, f"provenance evidence {key} mismatch"
+
+    for key in ["source_status", "target_status"]:
+        if key in evidence and str(evidence.get(key) or "").strip() != str(record.get(key) or "").strip():
+            return False, f"provenance evidence {key} mismatch"
+
+    return True, "source-specific JSON provenance verified"
+
+
 def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str, dict[str, Any]]:
     source = str(record.get("source_status") or record.get("from") or "").strip()
     target = str(record.get("target_status") or record.get("to") or "").strip()
@@ -106,6 +172,10 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     provenance_record_id = str(record.get("provenance_record_id") or "").strip()
     provenance_checked_by = str(record.get("provenance_checked_by") or "").strip()
     verification_method = str(record.get("provenance_verification_method") or "").strip()
+    evidence_file = str(record.get("provenance_evidence_file") or "").strip()
+    evidence_sha = str(record.get("provenance_evidence_sha256") or "").strip()
+    is_terminal_target = target in terminal_targets
+    is_gated_action = bool(approved_action and approved_action in allowed_actions)
 
     details = {
         "source_status": source,
@@ -117,6 +187,9 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
         "provenance_record_id": provenance_record_id,
         "provenance_checked_by": provenance_checked_by,
         "provenance_verification_method": verification_method,
+        "provenance_evidence_file": evidence_file,
+        "provenance_evidence_sha256": evidence_sha,
+        "is_gated_action": is_gated_action,
         "review_state": review_state,
         "terminal_approval_transitions": sorted([{"from": a, "to": b} for a, b in transitions], key=lambda x: (x["from"], x["to"])),
     }
@@ -124,17 +197,18 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if not source or not target:
         return False, "missing source_status or target_status", details
 
-    # Non-terminal review/fix transitions are outside this terminal approval gate.
-    if target not in terminal_targets:
+    # Non-terminal review/fix transitions are outside this gate only when they do
+    # not carry an approval-required action such as github_issue_close.
+    if not is_terminal_target and not is_gated_action:
         return True, "non-terminal transition does not require terminal approval provenance", details
 
-    if (source, target) not in transitions:
+    if is_terminal_target and (source, target) not in transitions:
         return False, f"invalid terminal transition {source!r} -> {target!r}; expected one of {sorted(transitions)!r}", details
 
     missing = [field for field in REQUIRED_EVIDENCE_FIELDS if not str(record.get(field) or "").strip()]
     if missing:
         details["missing_fields"] = missing
-        return False, "missing terminal approval evidence: " + ", ".join(missing), details
+        return False, "missing gated approval evidence: " + ", ".join(missing), details
 
     if not actor:
         return False, "terminal approval actor identity is missing", details
@@ -166,11 +240,16 @@ def validate(record: dict[str, Any], policy: dict[str, Any]) -> tuple[bool, str,
     if provenance_record_id.lower() in {"n/a", "none", "null", "unknown"}:
         return False, "provenance_record_id must identify source-specific durable evidence", details
 
+    verified, evidence_reason = _verify_source_specific_evidence(record, details)
+    if not verified:
+        return False, evidence_reason, details
+    details["provenance_evidence_verification"] = evidence_reason
+
     linked_result = str(record.get("linked_result_packet_or_review") or "").strip()
     if linked_result.lower() in {"n/a", "none", "null", "unknown"}:
         return False, "linked_result_packet_or_review must identify durable evidence", details
 
-    return True, "human-origin terminal approval transition accepted", details
+    return True, "human-origin gated approval accepted", details
 
 
 def main() -> int:

@@ -83,6 +83,7 @@ require_text docs/contracts/manager-contract.md 'Manager self-approval'
 require_text docs/contracts/manager-contract.md 'Terminal status transitions out of `Human Review` and GitHub issue closeout'
 require_text docs/contracts/manager-contract.md 'GitHub issue closeout'
 require_text docs/contracts/manager-contract.md 'trusted provenance verifier'
+require_text docs/contracts/manager-contract.md 'SHA-256 hash'
 require_text docs/contracts/manager-contract.md 'Caller-supplied'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-approval-transition-check.py'
 require_text docs/contracts/manager-contract.md 'scripts/dokkaebi-worker-result-review.py'
@@ -104,6 +105,7 @@ require_text docs/policies/authority-and-safety.md 'Manager-authored terminal'
 require_text docs/policies/authority-and-safety.md 'untrusted, or contradictory provenance fails closed'
 require_text docs/policies/authority-and-safety.md 'caller-supplied'
 require_text docs/policies/authority-and-safety.md 'GitHub issue close'
+require_text docs/policies/authority-and-safety.md 'source-specific evidence file'
 require_text docs/policies/authority-and-safety.md 'repeat-dispatch hazard'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
 
@@ -149,6 +151,8 @@ require_text docs/runbooks/dokkaebi-runtime-bootstrap.md '## 7. Worker result in
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'scripts/dokkaebi-worker-result-review.py'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'dokkaebi/KILL_SWITCH'
 require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'unattended poll loop'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'exact `GITHUB_GRAPHQL_TOKEN`'
+require_text docs/runbooks/dokkaebi-runtime-bootstrap.md 'SHA-256 hash'
 
 require_text README.md 'ARCHITECTURE.md'
 require_text README.md 'WORKFLOW.md'
@@ -273,6 +277,8 @@ for doc_name, doc_text in [
         'provenance_record_id',
         'provenance_checked_by',
         'provenance_verification_method',
+        'provenance_evidence_file',
+        'provenance_evidence_sha256',
     ]:
         if term not in doc_text:
             errors.append(f'{doc_name} missing provenance evidence field: {term}')
