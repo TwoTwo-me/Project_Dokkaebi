@@ -1,14 +1,14 @@
 # Project Dokkaebi Workflow
 
-This workflow defines how Dokkaebi converts Human intent into GitHub
-Project/Symphony work and how Worker output returns as verifiable evidence.
+This workflow defines how Dokkaebi converts Human intent into Symphony-native
+ProjectScope work and how Worker output returns as verifiable evidence.
 
 ```text
 Human request
   -> Manager intake and clarification
   -> worker-ready ticket
   -> approval/status gate
-  -> Symphony dispatch
+  -> ProjectScope / Symphony dispatch
   -> Worker execution
   -> result packet
   -> Manager review
@@ -19,8 +19,8 @@ Human request
 
 - Human intent, constraints, and approval boundaries must survive translation
   into tickets.
-- Work enters the Worker queue only as an inspectable GitHub Project issue or
-  equivalent work contract.
+- Work enters the Worker queue only as an inspectable ProjectScope ticket,
+  GitHub Project issue, or equivalent work contract.
 - Workers execute bounded tasks; they do not negotiate broad scope directly with
   the Human by default.
 - Progress and results flow through tracker/workpad/PR/test artifacts so they
@@ -60,10 +60,12 @@ Required ticket sections:
 4. **Scope and non-goals**: what the Worker may and may not change.
 5. **Permission level**: allowed tools, network, credentials, write authority,
    and approval requirements.
-6. **Validation plan**: tests, lint, typecheck, build, smoke checks, or manual
+6. **ProjectScope and capability requirements**: target scope, Worker tier, OS,
+   tools, network mode, and provider constraints.
+7. **Validation plan**: tests, lint, typecheck, build, smoke checks, or manual
    verification expected from the Worker.
-7. **Result packet requirements**: exact evidence the Worker must return.
-8. **Escalation triggers**: when to stop and report instead of improvising.
+8. **Result packet requirements**: exact evidence the Worker must return.
+9. **Escalation triggers**: when to stop and report instead of improvising.
 
 ## Phase 3: Approval and readiness gate
 
@@ -82,14 +84,31 @@ Before dispatch, the Manager classifies the ticket:
 Dispatch readiness should be represented by status/labels in the GitHub Project,
 not by private Manager memory alone.
 
-Backend-facing labels may use project-specific names, but they must map to the
-semantic status model below before Symphony dispatch.
+Symphony-facing labels may use project-specific names, but they must map to the
+semantic status and capability model below before Symphony dispatch.
+
+
+## ProjectScope model
+
+A ProjectScope is one configured tracker/project/workflow boundary watched by
+Symphony, or by a future ADR-approved runtime that explicitly conforms to the
+Symphony scheduler/runner/tracker-reader contract. For v0, a ProjectScope is a
+GitHub Project with documented status fields, labels, Worker capability metadata,
+credential policy, and result-packet surfaces. Multi-project operation means
+Dokkaebi coordinates multiple ProjectScopes above Symphony; it does not require a
+single v0 Symphony process to poll every project.
+
+A ticket is dispatchable only when its ProjectScope mapping is known and its
+required Worker capabilities are available. Capability terms are defined in
+[`docs/contracts/worker-capability-model.md`](docs/contracts/worker-capability-model.md).
+Runtime provider boundaries are defined in
+[`docs/contracts/runtime-provider-contract.md`](docs/contracts/runtime-provider-contract.md).
 
 ## Phase 4: Symphony dispatch
 
-Symphony watches the configured GitHub Project and dispatches tickets that match
-its admission rules, such as status, labels, worker OS metadata, and capability
-constraints.
+Symphony watches the configured ProjectScope and dispatches tickets that match
+its admission rules, such as status, labels, Worker OS metadata, capability
+constraints, credential policy, and validation expectations.
 
 On dispatch, Symphony should provide the Worker:
 

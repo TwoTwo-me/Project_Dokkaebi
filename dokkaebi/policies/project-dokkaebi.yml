@@ -1,0 +1,119 @@
+schema_version: dokkaebi.project_policy.v0
+project_scope_id: project-dokkaebi
+name: Project Dokkaebi bootstrap policy
+status: bootstrap-dev-only
+created_utc: "2026-05-27T00:00:00Z"
+
+mode:
+  environment_tier: dev
+  trusted_automation: local_bootstrap_only
+  default_decision: fail_closed
+  human_review_required_for_closeout: true
+
+allowed_default_automation:
+  - draft_or_update_worker_ready_tickets
+  - update_workpad_or_progress_comments
+  - update_project_item_status_when_policy_allows
+  - prepare_local_commits_or_prs_for_human_review
+  - summarize_worker_results_with_evidence
+
+approval_required:
+  - credential_or_secret_access
+  - github_project_schema_creation_or_mutation
+  - worker_creation_scaling_or_privilege_elevation
+  - host_docker_helper_enablement
+  - cloud_vm_kubernetes_iac_or_proxmox_mutation
+  - manager_runtime_replacement
+  - pr_merge
+  - deployment
+  - production_data_or_infrastructure_write
+
+credential_broker:
+  required: true
+  raw_manager_token_to_worker: forbidden
+  bootstrap_state: disabled_until_github_app_or_equivalent_broker
+  worker_env_scrubber: scripts/dokkaebi-codex-worker-app-server.sh
+  audit_metadata_required:
+    - ticket_id
+    - repository_allowlist
+    - branch_or_environment_binding
+    - granted_capability
+    - expiry
+    - revocation_condition
+
+workers:
+  default_capability: basic
+  allowed_capabilities:
+    basic:
+      enabled: true
+      approval_required: false
+      notes: docs, code, and lightweight validation only.
+    container-capable:
+      enabled: false
+      approval_required: true
+      notes: Enable only after host helper daemon contract exists.
+    testbed:
+      enabled: false
+      approval_required: true
+      notes: Independent verification environment, not the first execution path.
+  allowed_os:
+    - linux
+  max_concurrent_workers: 1
+
+runtime_providers:
+  local-basic:
+    enabled: true
+    environment_tier: dev
+    allowed_capabilities:
+      - basic
+  host-docker:
+    enabled: false
+    environment_tier: dev
+    allowed_capabilities:
+      - container-capable
+    requires:
+      - human_approval_record
+      - host_helper_daemon_contract
+      - audit_log
+      - kill_switch
+      - cleanup_and_residue_check
+
+validation_gates:
+  worker_ticket_must_include:
+    - goal
+    - acceptance_criteria
+    - scope_and_non_goals
+    - permission_level
+    - project_scope
+    - required_capability
+    - validation_plan
+    - result_packet_requirements
+  result_packet_must_include:
+    - source_ticket
+    - summary
+    - changed_files_or_pr
+    - validation_commands_and_outcomes
+    - acceptance_criteria_evidence
+    - blockers_or_missing_permissions
+    - residual_risks
+    - scope_control_statement
+    - recommended_next_action
+
+audit_and_rollback:
+  approvals_dir: dokkaebi/approvals
+  worker_result_template: docs/templates/worker-result-packet.md
+  rollback_required_for:
+    - project_schema_changes
+    - credential_broker_changes
+    - runtime_provider_changes
+    - code_changes_with_pr
+
+kill_switches:
+  project_file: dokkaebi/KILL_SWITCH
+  action_classes:
+    - dispatch
+    - credential_grant
+    - worker_start
+    - provider_mutation
+    - merge_or_deploy
+  behavior: fail_closed_when_present_or_ambiguous

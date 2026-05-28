@@ -22,9 +22,9 @@ A Manager adapter must be able to:
 1. Accept a Human request and preserve the original intent.
 2. Clarify ambiguity before issuing Worker work when goals, non-goals, or
    approval boundaries are unclear.
-3. Convert approved work into a GitHub Project/Symphony-ready ticket.
+3. Convert approved work into a ProjectScope/Symphony-ready ticket.
 4. Attach acceptance criteria, constraints, validation requirements, permission
-   level, and expected result packet.
+   level, Worker capability requirements, and expected result packet.
 5. Respect Human approval gates before high-impact actions.
 6. Run a fail-closed preflight before dispatch when approval, credentials,
    infrastructure, deployment, project status, or Worker authority could be
@@ -52,6 +52,8 @@ Required local artifacts:
 - [`ARCHITECTURE.md`](../../ARCHITECTURE.md)
 - [`WORKFLOW.md`](../../WORKFLOW.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
+- [`docs/contracts/runtime-provider-contract.md`](runtime-provider-contract.md)
+- [`docs/contracts/worker-capability-model.md`](worker-capability-model.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -101,8 +103,8 @@ A Manager adapter must block dispatch when any required condition is unknown:
 1. Source request and ticket are linked.
 2. Acceptance criteria, non-goals, permission level, validation plan, and result
    packet requirements are present.
-3. GitHub Project/Symphony status is mapped to a dispatchable semantic state.
-4. Worker capability, OS, and tool constraints match the ticket.
+3. ProjectScope/Symphony status is mapped to a dispatchable semantic state.
+4. Worker capability tier, OS, provider, and tool constraints match the ticket.
 5. Human approval evidence exists for every gated action.
 6. Credential grants, if needed, are brokered, least-privilege, task-scoped, and
    time-bound.
@@ -121,18 +123,23 @@ outside ticket prose and Worker result summaries.
 
 ## Symphony compatibility
 
-Dokkaebi treats Symphony as the first backend adapter behind the Manager Contract.
+Dokkaebi treats Symphony as the canonical execution layer inside a ProjectScope.
+The Manager remains replaceable, but it must hand off work through open,
+inspectable ProjectScope artifacts rather than private runtime memory.
+
 The Manager must support:
 
-- **Greenfield Symphony projects:** propose the initial status fields, labels,
-  templates, and admission rules; create them only under approved setup
+- **Greenfield ProjectScopes:** propose initial status fields, labels, templates,
+  capability metadata, and admission rules; create them only under approved setup
   authority.
-- **Brownfield Symphony projects:** map existing project statuses, labels, workpad
-  conventions, and Worker metadata to the semantic state model in `WORKFLOW.md`
-  before dispatch.
+- **Brownfield ProjectScopes:** map existing project statuses, labels, workpad
+  conventions, Worker metadata, and capability tiers to the semantic state model
+  in `WORKFLOW.md` before dispatch.
 
-If the status mapping is missing or ambiguous, the ticket remains blocked until
-the mapping is documented.
+Managers do not directly schedule Workers when Symphony owns the scope's
+polling/routing loop. If status, capability, provider, credential, or approval
+mapping is missing or ambiguous, the ticket remains blocked until the mapping is
+documented.
 
 ## Adapter conformance
 
@@ -144,7 +151,7 @@ capabilities to concrete behavior:
 | Human intake and clarification | Request notes, scope, non-goals, and stop condition. |
 | Ticket drafting | Worker ticket with acceptance criteria, permission level, and validation plan. |
 | Approval enforcement | Approval evidence or explicit blocked reason. |
-| Symphony handoff | Project item/status/label/workpad linkage. |
+| Symphony-native handoff | ProjectScope item/status/label/capability/workpad linkage. |
 | Worker result review | Result packet review with validation evidence and residual risks. |
 | Resume portability | Request, ticket, approvals, result packet, PR/logs, and next decision links. |
 

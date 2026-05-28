@@ -1,7 +1,7 @@
 # Hermes Manager Adapter
 
 Hermes is the first baseline Manager adapter for Project Dokkaebi. This document
-defines how Hermes should satisfy the Dokkaebi Manager Contract without making
+defines how Hermes satisfies the Dokkaebi Manager Contract without making
 Dokkaebi Hermes-specific.
 
 ## Adapter role
@@ -9,12 +9,12 @@ Dokkaebi Hermes-specific.
 Hermes acts above Symphony:
 
 ```text
-Human -> Hermes as Dokkaebi Manager -> Manager Contract -> Symphony/GitHub Project -> AI Worker
+Human -> Hermes as Dokkaebi Manager -> Manager Contract -> ProjectScope/Symphony -> AI Worker
 ```
 
 Hermes owns intake, clarification, work-contract drafting, approval checks,
-Worker-result review, and Human-facing summaries. Symphony owns GitHub Project
-monitoring, Worker dispatch, progress state, and backend-specific execution
+Worker-result review, and Human-facing summaries. Symphony owns ProjectScope
+monitoring, Worker dispatch, progress state, and execution-layer orchestration
 mechanics.
 
 ## Required Hermes behavior
@@ -25,7 +25,7 @@ Hermes must:
 2. Clarify ambiguous scope, authority, safety, validation, or stop conditions.
 3. Produce Worker tickets using `docs/templates/worker-ticket.md`.
 4. Apply `docs/policies/authority-and-safety.md` before dispatch.
-5. Route approved work through Symphony/GitHub Project instead of direct
+5. Route approved work through the ProjectScope/Symphony control plane instead of direct
    Human-to-Worker control.
 6. Require Worker results to follow `docs/templates/worker-result-packet.md`.
 7. Summarize results with evidence, blockers, residual risks, and next decisions.
@@ -42,20 +42,20 @@ from the authority policy:
 - permission level declared;
 - Human approval evidence present for every gated action;
 - credential grants brokered and scoped when required;
-- Symphony project status/label mapping confirmed;
-- Worker capability and OS constraints available.
+- ProjectScope status/label mapping confirmed;
+- Worker capability tier, provider, and OS constraints available.
 
 Unknown approval state means blocked, not best-effort dispatch.
 
 ## Symphony integration expectations
 
-Hermes should communicate with Symphony through inspectable artifacts and, later,
+Hermes communicates with Symphony through inspectable artifacts and, later,
 through deterministic CLI/MCP integration:
 
-- GitHub Project issue or item for each Worker-ready ticket;
+- ProjectScope item or GitHub Project issue for each Worker-ready ticket;
 - status fields mapped to the semantic states in `WORKFLOW.md`;
-- labels/metadata for permission level, backend, OS/capability needs, and
-  approval gates;
+- labels/metadata for permission level, ProjectScope, Worker capability tier,
+  provider constraints, OS needs, and approval gates;
 - workpad or issue comments for progress and result packets;
 - PR links, commits, validation logs, or generated artifacts.
 
@@ -72,7 +72,7 @@ admission rules, or auto-add workflows without approved setup authority.
 | Human intake | Capture source request and clarify ambiguity. | Intake notes or ticket context. |
 | Ticket drafting | Generate Worker ticket template sections. | GitHub issue/project item body. |
 | Approval gates | Enforce authority policy before dispatch. | Approval evidence record or blocked reason. |
-| Symphony handoff | Create/update dispatchable project item. | Project status, labels, and workpad link. |
+| Symphony-native handoff | Create/update dispatchable ProjectScope item. | Project status, labels, capability metadata, and workpad link. |
 | Worker result review | Parse result packet and verify evidence. | Manager review summary. |
 | Resume portability | Store enough audit for another adapter. | Links to request, ticket, result, PR/logs. |
 
@@ -82,7 +82,7 @@ Hermes must not:
 
 - become the only source of truth for approvals or Worker results;
 - store raw long-lived secrets in memory or prompts;
-- bypass Symphony for Worker dispatch unless a later backend adapter is approved;
+- bypass Symphony for Worker dispatch inside a ProjectScope unless a later ADR explicitly changes the execution boundary;
 - merge PRs, deploy, write production data, create cloud/Proxmox resources, or
   scale Workers without explicit Human approval;
 - rely on Hermes-only hidden state that prevents another Manager from resuming.
@@ -92,4 +92,4 @@ Hermes must not:
 The first version can be documentation- and template-driven. Later CLI/MCP tools
 may validate preflight, read/write tracker state, and run adapter conformance
 tests. Those tools must implement this contract and fail closed on missing
-approval or unknown project status.
+approval, unknown project status, or missing Worker capability metadata.

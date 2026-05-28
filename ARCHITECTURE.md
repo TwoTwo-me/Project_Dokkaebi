@@ -1,30 +1,35 @@
 # Project Dokkaebi Architecture
 
 Project Dokkaebi is the upper AI Manager layer for a human-governed,
-auditable project-management loop:
+Symphony-native project-management loop:
 
 ```text
 Human
   -> Dokkaebi Manager
-  -> Symphony / GitHub Project control plane
+  -> ProjectScope / Symphony control plane
   -> isolated AI Worker
   -> verifiable result packet
   -> Dokkaebi Manager review
-  -> Human decision
+  -> Human decision or policy-gated trusted action
 ```
 
-Dokkaebi owns intent preservation, authority policy, work-contract quality, and
-result review. Symphony is the first worker orchestration backend. It watches a
-GitHub Project, dispatches bounded worker runs, and records progress through
-issues, workpad comments, pull requests, logs, and project status.
+Dokkaebi owns intent preservation, authority policy, work-contract quality,
+project-scope coordination, Worker capability requirements, environment-provider
+contracts, and result review/evaluation. Symphony is the canonical scheduler /
+runner / tracker-reader execution layer inside a ProjectScope. GitHub Project is
+the first v0 scheduler/tracker substrate.
+
+This architecture is accepted in
+[`docs/adr/0002-symphony-native-execution-layer.md`](docs/adr/0002-symphony-native-execution-layer.md).
 
 ## Architectural goals
 
 - Preserve Human intent while converting it into worker-ready contracts.
 - Keep Manager implementations replaceable: Hermes first, but not Hermes-only.
-- Route worker execution through a visible tracker instead of ad-hoc direct
-  Human-to-Worker conversations.
-- Enforce authority boundaries before credentials, infrastructure, worker
+- Use Symphony-native ProjectScopes for visible, auditable Worker execution.
+- Route Worker dispatch through explicit status, policy, capability, and approval
+  gates instead of ad-hoc direct Human-to-Worker conversations.
+- Enforce authority boundaries before credentials, infrastructure, Worker
   scaling, merge, deploy, or production-write actions.
 - Require result packets with enough evidence for another Manager or Human to
   verify, resume, or reject the work.
@@ -55,24 +60,39 @@ Initial and candidate adapters:
 - **Future/custom adapters**: allowed only after implementing the same Manager
   Contract and safety gates.
 
-### Symphony / GitHub Project control plane
+### ProjectScope / Symphony control plane
 
-Symphony is the lower orchestration backend for the first implementation path.
-GitHub Project issues are the durable dispatch queue and visible coordination
-surface. Symphony consumes approved tickets, starts isolated Worker runs, and
-updates project/workpad/PR state.
+A ProjectScope is one configured tracker/project/workflow boundary watched by
+Symphony, or by a future ADR-approved runtime that explicitly conforms to the
+Symphony scheduler/runner/tracker-reader contract. Symphony owns polling,
+scheduling, routing, isolated Worker execution attempts, reconciliation, and
+operator-visible status inside that scope.
 
-Dokkaebi must treat Symphony as an adapter behind a stable work-contract
-interface. A future backend may replace Symphony without changing the Manager's
-core responsibility to produce bounded, auditable work.
+Dokkaebi manages ProjectScopes above Symphony. Multi-project operation is modeled
+as Dokkaebi coordinating multiple ProjectScopes or Symphony instances. For v0,
+GitHub Project is the first scheduler/tracker substrate.
+
+### Runtime providers
+
+Runtime providers create or lease Worker environments for ProjectScopes. The
+provider boundary is defined in
+[`docs/contracts/runtime-provider-contract.md`](docs/contracts/runtime-provider-contract.md).
+Dokkaebi owns provider policy and environment lifecycle decisions; Symphony only
+routes to registered capable Workers.
+
+The first planned provider direction is Host Docker through a narrow host helper
+daemon. A broad host Docker socket is not a default Dokkaebi authority surface.
 
 ### AI Worker
 
 A Worker executes one bounded ticket at a time in an isolated workspace. It must
 follow ticket scope, permission level, acceptance criteria, validation
-requirements, and result-packet expectations. Workers do not receive broad
-Manager authority by default and should not expand scope without Manager/Human
-approval.
+requirements, capability constraints, and result-packet expectations. Workers do
+not receive broad Manager authority by default and must not expand scope without
+Manager/Human approval.
+
+Worker capability routing is defined in
+[`docs/contracts/worker-capability-model.md`](docs/contracts/worker-capability-model.md).
 
 ### Credential broker
 
@@ -81,20 +101,16 @@ authority. It must issue only least-privilege, time-bound, task-scoped
 credentials when a ticket explicitly allows them. Manager PATs, OAuth tokens,
 SSH keys, and cloud credentials must not be copied directly into Worker spaces.
 
-### Approval gates
+### Approval and trusted automation gates
 
 Approval gates are explicit stop points where automation must wait for a Human
-decision or a documented policy grant. At minimum, approval is required for:
+decision or a documented policy grant. Full trusted automation additionally
+requires per-project policy, credential broker enforcement, durable approval
+records, validation gates, environment tiers, audit/rollback posture, and kill
+switches.
 
-- cloud or Proxmox resource changes;
-- secret or credential access;
-- Worker creation, scaling, or privilege elevation;
-- Manager runtime replacement;
-- PR merge, deployment, or production data/infrastructure writes unless a later
-  ADR explicitly narrows and grants those actions.
-
-See the companion policy document
-`docs/policies/authority-and-safety.md` for the authoritative approval matrix.
+See [`docs/policies/authority-and-safety.md`](docs/policies/authority-and-safety.md)
+for the authoritative approval matrix.
 
 ## Trust boundaries
 
@@ -105,8 +121,8 @@ Human authority
 Dokkaebi Manager boundary
   | worker-ready ticket, status review, evidence review
   v
-GitHub Project / Symphony boundary
-  | dispatch, isolated workspace, scoped credentials
+ProjectScope / Symphony boundary
+  | dispatch, isolated workspace, scoped credentials, capability routing
   v
 Worker boundary
   | code/docs/artifacts/tests/logs
@@ -118,10 +134,10 @@ Key boundary rules:
 
 1. **Human to Manager**: the Manager may clarify and draft, but may not infer
    high-impact approval from vague intent.
-2. **Manager to Symphony**: only approved, worker-ready tickets enter the
+2. **Manager to ProjectScope**: only approved, worker-ready tickets enter the
    dispatchable queue.
 3. **Symphony to Worker**: Workers receive only the workspace, tools, labels,
-   credentials, and permissions declared by the ticket and policy.
+   capabilities, credentials, and permissions declared by the ticket and policy.
 4. **Worker to repository/PR**: Workers may prepare changes and validation
    evidence, but merge/deploy/production-write authority remains gated.
 5. **Worker to Human**: direct Human conversation is not the default result path;
@@ -133,16 +149,19 @@ Authority flows downward only through explicit artifacts:
 
 1. Human states a goal and any known constraints.
 2. Manager clarifies ambiguity and classifies permission level.
-3. Manager writes or updates a GitHub Project ticket with acceptance criteria,
-   non-goals, permission level, validation, and expected result packet.
+3. Manager writes or updates a ProjectScope ticket with acceptance criteria,
+   non-goals, permission level, validation, capability requirements, and expected
+   result packet.
 4. Human approval is recorded for any gated action before dispatch.
-5. Symphony dispatches a Worker only when status, labels, and policy allow it.
+5. Symphony dispatches a Worker only when status, labels, capability, credential,
+   and policy gates allow it.
 6. Credential broker grants only the scoped capabilities required by the ticket.
 7. Worker returns evidence; Manager reviews it before asking the Human for any
    next high-impact decision.
 
 Authority does not flow by implication from tool availability, local filesystem
-access, credential presence, or a Worker discovering adjacent work.
+access, credential presence, environment access, or a Worker discovering adjacent
+work.
 
 ## Result flow
 
@@ -181,10 +200,10 @@ Dokkaebi should prefer surfaces another Manager adapter can inspect:
 
 Manager memory may help continuity, but it is not the durable source of truth.
 
-## Adapter portability
+## Manager portability
 
 The Manager runtime is replaceable only if core state is stored in open,
-inspectable artifacts. Adapter-specific behavior must be documented as adapter
+inspectable artifacts. Runtime-specific behavior must be documented as adapter
 behavior, not as Dokkaebi core architecture.
 
 Portability requirements:
@@ -204,12 +223,15 @@ Portability requirements:
 | Tracker drift | GitHub Project status, issue comments, PR state, and workspace state disagree. | Require result packets and Manager reconciliation before completion. |
 | Scope inflation | Worker expands into adjacent work without approval. | Ticket non-goals, acceptance criteria, and escalation rules. |
 | Manager ambiguity | Manager emits vague tickets that Workers cannot safely execute. | Clarify before dispatch and require worker-ready fields. |
-| Backend coupling | Dokkaebi becomes Symphony-specific. | Keep Symphony behind a Manager work-contract adapter boundary. |
+| Symphony coupling confusion | Future contributors try to make Managers own scheduler behavior or treat Symphony as generic plumbing again. | Cite ADR 0002, keep Manager replaceability separate from Symphony execution ownership, and model multi-project support as ProjectScopes above Symphony. |
+| Provider authority leakage | Environment providers expose broad Docker, VM, cloud, or Proxmox power. | Use the runtime provider contract, host helper daemon boundaries, approval gates, audit, rollback, and kill switches. |
 | Human review bypass | Merge, deploy, infra, or production writes happen without approval. | Treat high-impact actions as approval-required unless policy explicitly grants a narrow exception. |
 
-## Milestone 1 boundary
+## Current milestone boundary
 
-Milestone 1 is a repository-contract milestone. It documents the architecture,
-workflow, authority policy, Manager contract, and ticket/result templates. It
-does not grant production authority, create infrastructure, replace the Manager
-runtime, or enable unattended merge/deploy automation.
+The current milestone is a repository-contract milestone. It documents the
+architecture, workflow, authority policy, Manager contract, runtime-provider
+contract, Worker capability model, and ticket/result templates. It does not
+grant production authority, create infrastructure, replace the Manager runtime,
+implement Worker providers, design a UI, or enable unattended merge/deploy
+automation.

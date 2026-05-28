@@ -9,6 +9,8 @@ configured tracker surface.
 - **Task ID:** `<GitHub issue / project item / manager task id>`
 - **Source ticket:** `<link to ticket or workpad>`
 - **Worker:** `<worker id or run id>`
+- **ProjectScope:** `<scope id / project link>`
+- **Capability tier used:** `<basic | container-capable | testbed | other>`
 - **Workspace:** `<repo / branch / isolated workspace>`
 - **Completion status:** `<completed | blocked | failed | partial>`
 
@@ -56,6 +58,7 @@ If a check was not run, explain why and provide the next-best evidence.
 - **Stayed within ticket scope:** `<yes | no>`
 - **Scope deviations:** `<none, or Manager-approved deviation with link>`
 - **Human approval gates reached:** `<none, or approval gate and status>`
+- **Environment/provider gates reached:** `<none, or provider gate and status>`
 
 ## Recommended Manager/Human next action
 

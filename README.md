@@ -1,47 +1,84 @@
 # Project Dokkaebi
 
-Project Dokkaebi is the upper AI Manager layer for a three-tier
-project-management system:
+Project Dokkaebi is the upper AI Manager layer for a Symphony-native,
+human-governed project-management system:
 
 ```text
-Human -> AI Manager Agent -> Symphony/GitHub Project -> AI Worker -> verifiable result return
+Human -> replaceable AI Manager -> ProjectScope / Symphony -> AI Worker -> verifiable result return -> Manager review
 ```
 
-Dokkaebi manages Human intent, approval boundaries, work contracts, and
-result review. Symphony is treated as the first worker orchestration backend for
-GitHub Project based dispatch, isolated Worker execution, and progress/result
-tracking.
+Dokkaebi manages Human intent, approval boundaries, work contracts, project
+scopes, Worker capability requirements, environment-provider policy, and result
+review. Symphony is the canonical project-scope execution layer for scheduler /
+runner / tracker-reader orchestration. GitHub Project is the first v0
+scheduler/tracker substrate.
 
+See [`docs/adr/0002-symphony-native-execution-layer.md`](docs/adr/0002-symphony-native-execution-layer.md)
+for the accepted Symphony-native architecture decision.
 
 ## Manager strategy
 
-Dokkaebi is **Hermes-first, contract-first**:
+Dokkaebi is **Hermes-first, contract-first, and Manager-replaceable**:
 
 - Hermes is the first baseline AI Manager implementation.
 - Dokkaebi itself is not Hermes-specific; the stable interface is the Manager Contract.
 - Codex/oh-my-codex remains useful as a development, planning, and alternate Manager adapter.
 - OpenClaw remains a future candidate for channel/UI-heavy operation after safety boundaries are mature.
+- Manager runtimes are replaceable; Symphony remains the canonical execution layer inside a ProjectScope.
 
 See:
 
 - [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - [`WORKFLOW.md`](WORKFLOW.md)
 - [`docs/adr/0001-hermes-first-manager-contract.md`](docs/adr/0001-hermes-first-manager-contract.md)
+- [`docs/adr/0002-symphony-native-execution-layer.md`](docs/adr/0002-symphony-native-execution-layer.md)
 - [`docs/contracts/manager-contract.md`](docs/contracts/manager-contract.md)
+- [`docs/contracts/runtime-provider-contract.md`](docs/contracts/runtime-provider-contract.md)
+- [`docs/contracts/worker-capability-model.md`](docs/contracts/worker-capability-model.md)
 - [`docs/policies/authority-and-safety.md`](docs/policies/authority-and-safety.md)
 - [`docs/adapters/hermes.md`](docs/adapters/hermes.md)
+- [`docs/adapters/codex-omx-bootstrap.md`](docs/adapters/codex-omx-bootstrap.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](docs/templates/worker-result-packet.md)
 
-## Initial scope
+## Current scope
 
-Milestone 1 is a repository-contract milestone:
+The current architecture milestone is a repository-contract milestone:
 
-- Define the Dokkaebi concept and manager role.
-- Document architecture and trust boundaries.
+- Define Dokkaebi as the management/evaluation layer above Symphony.
+- Document ProjectScope, runtime-provider, and Worker capability boundaries.
 - Define Manager-to-Symphony-to-Worker workflow contracts.
-- Define safety/authority policy.
-- Create GitHub Project ticket templates for Worker-ready tasks.
+- Define safety/authority policy and trusted automation gates.
+- Create durable templates for Worker-ready tickets and result packets.
+
+It does not grant production authority, create infrastructure, design a UI,
+implement runtime code, or enable unattended merge/deploy automation.
+
+## Bootstrap ProjectScope
+
+This repository is now bound as the first local Dokkaebi ProjectScope through
+[`dokkaebi/project-scopes/project-dokkaebi.yml`](dokkaebi/project-scopes/project-dokkaebi.yml).
+The accompanying per-project policy lives in
+[`dokkaebi/policies/project-dokkaebi.yml`](dokkaebi/policies/project-dokkaebi.yml),
+and the Symphony workflow contract for the existing GitHub Project tracker
+implementation lives in
+[`dokkaebi/symphony/WORKFLOW.project-dokkaebi.md`](dokkaebi/symphony/WORKFLOW.project-dokkaebi.md).
+
+These bootstrap files are intentionally configuration-first: they do not grant
+credential access, enable host Docker authority, create infrastructure, merge
+PRs, or deploy. Remote GitHub Project ids are filled only after the GitHub
+Project setup/auth gate succeeds; the current bootstrap Project lives at
+<https://github.com/users/Project-Dokkaebi/projects/1>.
+
+The runnable path is documented in
+[`docs/runbooks/dokkaebi-runtime-bootstrap.md`](docs/runbooks/dokkaebi-runtime-bootstrap.md).
+The configured Worker launcher uses
+[`scripts/dokkaebi-codex-worker-app-server.sh`](scripts/dokkaebi-codex-worker-app-server.sh)
+to scrub Manager/control-plane credentials before `codex app-server` starts.
+Use `DOKKAEBI_WORKER_REF` when a Worker must validate a committed branch, pull
+request ref, or SHA instead of remote `main`.
 
 See [`docs/deep-interview-project-dokkaebi.md`](docs/deep-interview-project-dokkaebi.md)
-for the clarified initial specification.
+for the original clarified initial specification, and
+[`.omx/specs/deep-interview-dokkaebi-final-plan.md`](.omx/specs/deep-interview-dokkaebi-final-plan.md)
+for the Symphony-native planning brief.

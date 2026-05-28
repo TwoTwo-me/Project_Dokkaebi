@@ -1,19 +1,20 @@
 # Worker Ticket Template
 
 Use this template when the Dokkaebi Manager turns Human intent into a
-GitHub Project/Symphony-ready Worker ticket.
+ProjectScope/Symphony-ready Worker ticket.
 
 ## Ticket metadata
 
 - **Title:** `<short imperative task name>`
 - **Source request:** `<link or summary of original Human request>`
 - **Manager owner:** `<manager adapter or human owner>`
-- **Target backend:** `Symphony / GitHub Project`
+- **Target ProjectScope:** `<project scope id / GitHub Project>`
 - **Priority:** `<low | medium | high | urgent>`
-- **Status:** use one semantic state from `WORKFLOW.md`, or map the backend label
-  to one of these states: `Intake`, `Clarifying`, `Ready`, `Dispatchable`,
-  `In Progress`, `Needs Review`, `Human Review`, `Fix Requested`, `Merging`,
-  `Done`, `Reopened`, `Blocked`, `Failed`, `Cancelled`.
+- **Status:** use one semantic state from `WORKFLOW.md`, or map the
+  ProjectScope/tracker status label to one of these states: `Intake`,
+  `Clarifying`, `Ready`, `Dispatchable`, `In Progress`, `Needs Review`,
+  `Human Review`, `Fix Requested`, `Merging`, `Done`, `Reopened`, `Blocked`,
+  `Failed`, `Cancelled`.
 
 ## Goal
 
@@ -45,9 +46,20 @@ The Worker ticket is complete only when all checked criteria are satisfied.
 - Stay within the assigned files, systems, and permission level.
 - Do not broaden scope without Manager approval.
 - Preserve Manager replaceability; do not hard-code Hermes, Codex/OMX,
-  OpenClaw, or Symphony-specific assumptions unless this ticket explicitly
-  targets that adapter/backend.
+  OpenClaw, or project-specific assumptions unless this ticket explicitly
+  targets that Manager adapter or ProjectScope.
 - Keep diffs small, reviewable, and reversible.
+
+## ProjectScope and Worker capability
+
+- **ProjectScope:** `<scope id / project link>`
+- **Required capability tier:** `<basic | container-capable | testbed | other>`
+- **Provider constraints:** `<none | host-docker | vm | kubernetes | other>`
+- **OS/tooling constraints:** `<linux | macos | windows | any, plus tools>`
+- **Network mode:** `<none | restricted | project-approved>`
+
+See [`worker-capability-model.md`](../contracts/worker-capability-model.md) and
+[`runtime-provider-contract.md`](../contracts/runtime-provider-contract.md).
 
 ## Permission level
 

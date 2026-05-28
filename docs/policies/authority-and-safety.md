@@ -16,13 +16,14 @@ custom managers.
 
 ## Authority model
 
-- **Human**: defines goals, approves gates, and may replace Manager/backend
+- **Human**: defines goals, approves gates, and may replace Manager runtime
   choices.
 - **Dokkaebi Manager**: clarifies, drafts tickets, reviews results, and updates
   tracking state. It may not perform high-impact writes without approval
   evidence.
-- **Symphony/backend**: dispatches approved Worker tickets and records progress.
-  It may not broaden task scope or bypass readiness gates.
+- **Symphony-native execution layer**: dispatches approved Worker tickets and
+  records progress inside a ProjectScope. It may not broaden task scope or
+  bypass readiness gates.
 - **AI Worker**: executes one bounded ticket in an isolated workspace. It may not
   expand permissions, access secrets, merge/deploy, or mutate infrastructure.
 
@@ -45,7 +46,7 @@ ticket does not grant standing authority to future tickets.
 The Manager may automate these actions when scope and acceptance criteria are
 clear:
 
-- drafting or revising GitHub Project/Symphony-ready tickets;
+- drafting or revising ProjectScope/Symphony-ready tickets;
 - updating issue/project status, progress comments, and workpad notes;
 - requesting Worker validation evidence;
 - preparing commits or PRs for review;
@@ -89,8 +90,8 @@ preflight:
 1. Verify the source request and ticket are linked.
 2. Verify acceptance criteria, non-goals, permission level, validation plan, and
    result packet requirements are present.
-3. Verify the GitHub Project/Symphony status is dispatchable.
-4. Verify the Worker capability/OS/tooling constraints match the ticket.
+3. Verify the ProjectScope/Symphony status is dispatchable.
+4. Verify the Worker capability tier, OS, provider, and tooling constraints match the ticket.
 5. Verify approval evidence exists for every gated action.
 6. Verify credentials, if any, are issued through a credential broker with least
    privilege and expiry.
@@ -116,7 +117,7 @@ Credential requests require:
 
 ## Symphony compatibility policy
 
-Dokkaebi treats Symphony as the first backend, not as an inseparable core.
+Dokkaebi treats Symphony as the canonical execution layer inside a ProjectScope.
 Manager tickets must remain compatible with both:
 
 - **Greenfield projects:** Dokkaebi proposes the initial project fields,
@@ -133,6 +134,27 @@ updates remain automation candidates when the ticket is already approved.
 If project status fields, labels, workpad conventions, or Worker metadata cannot
 be mapped, the Manager must mark the ticket blocked and request a mapping or
 project setup change.
+
+## Trusted automation gates
+
+Full trusted automation is allowed only when every applicable gate is explicit,
+durable, and auditable:
+
+- versioned per-project policy file;
+- credential broker only, with no broad raw credential transfer;
+- durable Human approval record for gated action classes;
+- validation gate before direct action;
+- environment tiers with different thresholds for dev, staging, and production;
+- audit trail and rollback/revert path;
+- Human kill switch by project, Worker, Manager, environment, or action class.
+
+If any gate is missing, ambiguous, expired, or contradictory, Dokkaebi must fail
+closed and mark the work blocked.
+
+Runtime provider authority is governed by
+[`docs/contracts/runtime-provider-contract.md`](../contracts/runtime-provider-contract.md).
+Worker capability routing is governed by
+[`docs/contracts/worker-capability-model.md`](../contracts/worker-capability-model.md).
 
 ## Audit and review
 

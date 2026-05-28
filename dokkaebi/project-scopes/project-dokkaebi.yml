@@ -1,0 +1,141 @@
+schema_version: dokkaebi.project_scope.v0
+id: project-dokkaebi
+name: Project Dokkaebi bootstrap scope
+description: >-
+  Bootstrap ProjectScope that lets Dokkaebi manage its own repository through a
+  Symphony-native GitHub Project loop.
+status: remote-project-created
+created_utc: "2026-05-27T00:00:00Z"
+
+repository:
+  provider: github
+  owner: TwoTwo-me
+  name: Project_Dokkaebi
+  remote_url: git@github.com:TwoTwo-me/Project_Dokkaebi.git
+  local_path: /home/koreaplayer99/Project_Dokkaebi
+  default_branch: main
+  worker_ref_env: DOKKAEBI_WORKER_REF
+  allowed_paths:
+    - README.md
+    - ARCHITECTURE.md
+    - WORKFLOW.md
+    - docs/**
+    - scripts/**
+    - dokkaebi/**
+    - symphony-github-project-tracker/**
+
+manager:
+  active_runtime: codex-omx
+  contract: docs/contracts/manager-contract.md
+  adapter_notes:
+    - docs/adapters/hermes.md
+  duties:
+    - intake
+    - ticket_drafting
+    - approval_preflight
+    - result_review
+    - human_summary
+
+symphony:
+  canonical_execution_layer: true
+  source_of_truth: docs/adr/0002-symphony-native-execution-layer.md
+  implementation:
+    kind: local-github-project-tracker
+    path: symphony-github-project-tracker
+    workflow_file: dokkaebi/symphony/WORKFLOW.project-dokkaebi.md
+  scheduler_owner: symphony
+  dokkaebi_owner: manager_and_policy_above_symphony
+
+tracker:
+  kind: github-project-v2
+  owner: Project-Dokkaebi
+  repository_owner: TwoTwo-me
+  repository: Project_Dokkaebi
+  project_title: Dokkaebi Bootstrap
+  project_number: 1
+  project_id: PVT_kwHOES1Fes4BY7jD
+  project_url: https://github.com/users/Project-Dokkaebi/projects/1
+  token_env: GITHUB_GRAPHQL_TOKEN
+  state_field: Dokkaebi Status
+  priority_field: Priority
+  admission_labels:
+    - dokkaebi
+    - symphony
+  status_mapping:
+    intake: Intake
+    clarifying: Clarifying
+    ready: Ready
+    dispatchable: Dispatchable
+    in_progress: In Progress
+    needs_review: Human Review
+    fix_requested: Fix Requested
+    merging: Merging
+    done: Done
+    reopened: Reopened
+    blocked: Blocked
+    failed: Failed
+    cancelled: Cancelled
+  active_states:
+    - Dispatchable
+    - In Progress
+    - Fix Requested
+  wait_states:
+    - Intake
+    - Clarifying
+    - Ready
+    - Human Review
+    - Merging
+    - Blocked
+    - Reopened
+  terminal_states:
+    - Done
+    - Failed
+    - Cancelled
+  blocker_check_states:
+    - Dispatchable
+
+worker_routing:
+  default_required_capability: basic
+  capability_model: docs/contracts/worker-capability-model.md
+  allowed_capabilities:
+    - basic
+    - container-capable
+    - testbed
+  default_os: linux
+  allowed_os:
+    - linux
+  admission_rule: >-
+    A project item is dispatchable only when status, admission labels, capability
+    metadata, permission level, validation plan, and approval gates all pass.
+
+runtime_provider:
+  contract: docs/contracts/runtime-provider-contract.md
+  default_provider: local-basic
+  providers:
+    local-basic:
+      kind: local-process
+      environment_tier: dev
+      capabilities:
+        - basic
+      status: available-for-bootstrap
+    host-docker:
+      kind: host-docker-helper
+      environment_tier: dev
+      capabilities:
+        - container-capable
+      status: planned-not-enabled
+      requires_approval: true
+      notes: >-
+        Must go through a narrow audited host helper daemon; do not mount a broad
+        host Docker socket into Dokkaebi or Worker containers by default.
+
+policy:
+  file: dokkaebi/policies/project-dokkaebi.yml
+  fail_closed: true
+  credential_broker_required_for_credentials: true
+  kill_switch_file: dokkaebi/KILL_SWITCH
+
+audit:
+  approvals_dir: dokkaebi/approvals
+  result_packet_template: docs/templates/worker-result-packet.md
+  worker_ticket_template: docs/templates/worker-ticket.md
