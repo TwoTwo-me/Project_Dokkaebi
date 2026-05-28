@@ -40,6 +40,7 @@ See:
 - [`docs/adapters/codex-omx-bootstrap.md`](docs/adapters/codex-omx-bootstrap.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](docs/templates/worker-result-packet.md)
+- [`docs/runbooks/dokkaebi-always-on-services.md`](docs/runbooks/dokkaebi-always-on-services.md)
 
 ## Current scope
 

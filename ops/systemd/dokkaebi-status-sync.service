@@ -1,0 +1,17 @@
+[Unit]
+Description=Dokkaebi GitHub Project status mirror sync
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Project_Dokkaebi
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DOKKAEBI_STATUS_SYNC_INTERVAL_SECONDS=60
+Environment=DOKKAEBI_SERVICE_RESTART_SECONDS=60
+ExecStart=%h/Project_Dokkaebi/scripts/dokkaebi-service-loop.sh %h/Project_Dokkaebi/scripts/dokkaebi-project-status-sync-loop.sh
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target

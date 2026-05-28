@@ -1,0 +1,18 @@
+[Unit]
+Description=Dokkaebi Symphony ProjectScope poller
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Project_Dokkaebi
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+Environment=DOKKAEBI_USE_GH_TOKEN=1
+Environment=DOKKAEBI_SYMPHONY_PORT=4000
+Environment=DOKKAEBI_SERVICE_RESTART_SECONDS=60
+ExecStart=%h/Project_Dokkaebi/scripts/dokkaebi-service-loop.sh %h/Project_Dokkaebi/scripts/dokkaebi-symphony-run.sh
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=default.target
