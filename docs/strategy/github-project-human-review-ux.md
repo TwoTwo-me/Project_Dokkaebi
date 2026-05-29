@@ -163,6 +163,19 @@ API/CLI surface, configure the Project UI manually as follows:
      that imply credential/provider/merge-deploy authority.
    - `Dispatch Queue`: filter `status:Dispatchable`.
 
+
+## `Merging` status semantics
+
+`Merging` should mean that a Human has moved an item out of review and into the
+approval-sensitive closeout lane. It should not send the item back to a normal
+Symphony Worker queue. Future Dokkaebi automation should handle this through a
+Merge Gate that checks human provenance, PR mergeability, required checks, review
+state, and permission level before it performs `gh pr merge` or equivalent.
+
+Until that Merge Gate exists, changing `Status` to `Merging` is only a visible
+Human intent marker. It does not automatically change `Dokkaebi Status` or merge
+the PR.
+
 ## Human Review workflow guardrails
 
 - Manager/Worker automation may move complete evidence to `Human Review`.

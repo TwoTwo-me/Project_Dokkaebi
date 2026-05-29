@@ -53,6 +53,24 @@ OpenAI Symphony's spec focuses on a long-running issue-tracker poller with per-i
 
 Docker restart policies are valid for containerized workers, but the current safest local path uses systemd because existing scripts already enforce kill switch, preflight, workflow selection, and credential scrubbing. Docker worker fleet enablement should wait for explicit provider approval and credential broker maturity.
 
+### 6. `Status = Merging` is a Dokkaebi Merge Gate signal
+
+When a Human changes the GitHub Project `Status` field from `Human Review` to
+`Merging`, Dokkaebi should treat that as a **human merge-stage handoff signal**,
+not as a generic Symphony Worker task. The preferred future automation is a
+separate always-on Merge Gate owned by Dokkaebi/Manager policy:
+
+1. detect Project items where `Status = Merging` and `Dokkaebi Status = Human Review`;
+2. verify the actor/provenance represents an approved Human handoff;
+3. verify PR mergeability, required checks, and review state;
+4. verify permission level allows automation (`docs-only` and narrow `local-code` first;
+   keep `provider-change` and `merge-deploy` human-gated until a later policy grants them);
+5. set `Dokkaebi Status = Merging`, merge the PR, then set both status fields to `Done`;
+6. on failure, leave an evidence comment and move to `Blocked` or `Fix Requested`.
+
+Do not route this transition back to a normal Symphony Worker. Workers prepare
+changes and evidence; the Merge Gate performs the approval-sensitive closeout.
+
 ## Near-term roadmap
 
 1. **Stabilize self-hosting v0**
