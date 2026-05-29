@@ -65,11 +65,17 @@ separate always-on Merge Gate owned by Dokkaebi/Manager policy:
 3. verify PR mergeability, required checks, and review state;
 4. verify permission level allows automation (`docs-only` and narrow `local-code` first;
    keep `provider-change` and `merge-deploy` human-gated until a later policy grants them);
-5. set `Dokkaebi Status = Merging`, merge the PR, then set both status fields to `Done`;
-6. on failure, leave an evidence comment and move to `Blocked` or `Fix Requested`.
+5. set `Dokkaebi Status = Merging`, merge the PR, then set both status fields
+   to `Done` only after the merge is observed;
+6. on failure, leave an evidence comment and route by ownership: `Fix Requested`
+   for author-actionable PR fixes such as failing checks, requested changes, or
+   conflicts, and `Blocked` for missing human provenance, insufficient permission,
+   unavailable mergeability data, or policy/tooling failures.
 
 Do not route this transition back to a normal Symphony Worker. Workers prepare
 changes and evidence; the Merge Gate performs the approval-sensitive closeout.
+`Status = Merging` is therefore a Manager-side closeout signal, not a new coding
+assignment.
 
 ## Near-term roadmap
 

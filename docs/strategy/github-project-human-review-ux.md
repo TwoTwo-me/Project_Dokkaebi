@@ -174,7 +174,9 @@ state, and permission level before it performs `gh pr merge` or equivalent.
 
 Until that Merge Gate exists, changing `Status` to `Merging` is only a visible
 Human intent marker. It does not automatically change `Dokkaebi Status` or merge
-the PR.
+the PR. Once the gate exists, it should close out to `Done` only after a merge is
+observed, use `Fix Requested` for author-actionable PR repairs, and use `Blocked`
+for provenance, permission, policy, or tooling blockers.
 
 ## Human Review workflow guardrails
 
