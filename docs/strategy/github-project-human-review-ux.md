@@ -117,10 +117,30 @@ Post-update verification:
   `ok=true`, `itemsChecked=3`, and `updates=[]`, confirming the metadata update
   did not create status mirror drift.
 
-## Recommended manual view recipe
 
-Until GitHub exposes ProjectV2 view mutations through GraphQL/`gh`, configure the
-Project UI manually as follows:
+## 2026-05-28 late update: direct view creation succeeded
+
+The earlier API-limitation note above was superseded by a later leader-lane
+REST check using the current Projects v2 views endpoint and the authenticated
+`Project-Dokkaebi` account. Four saved views were created directly without UI
+automation:
+
+| View | URL | Purpose |
+| --- | --- | --- |
+| `Dokkaebi 00 — All work` | <https://github.com/users/Project-Dokkaebi/projects/1/views/2> | Full audit table baseline. |
+| `Dokkaebi 01 — Human Review` | <https://github.com/users/Project-Dokkaebi/projects/1/views/3> | Human attention queue. |
+| `Dokkaebi 02 — Worker queue` | <https://github.com/users/Project-Dokkaebi/projects/1/views/4> | Dispatchable/In Progress/Fix Requested queue. |
+| `Dokkaebi 03 — Open nonterminal` | <https://github.com/users/Project-Dokkaebi/projects/1/views/5> | Open work excluding terminal statuses. |
+
+Evidence lives under `.omx/evidence/project-view-create/*.json`. Future view
+audits should treat these saved views as the current human-facing baseline and
+only fall back to manual UI changes when a field/layout operation is not exposed
+by the API.
+
+## Manual fallback view recipe
+
+If a future Project field/layout option cannot be changed through the available
+API/CLI surface, configure the Project UI manually as follows:
 
 1. Rename `View 1` to `Human Review / Dispatch`.
 2. Keep table layout.
@@ -142,6 +162,21 @@ Project UI manually as follows:
    - `Blocked / Approval Required`: filter `status:Blocked` or permission levels
      that imply credential/provider/merge-deploy authority.
    - `Dispatch Queue`: filter `status:Dispatchable`.
+
+
+## `Merging` status semantics
+
+`Merging` should mean that a Human has moved an item out of review and into the
+approval-sensitive closeout lane. It should not send the item back to a normal
+Symphony Worker queue. Future Dokkaebi automation should handle this through a
+Merge Gate that checks human provenance, PR mergeability, required checks, review
+state, and permission level before it performs `gh pr merge` or equivalent.
+
+Until that Merge Gate exists, changing `Status` to `Merging` is only a visible
+Human intent marker. It does not automatically change `Dokkaebi Status` or merge
+the PR. Once the gate exists, it should close out to `Done` only after a merge is
+observed, use `Fix Requested` for author-actionable PR repairs, and use `Blocked`
+for provenance, permission, policy, or tooling blockers.
 
 ## Human Review workflow guardrails
 
