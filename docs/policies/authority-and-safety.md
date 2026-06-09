@@ -90,7 +90,7 @@ preflight:
 1. Verify the source request and ticket are linked.
 2. Verify acceptance criteria, non-goals, permission level, validation plan, and
    result packet requirements are present.
-3. Verify the GitHub Project/Symphony status is dispatchable.
+3. Verify the GitHub Project/Symphony status and admission fields are dispatchable.
 4. Verify the Worker capability/OS/tooling constraints match the ticket.
 5. Verify approval evidence exists for every gated action.
 6. Verify credentials, if any, are issued through a credential broker with least
@@ -121,19 +121,21 @@ Dokkaebi treats Symphony as the first backend, not as an inseparable core.
 Manager tickets must remain compatible with both:
 
 - **Greenfield projects:** Dokkaebi proposes the initial project fields,
-  statuses, labels, templates, and admission rules. It creates them only under
-  approved setup authority before dispatch.
-- **Brownfield projects:** Dokkaebi maps existing statuses/labels to the semantic
-  state model in `WORKFLOW.md` before enabling Worker dispatch.
+  statuses, fallback labels, templates, and admission rules. It creates them
+  only under approved setup authority before dispatch.
+- **Brownfield projects:** Dokkaebi maps existing statuses, agent,
+  authorization, authorized-by, admission fields, fallback labels, and workpad
+  conventions to the semantic state model in `WORKFLOW.md` before enabling
+  Worker dispatch.
 
 GitHub Project schema changes, field creation, label creation, template updates,
 admission-rule changes, and auto-add workflow changes are control-plane writes.
 They require approved setup authority. Routine progress comments and status
 updates remain automation candidates when the ticket is already approved.
 
-If project status fields, labels, workpad conventions, or Worker metadata cannot
-be mapped, the Manager must mark the ticket blocked and request a mapping or
-project setup change.
+If project status fields, admission fields, fallback labels, workpad
+conventions, or Worker metadata cannot be mapped, the Manager must mark the
+ticket blocked and request a mapping or project setup change.
 
 ## Git governance boundary
 

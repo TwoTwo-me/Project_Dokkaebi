@@ -59,7 +59,9 @@ Initial and candidate adapters:
 
 Symphony is the lower orchestration backend for the first implementation path.
 GitHub Project issues are the durable dispatch queue and visible coordination
-surface. Symphony consumes approved tickets, starts isolated Worker runs, and
+surface. GitHub Project `Status` is the lifecycle source of truth, while
+workpad comments, PRs, commits, logs, and validation artifacts carry execution
+evidence. Symphony consumes approved tickets, starts isolated Worker runs, and
 updates project/workpad/PR state.
 
 Dokkaebi must treat Symphony as an adapter behind a stable work-contract
@@ -136,7 +138,8 @@ Authority flows downward only through explicit artifacts:
 3. Manager writes or updates a GitHub Project ticket with acceptance criteria,
    non-goals, permission level, validation, and expected result packet.
 4. Human approval is recorded for any gated action before dispatch.
-5. Symphony dispatches a Worker only when status, labels, and policy allow it.
+5. Symphony dispatches a Worker only when Status, agent, authorization,
+   admission, fallback labels, and policy allow it.
 6. Credential broker grants only the scoped capabilities required by the ticket.
 7. Worker returns evidence; Manager reviews it before asking the Human for any
    next high-impact decision.
@@ -172,8 +175,8 @@ A minimum result packet includes:
 
 Dokkaebi should prefer surfaces another Manager adapter can inspect:
 
-- GitHub Project fields and status history;
-- issue body, comments, and workpad comments;
+- GitHub Project fields and status history, especially the lifecycle `Status`;
+- issue body, comments, and workpad comments used as execution evidence;
 - PR descriptions, review threads, commits, and checks;
 - Worker logs and validation artifacts;
 - repository documents and versioned policies;

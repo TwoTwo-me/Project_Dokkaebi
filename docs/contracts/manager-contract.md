@@ -128,15 +128,16 @@ outside ticket prose and Worker result summaries.
 Dokkaebi treats Symphony as the first backend adapter behind the Manager Contract.
 The Manager must support:
 
-- **Greenfield Symphony projects:** propose the initial status fields, labels,
-  templates, and admission rules; create them only under approved setup
-  authority.
-- **Brownfield Symphony projects:** map existing project statuses, labels, workpad
+- **Greenfield Symphony projects:** propose the initial status fields,
+  fallback labels, templates, and admission rules; create them only under
+  approved setup authority.
+- **Brownfield Symphony projects:** map existing project statuses, agent,
+  authorization, authorized-by, admission fields, fallback labels, workpad
   conventions, and Worker metadata to the semantic state model in `WORKFLOW.md`
   before dispatch.
 
-If the status mapping is missing or ambiguous, the ticket remains blocked until
-the mapping is documented.
+If the status or admission mapping is missing or ambiguous, the ticket remains
+blocked until the mapping is documented.
 
 ## Adapter conformance
 
