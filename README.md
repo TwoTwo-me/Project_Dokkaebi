@@ -29,6 +29,7 @@ See:
 - [`docs/adr/0001-hermes-first-manager-contract.md`](docs/adr/0001-hermes-first-manager-contract.md)
 - [`docs/contracts/manager-contract.md`](docs/contracts/manager-contract.md)
 - [`docs/policies/authority-and-safety.md`](docs/policies/authority-and-safety.md)
+- [`docs/policies/git-governance.md`](docs/policies/git-governance.md)
 - [`docs/adapters/hermes.md`](docs/adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](docs/templates/worker-result-packet.md)

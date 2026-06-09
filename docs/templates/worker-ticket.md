@@ -44,10 +44,12 @@ The Worker ticket is complete only when all checked criteria are satisfied.
 
 - Stay within the assigned files, systems, and permission level.
 - Do not broaden scope without Manager approval.
-- Preserve Manager replaceability; do not hard-code Hermes, Codex/OMX,
+- Preserve Manager replaceability; do not hard-code Hermes, Codex-based tooling,
   OpenClaw, or Symphony-specific assumptions unless this ticket explicitly
   targets that adapter/backend.
 - Keep diffs small, reviewable, and reversible.
+- Follow [`../policies/git-governance.md`](../policies/git-governance.md) when
+  creating branches, commits, PRs, or submodule pointer updates.
 
 ## Permission level
 
@@ -55,7 +57,8 @@ Choose the narrowest level that lets the Worker complete the task.
 
 - **Read-only:** inspect and report only.
 - **Repo-local write:** edit files in the assigned repository/workspace only.
-- **PR preparation:** create commits/PRs, but do not merge.
+- **PR preparation:** create GitHub Flow branches, commits, and PRs, but do not
+  merge.
 - **External write:** requires explicit Human approval before execution.
 
 ## Human approval gates
@@ -70,6 +73,18 @@ Human approval is required before any of these actions:
 - Manager runtime replacement;
 - PR merge, deployment, production data writes, or production infrastructure
   writes unless a later ADR explicitly narrows this gate.
+
+## Git plan
+
+Fill this section when repository writes are in scope. Use `N/A` only for
+read-only or planning-only tickets.
+
+- **Base branch:** `<main or approved base>`
+- **Branch name:** `<type>/<scope-slug> or <actor>/<type>/<scope-slug>`
+- **Commit authority:** `<prepare only | create commits | open PR>`
+- **Commit grouping:** `<atomic commit plan or N/A>`
+- **Submodule handling:** `<N/A or expected submodule path/commit boundary>`
+- **Merge authority:** `Human approval required unless a later ADR grants a narrow exception`
 
 ## Worker instructions
 
@@ -96,7 +111,7 @@ The Worker must report:
 
 - task identifier and source ticket;
 - summary of completed work;
-- changed files, commit, PR, or artifact links;
+- changed files, branch, commit, PR, or artifact links;
 - validation commands and outcomes;
 - acceptance-criteria evidence and whether acceptance criteria were met;
 - blockers or missing permissions;

@@ -48,7 +48,8 @@ clear:
 - drafting or revising GitHub Project/Symphony-ready tickets;
 - updating issue/project status, progress comments, and workpad notes;
 - requesting Worker validation evidence;
-- preparing commits or PRs for review;
+- preparing branches, commits, or PRs for review under
+  [`git-governance.md`](git-governance.md);
 - summarizing Worker results and residual risks for the Human.
 
 ## Forbidden default actions
@@ -133,6 +134,15 @@ updates remain automation candidates when the ticket is already approved.
 If project status fields, labels, workpad conventions, or Worker metadata cannot
 be mapped, the Manager must mark the ticket blocked and request a mapping or
 project setup change.
+
+## Git governance boundary
+
+Branch, commit, pull-request, and submodule-pointer work follows
+[`git-governance.md`](git-governance.md). Preparing reviewable commits or PRs is
+an automation candidate only when the ticket grants repository write or PR
+preparation authority. PR merge, direct protected-branch writes, deployment,
+production writes, destructive history rewriting, and release publication remain
+Human approval gates unless a later ADR grants a narrow exception.
 
 ## Audit and review
 

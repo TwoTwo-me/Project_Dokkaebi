@@ -34,6 +34,8 @@ A Manager adapter must be able to:
 8. Summarize Worker output back to the Human with evidence, blockers, residual
    risks, and next decisions.
 9. Keep enough audit trail for another Manager adapter to resume.
+10. Apply the Git governance policy when preparing branches, commits, pull
+    requests, or submodule pointer updates.
 
 ## Stable contract artifacts
 
@@ -52,6 +54,7 @@ Required local artifacts:
 - [`ARCHITECTURE.md`](../../ARCHITECTURE.md)
 - [`WORKFLOW.md`](../../WORKFLOW.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
+- [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -75,7 +78,8 @@ for the binding safety policy.
 - Drafting GitHub Project tickets.
 - Updating workpad/progress comments.
 - Posting validation evidence.
-- Preparing PRs for review.
+- Preparing branches, commits, and PRs for review under
+  [`docs/policies/git-governance.md`](../policies/git-governance.md).
 
 ### Approval evidence minimum
 
@@ -157,7 +161,7 @@ A Worker result packet must include:
 
 - task identifier and source ticket;
 - summary of completed work;
-- changed files or PR links;
+- changed files, branch, commits, or PR links;
 - validation commands and outcomes;
 - acceptance-criteria evidence and whether acceptance criteria were met;
 - blockers or missing permissions;

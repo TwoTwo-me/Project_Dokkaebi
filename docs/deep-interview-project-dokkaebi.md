@@ -6,9 +6,8 @@
 - Final ambiguity: **15%**
 - Threshold: **20%**
 - Context type: greenfield Dokkaebi repo + local Symphony clone inspected
-- Context snapshot: `.omx/context/project-dokkaebi-20260526T071402Z.md`
-- Transcript: `.omx/interviews/project-dokkaebi-20260526T074910Z.md`
-- Canonical output path: `.omx/specs/deep-interview-project-dokkaebi.md`
+- Source traces: local planning artifacts, path intentionally omitted from the
+  committed spec.
 
 ## Clarity Breakdown
 
@@ -152,15 +151,24 @@ Relevant confirmed capabilities:
 
 A downstream planner/executor can consider milestone 1 complete when:
 
-- [ ] `README.md` explains Project Dokkaebi, the 3-layer model, and where Symphony fits.
-- [ ] `ARCHITECTURE.md` defines components, trust boundaries, authority flow, and result flow.
-- [ ] `WORKFLOW.md` defines Manager-to-Symphony-to-Worker operating flow and state transitions.
-- [ ] A safety/authority policy document defines approval-required actions, automation candidates, forbidden actions, and audit requirements.
-- [ ] GitHub Project issue/ticket templates exist for Worker-ready tasks.
-- [ ] The documents explicitly state Dokkaebi is the upper Manager layer and Symphony is the worker orchestration backend for the first implementation path.
-- [ ] The documents preserve Manager replaceability across Hermes/OpenClaw/Codex/oh-my-codex/future managers.
-- [ ] The documents include a critical review section or equivalent risk/failure-mode coverage.
-- [ ] The PR/deploy/production-write decision boundary is resolved or explicitly marked as a planning blocker before enabling automation.
+- [x] `README.md` explains Project Dokkaebi, the 3-layer model, and where Symphony fits.
+  - Evidence: `README.md` defines `Human -> AI Manager Agent -> Symphony/GitHub Project -> AI Worker -> verifiable result return` and states Symphony is the first worker orchestration backend.
+- [x] `ARCHITECTURE.md` defines components, trust boundaries, authority flow, and result flow.
+  - Evidence: `ARCHITECTURE.md` defines Human, Dokkaebi Manager, Symphony/GitHub Project, AI Worker, credential broker, approval gates, trust boundaries, authority flow, result flow, and critical risks.
+- [x] `WORKFLOW.md` defines Manager-to-Symphony-to-Worker operating flow and state transitions.
+  - Evidence: `WORKFLOW.md` defines intake, work-contract drafting, approval/readiness gate, Symphony dispatch, Worker execution, result packet, Manager review, and the semantic status model.
+- [x] A safety/authority policy document defines approval-required actions, automation candidates, forbidden actions, and audit requirements.
+  - Evidence: `docs/policies/authority-and-safety.md` defines Human approval required, automation allowed by default, forbidden default actions, approval evidence records, fail-closed preflight, credential broker boundary, Symphony compatibility policy, and audit/review.
+- [x] GitHub Project issue/ticket templates exist for Worker-ready tasks.
+  - Evidence: `docs/templates/worker-ticket.md` defines Worker-ready ticket fields, approval gates, validation requirements, result-packet expectations, and escalation rules; `docs/templates/worker-result-packet.md` defines closeout evidence.
+- [x] The documents explicitly state Dokkaebi is the upper Manager layer and Symphony is the worker orchestration backend for the first implementation path.
+  - Evidence: `README.md`, `ARCHITECTURE.md`, `WORKFLOW.md`, `docs/contracts/manager-contract.md`, `docs/policies/authority-and-safety.md`, and `docs/adapters/hermes.md` all preserve the Dokkaebi Manager above Symphony/GitHub Project boundary.
+- [x] The documents preserve Manager replaceability across Hermes, OpenClaw, Codex and oh-my-codex, and future managers.
+  - Evidence: `README.md`, `ARCHITECTURE.md`, `docs/adr/0001-hermes-first-manager-contract.md`, and `docs/contracts/manager-contract.md` define Hermes-first but contract-first Manager replaceability.
+- [x] The documents include a critical review section or equivalent risk/failure-mode coverage.
+  - Evidence: `ARCHITECTURE.md` includes critical risks and mitigations; this interview spec includes Critical Feasibility Review, failure modes, and mitigations.
+- [x] The PR/deploy/production-write decision boundary is resolved or explicitly marked as a planning blocker before enabling automation.
+  - Evidence: `ARCHITECTURE.md`, `WORKFLOW.md`, `docs/contracts/manager-contract.md`, `docs/policies/authority-and-safety.md`, and `docs/templates/worker-ticket.md` require Human approval for PR merge, deployment, production data writes, and production infrastructure writes unless a later ADR grants a narrow exception.
 
 ## Assumptions Exposed + Resolutions
 
@@ -181,7 +189,7 @@ The main pressure pass challenged why Manager should not simply spawn Workers di
 Use this spec as the requirements source of truth. Recommended next step:
 
 ```text
-$ralplan .omx/specs/deep-interview-project-dokkaebi.md
+$ralplan docs/deep-interview-project-dokkaebi.md
 ```
 
 Planning should produce PRD/test-spec artifacts for the milestone documents. Implementation should not start until planning resolves the PR/deploy approval boundary.
