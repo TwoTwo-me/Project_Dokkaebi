@@ -81,16 +81,19 @@ Before dispatch, the Manager classifies the ticket:
 | Manager runtime replacement | Requires explicit Human approval. |
 | PR merge, deployment, production write | Requires explicit Human approval unless a later ADR grants a narrow exception. |
 
-Dispatch readiness should be represented by status/labels in the GitHub Project,
+Dispatch readiness should be represented by GitHub Project Status, agent,
+authorization, authorized-by, admission fields, and any approved fallback labels,
 not by private Manager memory alone.
 
-Backend-facing labels may use project-specific names, but they must map to the
-semantic status model below before Symphony dispatch.
+Backend-facing fields or labels may use project-specific names, but they must
+map to the semantic status model and admission contract below before Symphony
+dispatch.
 
 ## Phase 4: Symphony dispatch
 
 Symphony watches the configured GitHub Project and dispatches tickets that match
-its admission rules, such as status, labels, worker OS metadata, and capability
+its admission rules, such as Status, Agent, Authorization, Authorized By,
+Symphony Admission, approved fallback labels, worker OS metadata, and capability
 constraints.
 
 On dispatch, Symphony should provide the Worker:
@@ -169,6 +172,11 @@ creates a follow-up ticket with clear acceptance criteria.
 Dokkaebi should use explicit statuses so Human, Manager, Symphony, and Workers
 share the same state machine. The exact GitHub Project field names may vary, but
 the semantic states should remain stable.
+
+GitHub Project `Status` is the lifecycle source of truth for this state machine.
+Workpad comments, PRs, commits, logs, and validation artifacts are evidence
+surfaces that explain or prove the state; they should not silently override the
+project lifecycle state.
 
 | State | Owner | Meaning | Allowed next states |
 | --- | --- | --- | --- |
