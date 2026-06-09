@@ -20,7 +20,9 @@ Briefly state what changed and whether the ticket goal was met.
 
 - **Files changed:**
   - `<path>` — `<short reason>`
-- **Commit(s):** `<sha or N/A>`
+- **Branch:** `<branch or N/A>`
+- **Commit(s):** `<sha and subject, or N/A>`
+- **Commit rationale:** `<why the commit boundaries and approach were chosen, or N/A>`
 - **PR:** `<link or N/A>`
 - **Other artifacts:** `<logs, screenshots, generated files, or N/A>`
 

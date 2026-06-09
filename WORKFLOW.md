@@ -64,6 +64,8 @@ Required ticket sections:
    verification expected from the Worker.
 7. **Result packet requirements**: exact evidence the Worker must return.
 8. **Escalation triggers**: when to stop and report instead of improvising.
+9. **Git plan**: base branch, branch naming, commit authority, PR expectation,
+   and submodule handling when repository writes are in scope.
 
 ## Phase 3: Approval and readiness gate
 
@@ -120,6 +122,9 @@ loop is:
 Workers may recommend follow-up work, but recommendations are not implicit
 authorization to perform it.
 
+When a Worker creates branches, commits, PRs, or submodule pointer updates, it
+must follow [`docs/policies/git-governance.md`](docs/policies/git-governance.md).
+
 ## Phase 6: Result packet
 
 A Worker result packet must be evidence-dense and reusable by another Manager.
@@ -127,7 +132,7 @@ Minimum fields:
 
 - ticket id and Worker id;
 - summary of completed work;
-- changed files, PRs, commits, or artifact links;
+- changed files, branch, PRs, commits, or artifact links;
 - validation commands and pass/fail outcomes;
 - acceptance-criteria evidence and whether acceptance criteria were met;
 - blockers, missing approvals, or skipped checks;
@@ -149,6 +154,8 @@ Review checklist:
 - Are changes inside the declared scope?
 - Were required tests, lint, typecheck, build, or smoke checks run?
 - Are skipped checks justified?
+- Does commit/PR evidence follow the Git governance policy when repository
+  writes were in scope?
 - Are residual risks acceptable or do they require follow-up tickets?
 - Is Human approval needed for merge, deploy, production writes, credentials,
   infrastructure, or broader Worker authority?
@@ -216,6 +223,8 @@ A task is complete only when:
 - changes stayed inside declared scope;
 - required validation has passed or skipped checks are explicitly justified;
 - result packet evidence is available in durable surfaces;
+- commit, PR, and submodule evidence follows Git governance when repository
+  writes were in scope;
 - approval-gated actions are either approved and recorded or not performed;
 - Manager review has reconciled ticket, PR, workpad, and status state;
 - any remaining risks are accepted or converted into follow-up tickets.

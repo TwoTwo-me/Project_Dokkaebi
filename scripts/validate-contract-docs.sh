@@ -34,10 +34,14 @@ require_file ARCHITECTURE.md
 require_file WORKFLOW.md
 require_file docs/contracts/manager-contract.md
 require_file docs/policies/authority-and-safety.md
+require_file docs/policies/git-governance.md
 require_file docs/adapters/hermes.md
 require_file docs/templates/worker-ticket.md
 require_file docs/templates/worker-result-packet.md
 require_file README.md
+require_file .github/pull_request_template.md
+require_file .github/workflows/dokkaebi-governance.yml
+require_file scripts/validate-git-governance.sh
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -57,6 +61,7 @@ require_text docs/contracts/manager-contract.md '## Credential broker boundary'
 require_text docs/contracts/manager-contract.md '## Symphony compatibility'
 require_text docs/contracts/manager-contract.md '## Adapter conformance'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
+require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
 require_text docs/contracts/manager-contract.md 'planned result-packet or Manager-review surface'
@@ -77,7 +82,50 @@ require_text docs/policies/authority-and-safety.md 'planned result-packet or Man
 require_text docs/policies/authority-and-safety.md 'required at closeout'
 require_text docs/policies/authority-and-safety.md 'control-plane writes'
 require_text docs/policies/authority-and-safety.md 'approved setup authority'
+require_text docs/policies/authority-and-safety.md '## Git governance boundary'
+require_text docs/policies/authority-and-safety.md '[`git-governance.md`](git-governance.md)'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
+
+require_text docs/policies/git-governance.md '# Dokkaebi Git Governance Policy'
+require_text docs/policies/git-governance.md '## Enforcement surfaces'
+require_text docs/policies/git-governance.md '## GitHub Flow'
+require_text docs/policies/git-governance.md '`main` is the only long-lived integration branch'
+require_text docs/policies/git-governance.md 'short-lived branches'
+require_text docs/policies/git-governance.md 'PR merge requires explicit Human approval'
+require_text docs/policies/git-governance.md '## Branch naming'
+require_text docs/policies/git-governance.md '<type>/<scope-slug>'
+require_no_text docs/policies/git-governance.md '<actor>/<type>/<scope-slug>'
+require_text docs/policies/git-governance.md '## Commit policy'
+require_text docs/policies/git-governance.md 'Commit messages must preserve the development process and decision rationale'
+require_text docs/policies/git-governance.md 'Context:'
+require_text docs/policies/git-governance.md 'Decision:'
+require_text docs/policies/git-governance.md 'Why:'
+require_text docs/policies/git-governance.md 'Validation:'
+require_text docs/policies/git-governance.md 'Risks:'
+require_text docs/policies/git-governance.md '## Pull request requirements'
+require_text docs/policies/git-governance.md '## Submodule policy'
+require_text docs/policies/git-governance.md 'Submodule commits must be created inside the submodule first'
+require_text docs/policies/git-governance.md 'A root gitlink update must cite the submodule path and target commit sha'
+
+require_text .github/pull_request_template.md '# Dokkaebi Pull Request'
+require_text .github/pull_request_template.md '## Decision rationale'
+require_text .github/pull_request_template.md 'Context:'
+require_text .github/pull_request_template.md 'Decision:'
+require_text .github/pull_request_template.md 'Why:'
+require_text .github/pull_request_template.md '## Git status'
+
+require_text .github/workflows/dokkaebi-governance.yml 'name: Dokkaebi governance'
+require_text .github/workflows/dokkaebi-governance.yml 'contract-docs'
+require_text .github/workflows/dokkaebi-governance.yml 'git-governance'
+require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-contract-docs.sh'
+require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-git-governance.sh'
+
+require_text scripts/validate-git-governance.sh 'PASS Dokkaebi Git governance checks passed'
+require_text scripts/validate-git-governance.sh 'Context:'
+require_text scripts/validate-git-governance.sh 'Decision:'
+require_text scripts/validate-git-governance.sh 'Why:'
+require_text scripts/validate-git-governance.sh 'Validation:'
+require_text scripts/validate-git-governance.sh 'Risks:'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -90,10 +138,12 @@ require_text docs/templates/worker-ticket.md '## Goal'
 require_text docs/templates/worker-ticket.md '## Acceptance criteria'
 require_text docs/templates/worker-ticket.md '## Permission level'
 require_text docs/templates/worker-ticket.md '## Human approval gates'
+require_text docs/templates/worker-ticket.md '## Git plan'
 require_text docs/templates/worker-ticket.md '## Validation requirements'
 require_text docs/templates/worker-ticket.md '## Expected result packet'
 require_text docs/templates/worker-ticket.md '[`worker-result-packet.md`](worker-result-packet.md)'
 require_text docs/templates/worker-ticket.md '../policies/authority-and-safety.md'
+require_text docs/templates/worker-ticket.md '../policies/git-governance.md'
 require_text docs/templates/worker-ticket.md 'acceptance-criteria evidence'
 require_text docs/templates/worker-ticket.md 'whether acceptance criteria were met'
 require_text docs/templates/worker-ticket.md 'scope-control statement'
@@ -102,6 +152,7 @@ require_text docs/templates/worker-ticket.md 'approval-gate status'
 require_text docs/templates/worker-result-packet.md '# Worker Result Packet Template'
 require_text docs/templates/worker-result-packet.md '## Task identity'
 require_text docs/templates/worker-result-packet.md '## Changed artifacts'
+require_text docs/templates/worker-result-packet.md '**Commit rationale:**'
 require_text docs/templates/worker-result-packet.md '## Acceptance criteria evidence'
 require_text docs/templates/worker-result-packet.md '## Validation evidence'
 require_text docs/templates/worker-result-packet.md '## Blockers or missing permissions'
@@ -116,6 +167,7 @@ require_text README.md 'docs/adr/0001-hermes-first-manager-contract.md'
 require_text README.md 'docs/contracts/manager-contract.md'
 require_text README.md 'docs/deep-interview-project-dokkaebi.md'
 require_text README.md 'docs/policies/authority-and-safety.md'
+require_text README.md 'docs/policies/git-governance.md'
 require_text README.md 'docs/adapters/hermes.md'
 require_text README.md 'docs/templates/worker-ticket.md'
 require_text README.md 'docs/templates/worker-result-packet.md'
@@ -131,6 +183,7 @@ scope = [
     Path('WORKFLOW.md'),
     Path('docs/contracts/manager-contract.md'),
     Path('docs/policies/authority-and-safety.md'),
+    Path('docs/policies/git-governance.md'),
     Path('docs/adapters/hermes.md'),
     Path('docs/templates/worker-ticket.md'),
     Path('docs/templates/worker-result-packet.md'),
