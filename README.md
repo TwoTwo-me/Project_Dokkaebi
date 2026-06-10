@@ -41,6 +41,7 @@ See:
 - [`WORKFLOW.md`](WORKFLOW.md)
 - [`docs/adr/0001-hermes-first-manager-contract.md`](docs/adr/0001-hermes-first-manager-contract.md)
 - [`docs/contracts/manager-contract.md`](docs/contracts/manager-contract.md)
+- [`docs/contracts/hammer-worker-contract.md`](docs/contracts/hammer-worker-contract.md)
 - [`docs/policies/authority-and-safety.md`](docs/policies/authority-and-safety.md)
 - [`docs/policies/git-governance.md`](docs/policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
@@ -55,9 +56,11 @@ Fire helpers, and Dokkaebi Hammer runtimes. Bootstrap work must start with
 read-only preflight, use scripted install steps when changes are approved,
 record install evidence, and include rollback notes in the result packet.
 
-Remote hosts, Docker, `kubectl`, and Kubernetes are planned or eligible routing
-and bootstrap targets only. This documentation does not claim Docker or
-Kubernetes support is implemented. See
+Remote hosts, Docker, `kubectl`, and Kubernetes require preflight and explicit
+authority before live mutation. The runtime now models typed Hammer routes for
+`local_worktree`, `ssh`, `docker`, and `kubernetes_job`; Docker and Kubernetes
+provider behavior is verified with fake command/manifest runners until live
+smoke validation is completed. See
 [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
 for local/remote install rules and `dokkaebi-hammer` reset boundaries.
 

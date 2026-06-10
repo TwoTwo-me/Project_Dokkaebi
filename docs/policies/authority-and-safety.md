@@ -172,8 +172,10 @@ GitHub Project `Status` is the lifecycle source of truth. Workpad comments,
 labels, Fire logs, Hammer logs, PRs, and validation artifacts are audit
 surfaces, not replacements for the lifecycle field.
 
-Docker, `kubectl`, and Kubernetes are planned or eligible routing/bootstrap
-targets only. This policy does not claim those routes are implemented.
+Docker and Kubernetes Hammer providers may be modeled and tested with fake
+command runners or generated manifests without granting live infrastructure
+authority. Live Docker daemon changes, `kubectl` context changes, Kubernetes
+resource creation, or remote cluster mutation remain approval-gated.
 
 ## Toolchain bootstrap boundary
 

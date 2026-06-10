@@ -57,6 +57,7 @@ Required local artifacts:
 
 - [`ARCHITECTURE.md`](../../ARCHITECTURE.md)
 - [`WORKFLOW.md`](../../WORKFLOW.md)
+- [`docs/contracts/hammer-worker-contract.md`](hammer-worker-contract.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
@@ -168,8 +169,10 @@ control-plane mutations:
   marks project webhook events as public preview, Fire must confirm current
   project state through GraphQL before dispatch, retry, or closeout.
 
-Docker, `kubectl`, and Kubernetes are planned or eligible routing/bootstrap
-targets only. This contract does not claim those routes are implemented.
+Docker and Kubernetes Hammer providers are implemented first through typed
+routes, fake command runners, and manifest generation. Live Docker, `kubectl`,
+or Kubernetes mutation remains approval-gated and must be proven through the
+toolchain bootstrap and live-routing validation path before production use.
 
 ## Toolchain bootstrap contract
 

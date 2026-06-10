@@ -33,6 +33,7 @@ require_no_text() {
 require_file ARCHITECTURE.md
 require_file WORKFLOW.md
 require_file docs/contracts/manager-contract.md
+require_file docs/contracts/hammer-worker-contract.md
 require_file docs/policies/authority-and-safety.md
 require_file docs/policies/git-governance.md
 require_file docs/adapters/hermes.md
@@ -64,6 +65,7 @@ require_text docs/contracts/manager-contract.md '## Adapter conformance'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
+require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
 require_text docs/contracts/manager-contract.md 'planned result-packet or Manager-review surface'
 require_text docs/contracts/manager-contract.md 'closeout evidence'
@@ -72,6 +74,17 @@ require_text docs/contracts/manager-contract.md 'scope-control statement'
 require_text docs/contracts/manager-contract.md 'approval-gate status'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
+
+require_text docs/contracts/hammer-worker-contract.md '# Dokkaebi Hammer Worker Contract'
+require_text docs/contracts/hammer-worker-contract.md 'local_worktree'
+require_text docs/contracts/hammer-worker-contract.md 'ssh'
+require_text docs/contracts/hammer-worker-contract.md 'docker'
+require_text docs/contracts/hammer-worker-contract.md 'kubernetes_job'
+require_text docs/contracts/hammer-worker-contract.md 'capabilities'
+require_text docs/contracts/hammer-worker-contract.md 'isolation'
+require_text docs/contracts/hammer-worker-contract.md 'credential_mode'
+require_text docs/contracts/hammer-worker-contract.md 'cleanup'
+require_text docs/contracts/hammer-worker-contract.md 'Manager PATs, OAuth tokens'
 
 require_text docs/policies/authority-and-safety.md '# Dokkaebi Authority and Safety Policy'
 require_text docs/policies/authority-and-safety.md '## Human approval required'
@@ -168,6 +181,7 @@ require_text README.md 'ARCHITECTURE.md'
 require_text README.md 'WORKFLOW.md'
 require_text README.md 'docs/adr/0001-hermes-first-manager-contract.md'
 require_text README.md 'docs/contracts/manager-contract.md'
+require_text README.md 'docs/contracts/hammer-worker-contract.md'
 require_text README.md 'docs/deep-interview-project-dokkaebi.md'
 require_text README.md 'docs/policies/authority-and-safety.md'
 require_text README.md 'docs/policies/git-governance.md'
@@ -185,6 +199,7 @@ scope = [
     Path('ARCHITECTURE.md'),
     Path('WORKFLOW.md'),
     Path('docs/contracts/manager-contract.md'),
+    Path('docs/contracts/hammer-worker-contract.md'),
     Path('docs/policies/authority-and-safety.md'),
     Path('docs/policies/git-governance.md'),
     Path('docs/adapters/hermes.md'),
