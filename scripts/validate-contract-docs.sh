@@ -42,6 +42,7 @@ require_file README.md
 require_file .github/pull_request_template.md
 require_file .github/workflows/dokkaebi-governance.yml
 require_file scripts/validate-git-governance.sh
+require_file scripts/validate-dokkaebi-plugin.sh
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -119,6 +120,7 @@ require_text .github/workflows/dokkaebi-governance.yml 'contract-docs'
 require_text .github/workflows/dokkaebi-governance.yml 'git-governance'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-contract-docs.sh'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-git-governance.sh'
+require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-dokkaebi-plugin.sh'
 
 require_text scripts/validate-git-governance.sh 'PASS Dokkaebi Git governance checks passed'
 require_text scripts/validate-git-governance.sh 'Context:'
@@ -126,6 +128,7 @@ require_text scripts/validate-git-governance.sh 'Decision:'
 require_text scripts/validate-git-governance.sh 'Why:'
 require_text scripts/validate-git-governance.sh 'Validation:'
 require_text scripts/validate-git-governance.sh 'Risks:'
+require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'

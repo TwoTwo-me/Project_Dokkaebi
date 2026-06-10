@@ -24,6 +24,9 @@ jobs:
       - name: Validate Dokkaebi contract docs
         run: bash scripts/validate-contract-docs.sh
 
+      - name: Validate Dokkaebi plugin package
+        run: bash scripts/validate-dokkaebi-plugin.sh
+
   git-governance:
     name: git-governance
     if: github.event_name == 'pull_request'
