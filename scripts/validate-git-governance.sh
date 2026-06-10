@@ -100,6 +100,10 @@ PRIVATE_PATH_PATTERNS = [
     re.compile(r"(?<![A-Za-z0-9_])/(?:home|Users)/[^\s`'\"<>]+"),
     re.compile(r"[A-Za-z]:\\\\Users\\\\[^\s`'\"<>]+"),
 ]
+DISALLOWED_COMMIT_IDENTITY_PATTERNS = [
+    re.compile(r"\bcodex@openai\.com\b", re.IGNORECASE),
+    re.compile(r"\bcodex\s*<codex@openai\.com>", re.IGNORECASE),
+]
 
 
 def run(args: list[str]) -> str:
@@ -137,6 +141,15 @@ def metadata_errors(label: str, value: str) -> list[str]:
     for pattern in PRIVATE_PATH_PATTERNS:
         if pattern.search(value):
             found.append(f"{label} contains a private local path")
+            break
+    return found
+
+
+def commit_identity_errors(label: str, value: str) -> list[str]:
+    found = metadata_errors(label, value)
+    for pattern in DISALLOWED_COMMIT_IDENTITY_PATTERNS:
+        if pattern.search(value):
+            found.append(f"{label} contains a local automation identity")
             break
     return found
 
@@ -227,7 +240,7 @@ if pull_request is not None:
             if len(subject) > 72:
                 errors.append(f"{sha}: commit subject exceeds 72 chars")
             errors.extend(metadata_errors(f"{sha}: commit message", message))
-            errors.extend(metadata_errors(f"{sha}: commit identity", identity))
+            errors.extend(commit_identity_errors(f"{sha}: commit identity", identity))
             if not commit_has_required_evidence(message):
                 errors.append(
                     f"{sha}: commit message must include either Context/Decision/Validation/Risk(s) or Constraint/(Decision|Rejected|Why)/Tested/Not-tested evidence"
