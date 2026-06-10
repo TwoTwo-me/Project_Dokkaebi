@@ -198,6 +198,7 @@ require_text README.md 'kubernetes_job'
 python3 - <<'PY'
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 scope = [
@@ -213,6 +214,23 @@ scope = [
     Path('docs/templates/worker-result-packet.md'),
 ]
 
+def is_unchecked_submodule_link(target: str) -> bool:
+    parts = Path(target).parts
+    if not parts:
+        return False
+    root = parts[0]
+    if Path(root, '.git').exists():
+        return False
+    try:
+        output = subprocess.check_output(
+            ['git', 'ls-files', '--stage', '--', root],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+    except subprocess.CalledProcessError:
+        return False
+    return output.startswith('160000 ')
+
 errors = []
 for path in scope:
     text = path.read_text()
@@ -222,7 +240,8 @@ for path in scope:
         local = target.split('#', 1)[0]
         if not local:
             continue
-        if not (path.parent / local).exists():
+        resolved = path.parent / local
+        if not resolved.exists() and not is_unchecked_submodule_link(str(resolved)):
             errors.append(f'missing markdown link target: {path} -> {target}')
 
 workflow = Path('WORKFLOW.md').read_text()
