@@ -45,7 +45,7 @@ bash scripts/validate-contract-docs.sh
 
 ## Public metadata hygiene
 
-<!-- Confirm branch, commit messages, PR title/body, and project-facing summaries avoid private local paths and local tool-internal namespaces. -->
+<!-- Confirm branch, commit messages, commit identity, PR title/body, and project-facing summaries avoid private local paths and local tool-internal namespaces. -->
 
 ## Git status
 

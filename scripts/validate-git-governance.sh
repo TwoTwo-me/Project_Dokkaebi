@@ -217,6 +217,7 @@ if pull_request is not None:
 
         for sha in commits:
             message = run(["git", "show", "-s", "--format=%B", sha])
+            identity = run(["git", "show", "-s", "--format=%an <%ae>%n%cn <%ce>", sha])
             subject = message.splitlines()[0].strip() if message.splitlines() else ""
             if not subject:
                 errors.append(f"{sha}: commit subject is empty")
@@ -226,6 +227,7 @@ if pull_request is not None:
             if len(subject) > 72:
                 errors.append(f"{sha}: commit subject exceeds 72 chars")
             errors.extend(metadata_errors(f"{sha}: commit message", message))
+            errors.extend(metadata_errors(f"{sha}: commit identity", identity))
             if not commit_has_required_evidence(message):
                 errors.append(
                     f"{sha}: commit message must include either Context/Decision/Validation/Risk(s) or Constraint/(Decision|Rejected|Why)/Tested/Not-tested evidence"

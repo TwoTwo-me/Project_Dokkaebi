@@ -166,9 +166,9 @@ The PR body must be understandable without reading Manager chat memory.
 
 ## Public metadata hygiene
 
-The PR title, branch, body, and commit messages must not expose private local
-paths, local tool-internal namespaces, or default agent-generated branch
-prefixes.
+The PR title, branch, body, commit messages, and commit author/committer
+identity must not expose private local paths, local tool-internal namespaces,
+or default agent-generated branch prefixes.
 
 ## Submodule policy
 
