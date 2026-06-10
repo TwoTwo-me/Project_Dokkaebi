@@ -1,15 +1,16 @@
 # Project Dokkaebi Workflow
 
-This workflow defines how Dokkaebi converts Human intent into GitHub
-Project/Symphony work and how Worker output returns as verifiable evidence.
+This workflow defines how Dokkaebi converts Human intent into GitHub Project
+work, routes approved tickets through Dokkaebi Fire, and receives Dokkaebi
+Hammer output as verifiable evidence.
 
 ```text
 Human request
   -> Manager intake and clarification
   -> worker-ready ticket
   -> approval/status gate
-  -> Symphony dispatch
-  -> Worker execution
+  -> Dokkaebi Fire dispatch
+  -> Dokkaebi Hammer execution
   -> result packet
   -> Manager review
   -> Human decision / closeout
@@ -19,10 +20,10 @@ Human request
 
 - Human intent, constraints, and approval boundaries must survive translation
   into tickets.
-- Work enters the Worker queue only as an inspectable GitHub Project issue or
+- Work enters the Hammer queue only as an inspectable GitHub Project issue or
   equivalent work contract.
-- Workers execute bounded tasks; they do not negotiate broad scope directly with
-  the Human by default.
+- Hammer Workers execute bounded tasks; they do not negotiate broad scope
+  directly with the Human by default.
 - Progress and results flow through tracker/workpad/PR/test artifacts so they
   can be audited and resumed.
 - High-impact actions stop at approval gates even if a tool can technically
@@ -48,8 +49,8 @@ permissions.
 ## Phase 2: Work-contract drafting
 
 The Manager converts approved intent into a worker-ready ticket. A ticket is not
-ready for Symphony dispatch until it contains enough detail for an isolated
-Worker to complete and verify the task without hidden context.
+ready for Dokkaebi Fire dispatch until it contains enough detail for an isolated
+Dokkaebi Hammer runtime to complete and verify the task without hidden context.
 
 Required ticket sections:
 
@@ -57,12 +58,12 @@ Required ticket sections:
 2. **Context**: files, links, prior decisions, related tickets, and current
    system behavior.
 3. **Acceptance criteria**: observable pass/fail conditions.
-4. **Scope and non-goals**: what the Worker may and may not change.
+4. **Scope and non-goals**: what the Hammer may and may not change.
 5. **Permission level**: allowed tools, network, credentials, write authority,
    and approval requirements.
 6. **Validation plan**: tests, lint, typecheck, build, smoke checks, or manual
-   verification expected from the Worker.
-7. **Result packet requirements**: exact evidence the Worker must return.
+   verification expected from the Hammer.
+7. **Result packet requirements**: exact evidence the Hammer must return.
 8. **Escalation triggers**: when to stop and report instead of improvising.
 9. **Git plan**: base branch, branch naming, commit authority, PR expectation,
    and submodule handling when repository writes are in scope.
@@ -77,26 +78,34 @@ Before dispatch, the Manager classifies the ticket:
 | Local code change | May dispatch when validation and write scope are clear. |
 | Credentialed work | Requires explicit credential approval and brokered least-privilege access. |
 | Cloud / Proxmox / infrastructure | Requires explicit Human approval before any create/update/delete. |
-| Worker scaling or privilege elevation | Requires explicit Human approval. |
+| Hammer scaling or privilege elevation | Requires explicit Human approval. |
 | Manager runtime replacement | Requires explicit Human approval. |
 | PR merge, deployment, production write | Requires explicit Human approval unless a later ADR grants a narrow exception. |
+| Remote or container orchestration route | Requires explicit setup authority before mutating remote hosts, Docker, `kubectl`, or Kubernetes. |
 
 Dispatch readiness should be represented by GitHub Project Status, agent,
 authorization, authorized-by, admission fields, and any approved fallback labels,
 not by private Manager memory alone.
 
 Backend-facing fields or labels may use project-specific names, but they must
-map to the semantic status model and admission contract below before Symphony
+map to the semantic status model and admission contract below before Fire
 dispatch.
 
-## Phase 4: Symphony dispatch
+Local toolchain bootstrap may be automated only when the ticket grants it and
+the process follows [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md):
+prefer user-local installs, run read-only preflight first, capture scripted
+install evidence, record rollback notes, and respect `dokkaebi-hammer` reset
+request boundaries.
 
-Symphony watches the configured GitHub Project and dispatches tickets that match
-its admission rules, such as Status, Agent, Authorization, Authorized By,
-Symphony Admission, approved fallback labels, worker OS metadata, and capability
-constraints.
+## Phase 4: Dokkaebi Fire dispatch
 
-On dispatch, Symphony should provide the Worker:
+Dokkaebi Fire watches the configured GitHub Project and dispatches tickets that
+match its admission rules, such as Status, Agent, Authorization, Authorized By,
+Dokkaebi Fire or Symphony Admission, approved fallback labels, Hammer OS
+metadata, and capability constraints. Fire is the Symphony-derived
+long-running backend/orchestrator.
+
+On dispatch, Fire should provide the Hammer:
 
 - source ticket and acceptance criteria;
 - isolated workspace;
@@ -106,12 +115,12 @@ On dispatch, Symphony should provide the Worker:
 - expected progress/reporting surfaces;
 - result-packet schema.
 
-If the ticket cannot be safely dispatched, Symphony or the Manager should mark
-it blocked with the missing condition rather than starting a best-effort Worker.
+If the ticket cannot be safely dispatched, Fire or the Manager should mark it
+blocked with the missing condition rather than starting a best-effort Hammer.
 
-## Phase 5: Worker execution
+## Phase 5: Dokkaebi Hammer execution
 
-The Worker follows the ticket, not adjacent discoveries. The expected execution
+The Hammer follows the ticket, not adjacent discoveries. The expected execution
 loop is:
 
 1. inspect only the context needed for the ticket;
@@ -122,10 +131,10 @@ loop is:
    destructive action, scope expansion, or contradictory instructions;
 6. return a result packet through the configured tracker/workpad/PR surfaces.
 
-Workers may recommend follow-up work, but recommendations are not implicit
+Hammer Workers may recommend follow-up work, but recommendations are not implicit
 authorization to perform it.
 
-When a Worker creates branches, commits, PRs, or submodule pointer updates, it
+When a Hammer creates branches, commits, PRs, or submodule pointer updates, it
 must follow [`docs/policies/git-governance.md`](docs/policies/git-governance.md).
 
 ## Phase 6: Result packet
@@ -133,7 +142,7 @@ must follow [`docs/policies/git-governance.md`](docs/policies/git-governance.md)
 A Worker result packet must be evidence-dense and reusable by another Manager.
 Minimum fields:
 
-- ticket id and Worker id;
+- ticket id and Hammer id;
 - summary of completed work;
 - changed files, branch, PRs, commits, or artifact links;
 - validation commands and pass/fail outcomes;
@@ -169,9 +178,9 @@ creates a follow-up ticket with clear acceptance criteria.
 
 ## Status model
 
-Dokkaebi should use explicit statuses so Human, Manager, Symphony, and Workers
-share the same state machine. The exact GitHub Project field names may vary, but
-the semantic states should remain stable.
+Dokkaebi should use explicit statuses so Human, Manager, Dokkaebi Fire, and
+Dokkaebi Hammer share the same state machine. The exact GitHub Project field
+names may vary, but the semantic states should remain stable.
 
 GitHub Project `Status` is the lifecycle source of truth for this state machine.
 Workpad comments, PRs, commits, logs, and validation artifacts are evidence
@@ -183,14 +192,14 @@ project lifecycle state.
 | Intake | Manager | Human request captured; not yet worker-ready. | Clarifying, Ready, Cancelled |
 | Clarifying | Manager / Human | Manager is resolving ambiguity or approval boundaries. | Ready, Blocked, Cancelled |
 | Ready | Manager | Ticket has acceptance criteria, scope, validation, and permission level. | Dispatchable, Blocked, Cancelled |
-| Dispatchable | Symphony | Ticket matches Symphony admission rules. | In Progress, Blocked |
-| In Progress | Worker | Worker has accepted the ticket and is executing. | Needs Review, Blocked, Failed |
-| Needs Review / Human Review | Manager / Human | Worker returned evidence; review or approval is pending. | Fix Requested, Merging, Done, Blocked |
-| Fix Requested | Worker | Follow-up correction is required inside the same ticket scope. | In Progress, Needs Review, Failed |
+| Dispatchable | Dokkaebi Fire | Ticket matches Fire/Symphony admission rules. | In Progress, Blocked |
+| In Progress | Dokkaebi Hammer | Hammer has accepted the ticket and is executing. | Needs Review, Blocked, Failed |
+| Needs Review / Human Review | Manager / Human | Hammer returned evidence; review or approval is pending. | Fix Requested, Merging, Done, Blocked |
+| Fix Requested | Dokkaebi Hammer | Follow-up correction is required inside the same ticket scope. | In Progress, Needs Review, Failed |
 | Merging | Human / approved automation | Merge is explicitly authorized and checks are being finalized. | Done, Blocked, Failed |
 | Done | Manager | Acceptance criteria and required approvals are satisfied. | Reopened |
 | Reopened | Manager | Closed work is intentionally returned to intake with new evidence or scope. | Intake, Ready, Cancelled |
-| Blocked | Manager / Worker | Progress requires approval, credentials, scope decision, or external state. | Clarifying, Ready, In Progress, Cancelled |
+| Blocked | Manager / Hammer | Progress requires approval, credentials, scope decision, or external state. | Clarifying, Ready, In Progress, Cancelled |
 | Failed | Manager | Work cannot be completed under current constraints. | Reopened, Cancelled |
 | Cancelled | Human / Manager | Work is intentionally stopped. | Reopened |
 
@@ -202,7 +211,9 @@ Escalate to Manager/Human instead of continuing when:
 - a credential, secret, token, or admin account is needed;
 - cloud, Proxmox, infrastructure, deployment, production data, merge, or release
   action is required;
-- Worker privileges, parallelism, network authority, or runtime need expansion;
+- Hammer privileges, parallelism, network authority, or runtime need expansion;
+- a remote host, Docker, `kubectl`, Kubernetes, or `dokkaebi-hammer` reset
+  action exceeds the approved bootstrap boundary;
 - acceptance criteria conflict with safety policy;
 - validation cannot run and no equivalent evidence is available;
 - tracker state and actual repository/workspace state disagree.
@@ -215,9 +226,9 @@ Escalate to Manager/Human instead of continuing when:
 3. Manager creates a GitHub Project ticket with acceptance criteria, template
    path, validation expectations, and no merge/deploy authority.
 4. Human or policy marks it Ready.
-5. Symphony dispatches one Worker with a scoped workspace.
-6. Worker edits the template, runs markdown checks, and opens a PR.
-7. Worker posts a result packet with changed files, commands, outcomes, and
+5. Dokkaebi Fire dispatches one Hammer with a scoped workspace.
+6. Hammer edits the template, runs markdown checks, and opens a PR.
+7. Hammer posts a result packet with changed files, commands, outcomes, and
    residual risks.
 8. Manager verifies the packet, checks project/PR consistency, and asks the
    Human for merge approval if required.

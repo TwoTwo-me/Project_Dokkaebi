@@ -1,13 +1,15 @@
 # Dokkaebi Manager Contract
 
 This contract defines what any AI Manager implementation must do to serve as
-Project Dokkaebi's Manager layer.
+Project Dokkaebi's Manager layer. Dokkaebi is an installable Manager
+plugin/skillset that configures and manages GitHub Projects and issues while
+preserving Human approval, credential, and evidence boundaries.
 
 ## Manager implementations
 
 Initial target:
 
-- Hermes Manager Adapter
+- Hermes Manager Adapter consuming the Dokkaebi plugin/skillset
 
 Supported/future adapters:
 
@@ -22,16 +24,16 @@ A Manager adapter must be able to:
 1. Accept a Human request and preserve the original intent.
 2. Clarify ambiguity before issuing Worker work when goals, non-goals, or
    approval boundaries are unclear.
-3. Convert approved work into a GitHub Project/Symphony-ready ticket.
+3. Convert approved work into a GitHub Project/Dokkaebi Fire-ready ticket.
 4. Attach acceptance criteria, constraints, validation requirements, permission
    level, and expected result packet.
 5. Respect Human approval gates before high-impact actions.
 6. Run a fail-closed preflight before dispatch when approval, credentials,
    infrastructure, deployment, project status, or Worker authority could be
    affected.
-7. Read Worker progress/result packets from GitHub Project, workpad comments,
-   PRs, logs, or other configured surfaces.
-8. Summarize Worker output back to the Human with evidence, blockers, residual
+7. Read Dokkaebi Hammer progress/result packets from GitHub Project, workpad
+   comments, PRs, logs, or other configured surfaces.
+8. Summarize Hammer output back to the Human with evidence, blockers, residual
    risks, and next decisions.
 9. Keep enough audit trail for another Manager adapter to resume.
 10. Apply the Git governance policy when preparing branches, commits, pull
@@ -48,6 +50,8 @@ The preferred implementation surfaces are open and inspectable:
 - MCP tools for structured stateful or external integrations.
 - GitHub Project issue forms/templates.
 - Result packet schemas.
+- Toolchain bootstrap scripts or runbooks with preflight, install evidence, and
+  rollback notes.
 
 Required local artifacts:
 
@@ -55,6 +59,7 @@ Required local artifacts:
 - [`WORKFLOW.md`](../../WORKFLOW.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
+- [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -68,7 +73,8 @@ for the binding safety policy.
 
 - Cloud or Proxmox changes.
 - Secret or credential access.
-- Worker creation, scaling, or privilege elevation.
+- Hammer creation, scaling, or privilege elevation.
+- Remote host, Docker, `kubectl`, or Kubernetes mutation.
 - Manager runtime replacement.
 - PR merge, deployment, production data writes, or production infrastructure
   writes unless a later ADR grants a narrow exception.
@@ -78,6 +84,8 @@ for the binding safety policy.
 - Drafting GitHub Project tickets.
 - Updating workpad/progress comments.
 - Posting validation evidence.
+- Performing approved user-local Manager/Fire/Hammer tool bootstrap when
+  read-only preflight passes and evidence/rollback notes are recorded.
 - Preparing branches, commits, and PRs for review under
   [`docs/policies/git-governance.md`](../policies/git-governance.md).
 
@@ -105,39 +113,65 @@ A Manager adapter must block dispatch when any required condition is unknown:
 1. Source request and ticket are linked.
 2. Acceptance criteria, non-goals, permission level, validation plan, and result
    packet requirements are present.
-3. GitHub Project/Symphony status is mapped to a dispatchable semantic state.
-4. Worker capability, OS, and tool constraints match the ticket.
+3. GitHub Project/Dokkaebi Fire status is mapped to a dispatchable semantic state.
+4. Hammer capability, OS, and tool constraints match the ticket.
 5. Human approval evidence exists for every gated action.
 6. Credential grants, if needed, are brokered, least-privilege, task-scoped, and
    time-bound.
-7. No policy item requires Human review before continuing.
+7. Local vs remote bootstrap route is known, user-local installs are preferred,
+   and any remote, Docker, `kubectl`, Kubernetes, or `dokkaebi-hammer` reset
+   request is inside approved boundaries.
+8. No policy item requires Human review before continuing.
 
 A failed preflight creates a blocked ticket with a specific missing condition. It
 does not authorize best-effort Worker dispatch.
 
 ## Credential broker boundary
 
-Managers and Workers must not exchange broad raw credentials through prompts or
-hidden memory. A credential broker must issue task-scoped grants with
+Managers and Hammer Workers must not exchange broad raw credentials through
+prompts or hidden memory. A credential broker must issue task-scoped grants with
 repository/service allowlists, branch or environment binding, expiry, and endpoint
 proof. Grant metadata belongs in the audit trail; secret material should remain
 outside ticket prose and Worker result summaries.
 
-## Symphony compatibility
+## Symphony compatibility and Dokkaebi Fire lineage
 
-Dokkaebi treats Symphony as the first backend adapter behind the Manager Contract.
-The Manager must support:
+Dokkaebi Fire is the long-running backend/orchestrator derived from Symphony.
+Dokkaebi treats Fire/Symphony as the first backend adapter behind the Manager
+Contract. The Manager must support:
 
-- **Greenfield Symphony projects:** propose the initial status fields,
+- **Greenfield Fire/Symphony projects:** propose the initial status fields,
   fallback labels, templates, and admission rules; create them only under
   approved setup authority.
-- **Brownfield Symphony projects:** map existing project statuses, agent,
+- **Brownfield Fire/Symphony projects:** map existing project statuses, agent,
   authorization, authorized-by, admission fields, fallback labels, workpad
   conventions, and Worker metadata to the semantic state model in `WORKFLOW.md`
   before dispatch.
 
 If the status or admission mapping is missing or ambiguous, the ticket remains
 blocked until the mapping is documented.
+
+GitHub Project `Status` is the lifecycle source of truth. Fire may use
+additional labels, admission fields, logs, or workpad comments as evidence, but
+those surfaces must not silently replace the lifecycle state.
+
+Docker, `kubectl`, and Kubernetes are planned or eligible routing/bootstrap
+targets only. This contract does not claim those routes are implemented.
+
+## Toolchain bootstrap contract
+
+Manager adapters must follow
+[`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
+when installing or resetting local/remote Dokkaebi tools. The contract minimum
+is:
+
+- prefer user-local installs over system-wide or shared paths;
+- run read-only preflight before changing any host;
+- use scripted install steps when changes are approved;
+- record installed versions, paths, command output, and validation evidence;
+- include rollback notes in the result packet;
+- treat remote hosts, Docker, `kubectl`, Kubernetes, and `dokkaebi-hammer`
+  reset outside the approved target as blocked until Human approval exists.
 
 ## Adapter conformance
 
@@ -149,8 +183,8 @@ capabilities to concrete behavior:
 | Human intake and clarification | Request notes, scope, non-goals, and stop condition. |
 | Ticket drafting | Worker ticket with acceptance criteria, permission level, and validation plan. |
 | Approval enforcement | Approval evidence or explicit blocked reason. |
-| Symphony handoff | Project item/status/label/workpad linkage. |
-| Worker result review | Result packet review with validation evidence and residual risks. |
+| Fire/Symphony handoff | Project item/status/label/workpad linkage. |
+| Hammer result review | Result packet review with validation evidence and residual risks. |
 | Resume portability | Request, ticket, approvals, result packet, PR/logs, and next decision links. |
 
 Hermes baseline conformance is documented in
