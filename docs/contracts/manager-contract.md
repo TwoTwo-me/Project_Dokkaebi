@@ -155,6 +155,19 @@ GitHub Project `Status` is the lifecycle source of truth. Fire may use
 additional labels, admission fields, logs, or workpad comments as evidence, but
 those surfaces must not silently replace the lifecycle state.
 
+Manager adapters must distinguish routine project-item mutations from
+control-plane mutations:
+
+- `updateProjectV2ItemFieldValue` may update mapped status/admission fields for
+  an admitted ticket.
+- `addProjectV2ItemById` may add an authorized issue or PR to an approved
+  project.
+- `createProjectV2`, field/workflow mutation, deletion, archive, destructive
+  backfill, and cross-project migration require setup approval.
+- `projects_v2_item` webhooks are optional wake-up signals only. Because GitHub
+  marks project webhook events as public preview, Fire must confirm current
+  project state through GraphQL before dispatch, retry, or closeout.
+
 Docker, `kubectl`, and Kubernetes are planned or eligible routing/bootstrap
 targets only. This contract does not claim those routes are implemented.
 

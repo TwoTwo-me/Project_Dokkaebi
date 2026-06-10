@@ -148,6 +148,22 @@ admission-rule changes, and auto-add workflow changes are control-plane writes.
 They require approved setup authority. Routine progress comments and status
 updates remain automation candidates when the ticket is already approved.
 
+GitHub Projects API writes are split by risk:
+
+- `updateProjectV2ItemFieldValue` for the configured lifecycle/status or
+  admission fields is routine automation only after the ticket is admitted and
+  the field/value mapping is documented.
+- `addProjectV2ItemById` is routine automation only when adding an already
+  authorized issue or PR to an approved project. Cross-project moves or broad
+  backfills require setup approval.
+- `createProjectV2`, project deletion/archive, field creation/deletion, workflow
+  edits, and destructive bulk project mutations are control-plane changes and
+  require Human approval.
+- `projects_v2_item` and related project webhook handling are advisory signals.
+  GitHub documents project webhook events as public preview and subject to
+  change, so Fire may use them to wake a poll cycle but must reconcile against
+  GraphQL state before dispatch or closeout.
+
 If project status fields, admission fields, fallback labels, workpad
 conventions, or Worker metadata cannot be mapped, the Manager must mark the
 ticket blocked and request a mapping or project setup change.
