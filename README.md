@@ -44,6 +44,7 @@ See:
 - [`docs/contracts/hammer-worker-contract.md`](docs/contracts/hammer-worker-contract.md)
 - [`docs/policies/authority-and-safety.md`](docs/policies/authority-and-safety.md)
 - [`docs/policies/git-governance.md`](docs/policies/git-governance.md)
+- [`docs/operations/fire-sandbox-service.md`](docs/operations/fire-sandbox-service.md)
 - [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
 - [`docs/adapters/hermes.md`](docs/adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
@@ -81,11 +82,14 @@ for local/remote install rules and `dokkaebi-hammer` reset boundaries.
    [`symphony-github-project-tracker/elixir/WORKFLOW.md`](symphony-github-project-tracker/elixir/WORKFLOW.md).
    A single `tracker.project_id` remains valid; new multi-project deployments
    should use `tracker.default_project_key` plus `tracker.projects` entries.
-4. Register Hammer targets with typed profiles: `local_worktree`, `ssh`,
+4. Register the sandbox Fire process as a user-level service when it should
+   keep watching the GitHub Project between Manager sessions. See
+   [`docs/operations/fire-sandbox-service.md`](docs/operations/fire-sandbox-service.md).
+5. Register Hammer targets with typed profiles: `local_worktree`, `ssh`,
    `docker`, or `kubernetes_job`. Container routes require containerizable work
    plus an approved image/profile; Kubernetes routes also require an explicit
    context and namespace.
-5. Keep GitHub Project `Status` as the lifecycle source of truth. Fire logs,
+6. Keep GitHub Project `Status` as the lifecycle source of truth. Fire logs,
    Hammer logs, workpads, PRs, and validation artifacts are evidence surfaces,
    not replacement state.
 
