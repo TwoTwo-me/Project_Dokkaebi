@@ -109,6 +109,8 @@ On dispatch, Fire should provide the Hammer:
 
 - source ticket and acceptance criteria;
 - isolated workspace;
+- route type and provider evidence when the ticket requests `local_worktree`,
+  `ssh`, `docker`, or `kubernetes_job`;
 - declared write scope;
 - allowed tools and network mode;
 - scoped credentials, if policy approved and brokered;
@@ -117,6 +119,10 @@ On dispatch, Fire should provide the Hammer:
 
 If the ticket cannot be safely dispatched, Fire or the Manager should mark it
 blocked with the missing condition rather than starting a best-effort Hammer.
+Docker and Kubernetes Job routes require containerizable work plus an approved
+image/profile; Kubernetes also requires an explicit context and namespace.
+Absent or mismatched route metadata is a blocker, not a reason to fall back to a
+less isolated worker.
 
 ## Phase 5: Dokkaebi Hammer execution
 

@@ -4,9 +4,11 @@ This runbook defines the local and remote tool installation policy for
 Dokkaebi Manager plugin/skillset installs, Dokkaebi Fire helpers, and
 Dokkaebi Hammer runtimes.
 
-It is an authority boundary, not an implementation claim. Docker, `kubectl`,
-and Kubernetes are planned or eligible routing/bootstrap targets only until a
-later implementation ticket and approval record prove support exists.
+It is an authority boundary, not a broad implementation claim. Typed Hammer
+routes now include Docker and Kubernetes Job providers with fake runner coverage
+and isolated live-smoke evidence for approved disposable targets. Any new
+daemon, context, namespace, remote host, shared cluster, or persistent resource
+still needs ticket-specific setup authority before mutation.
 
 ## Scope
 
@@ -59,9 +61,11 @@ deleting images, containers, volumes, contexts, namespaces, deployments,
 secrets, jobs, or cluster resources requires explicit Human approval and
 brokered credentials.
 
-Planned or eligible routing means a future ticket may request that route. It
-does not mean Dokkaebi Fire can dispatch to that route today, and it does not
-grant a Hammer permission to install or mutate it.
+Typed route support means Dokkaebi Fire may consider the route only when the
+ticket, project fields, worker profile, credential policy, and bootstrap
+evidence all match. It does not grant a Hammer permission to install tools,
+mount broad secrets, mutate a daemon, or create cluster resources outside the
+approved test or production boundary.
 
 ## Dokkaebi Hammer reset boundaries
 

@@ -43,6 +43,10 @@ bash scripts/validate-contract-docs.sh
 - Deployment / production write: Human approval required unless a later ADR grants a narrow exception.
 - Credential / infrastructure / worker-scaling authority: Human approval required if reached.
 
+## Public metadata hygiene
+
+<!-- Confirm branch, commit messages, PR title/body, and project-facing summaries avoid private local paths and local tool-internal namespaces. -->
+
 ## Git status
 
 <!-- Paste current status evidence relevant to this PR. Include submodule status when present or changed. -->

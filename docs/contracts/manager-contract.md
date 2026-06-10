@@ -169,10 +169,11 @@ control-plane mutations:
   marks project webhook events as public preview, Fire must confirm current
   project state through GraphQL before dispatch, retry, or closeout.
 
-Docker and Kubernetes Hammer providers are implemented first through typed
-routes, fake command runners, and manifest generation. Live Docker, `kubectl`,
-or Kubernetes mutation remains approval-gated and must be proven through the
-toolchain bootstrap and live-routing validation path before production use.
+Docker and Kubernetes Hammer providers are implemented through typed routes,
+fake command/manifest verification, and isolated live-routing smoke evidence for
+approved test targets. Live Docker, `kubectl`, or Kubernetes mutation remains
+approval-gated outside those approved targets and must be re-proven through the
+toolchain bootstrap path before production or shared infrastructure use.
 
 ## Toolchain bootstrap contract
 

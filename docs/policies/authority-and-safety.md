@@ -172,10 +172,11 @@ GitHub Project `Status` is the lifecycle source of truth. Workpad comments,
 labels, Fire logs, Hammer logs, PRs, and validation artifacts are audit
 surfaces, not replacements for the lifecycle field.
 
-Docker and Kubernetes Hammer providers may be modeled and tested with fake
-command runners or generated manifests without granting live infrastructure
-authority. Live Docker daemon changes, `kubectl` context changes, Kubernetes
-resource creation, or remote cluster mutation remain approval-gated.
+Docker and Kubernetes Hammer providers may be modeled with fake command runners
+or generated manifests and may be live-smoked only against approved disposable
+targets. Live Docker daemon changes, `kubectl` context changes, Kubernetes
+resource creation, remote cluster mutation, or persistent namespace changes
+remain approval-gated.
 
 ## Toolchain bootstrap boundary
 

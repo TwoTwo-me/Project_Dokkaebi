@@ -59,10 +59,35 @@ record install evidence, and include rollback notes in the result packet.
 Remote hosts, Docker, `kubectl`, and Kubernetes require preflight and explicit
 authority before live mutation. The runtime now models typed Hammer routes for
 `local_worktree`, `ssh`, `docker`, and `kubernetes_job`; Docker and Kubernetes
-provider behavior is verified with fake command/manifest runners until live
-smoke validation is completed. See
+provider behavior is covered by fake command/manifest runners and isolated live
+smoke evidence for the approved test targets. Production Docker daemons,
+shared clusters, remote namespaces, and persistent infrastructure still require
+ticket-specific setup authority. See
 [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
 for local/remote install rules and `dokkaebi-hammer` reset boundaries.
+
+## Quickstart
+
+1. Install or register the Manager package from [`plugins/dokkaebi`](plugins/dokkaebi).
+   The local marketplace entry is [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json).
+2. Validate the package before use:
+
+   ```bash
+   bash scripts/validate-dokkaebi-plugin.sh
+   bash scripts/validate-contract-docs.sh
+   ```
+
+3. Configure Dokkaebi Fire from
+   [`symphony-github-project-tracker/elixir/WORKFLOW.md`](symphony-github-project-tracker/elixir/WORKFLOW.md).
+   A single `tracker.project_id` remains valid; new multi-project deployments
+   should use `tracker.default_project_key` plus `tracker.projects` entries.
+4. Register Hammer targets with typed profiles: `local_worktree`, `ssh`,
+   `docker`, or `kubernetes_job`. Container routes require containerizable work
+   plus an approved image/profile; Kubernetes routes also require an explicit
+   context and namespace.
+5. Keep GitHub Project `Status` as the lifecycle source of truth. Fire logs,
+   Hammer logs, workpads, PRs, and validation artifacts are evidence surfaces,
+   not replacement state.
 
 ## Initial scope
 

@@ -62,6 +62,7 @@ Preferred shape:
 Examples:
 
 ```text
+feat/dokkaebi-routing
 docs/git-governance
 fix/credential-broker-timeout
 chore/review-findings
@@ -70,6 +71,7 @@ infra/github-rulesets
 
 Allowed types:
 
+- `feat` - short alias for feature work.
 - `feature` - user-visible capability or new workflow behavior.
 - `fix` - bug fix or correctness repair.
 - `docs` - documentation, policy, ADR, or template change.
@@ -80,6 +82,8 @@ Allowed types:
 - `experiment` - explicitly disposable exploration that must not merge as-is.
 
 Avoid vague names such as `update`, `misc`, `wip`, `final`, or `changes`.
+Do not use local tool-internal namespace names, private workstation paths, or
+default agent-generated branch prefixes in branch names.
 
 ## Commit policy
 
@@ -121,6 +125,16 @@ Risks:
 <residual risk, skipped check, or N/A>
 ```
 
+An evidence-style body is also valid when it preserves the same audit value:
+
+```text
+Constraint: <scope, safety, compatibility, or operational constraint>
+Decision: <chosen approach, when useful>
+Rejected: <alternative> | <reason it was not chosen>
+Tested: <commands/checks and concise outcomes>
+Not-tested: <skipped checks and why>
+```
+
 Optional footers:
 
 ```text
@@ -149,6 +163,12 @@ Every pull request must include:
   --short --branch` when the submodule is present or changed.
 
 The PR body must be understandable without reading Manager chat memory.
+
+## Public metadata hygiene
+
+The PR title, branch, body, and commit messages must not expose private local
+paths, local tool-internal namespaces, or default agent-generated branch
+prefixes.
 
 ## Submodule policy
 

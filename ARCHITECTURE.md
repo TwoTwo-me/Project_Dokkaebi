@@ -75,17 +75,21 @@ tracker role while naming the Dokkaebi-owned backend surface. GitHub Project
 issues are the durable dispatch queue and visible coordination surface. GitHub
 Project `Status` is the lifecycle source of truth, while workpad comments, PRs,
 commits, logs, and validation artifacts carry execution evidence. Fire consumes
-approved tickets, starts isolated Hammer runs, and updates project/workpad/PR
-state.
+approved tickets from one or more registered GitHub Projects, starts isolated
+Hammer runs, and updates project/workpad/PR state with project-aware context.
 
 Dokkaebi must treat Fire as a backend adapter behind a stable work-contract
 interface. A future backend may replace the Symphony-derived Fire backend
 without changing the Manager's core responsibility to produce bounded,
 auditable work.
 
-Docker, `kubectl`, and Kubernetes are planned or eligible routing/bootstrap
-targets for future Fire deployments. This milestone does not claim Docker or
-Kubernetes dispatch support is implemented.
+Fire's current typed Hammer routing model covers `local_worktree`, `ssh`,
+`docker`, and `kubernetes_job` profiles. Docker and Kubernetes routes are
+eligible only when the ticket or project marks the work containerizable and
+provides a compatible image/profile; Kubernetes also requires an explicit
+context and namespace. Isolated live smoke evidence exists for the approved test
+targets, but production daemons, shared clusters, and persistent remote
+resources remain approval-gated setup surfaces.
 
 ### Dokkaebi Hammer Worker runtime
 
@@ -233,8 +237,10 @@ changes are approved, record install evidence, and include rollback notes in
 the result packet.
 
 Remote hosts, Docker, `kubectl`, and Kubernetes require explicit setup
-authority before mutation. They are eligible routing or bootstrap targets, not
-implemented support guarantees in this milestone. See
+authority before mutation. They are implemented routing surfaces only inside
+the typed Hammer contract and the evidence-backed approval boundary; they are
+not broad authority to mutate arbitrary hosts, daemons, clusters, namespaces, or
+shared infrastructure. See
 [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
 for local/remote install policy and `dokkaebi-hammer` reset boundaries.
 

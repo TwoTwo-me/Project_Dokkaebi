@@ -50,17 +50,19 @@ The host must pass health and capability checks before selection. In
 Fire may route to Docker only when the ticket or project configuration marks the
 work as containerizable and provides a compatible image or profile. Docker
 routes must not mount broad host secrets or receive Manager PAT/OAuth tokens.
-Wave 3 verifies this provider with fake command runners; live Docker smoke
-belongs to the later live-routing validation wave.
+Fake command runners cover provider behavior, and isolated live smoke proves the
+approved disposable Docker target. Any new daemon, image build path, host mount,
+or persistent container resource remains approval-gated.
 
 ### `kubernetes_job`
 
 Fire may route to a Kubernetes Job only when the ticket or project configuration
 marks the work as containerizable and provides a compatible image/profile plus a
 configured Kubernetes context and namespace. The context may be local or remote;
-Fire must not assume the cluster runs on the Fire server. Wave 3 verifies Job
-manifest generation and fake runner behavior; live Kubernetes smoke belongs to
-the later live-routing validation wave.
+Fire must not assume the cluster runs on the Fire server. Fake manifest runners
+cover provider behavior, and isolated live smoke proves the approved disposable
+Job target. Any new cluster, context, service account, namespace, image pull
+path, or persistent Job resource remains approval-gated.
 
 ## Routing rules
 
