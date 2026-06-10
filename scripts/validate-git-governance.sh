@@ -40,6 +40,7 @@ require_text .github/pull_request_template.md 'Why:'
 require_text .github/pull_request_template.md '## Validation'
 require_text .github/pull_request_template.md '## Risks'
 require_text .github/pull_request_template.md '## Approval gates'
+require_text .github/pull_request_template.md '## Public metadata hygiene'
 require_text .github/pull_request_template.md '## Git status'
 
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-contract-docs.sh'
@@ -57,7 +58,7 @@ import sys
 from pathlib import Path
 
 BRANCH_RE = re.compile(
-    r"^(feature|fix|docs|test|refactor|chore|infra|experiment)/[a-z0-9]+(-[a-z0-9]+)*$"
+    r"^(feat|feature|fix|docs|test|refactor|chore|infra|experiment)/[a-z0-9]+(-[a-z0-9]+)*$"
 )
 
 REQUIRED_PR_HEADINGS = [
@@ -68,18 +69,41 @@ REQUIRED_PR_HEADINGS = [
     "## Validation",
     "## Risks",
     "## Approval gates",
+    "## Public metadata hygiene",
     "## Git status",
 ]
 
 REQUIRED_COMMIT_MARKERS = [
     "Context:",
     "Decision:",
-    "Why:",
     "Validation:",
     "Risks:",
 ]
+CONSTRAINT_COMMIT_MARKERS = [
+    "Constraint:",
+    "Tested:",
+    "Not-tested:",
+]
+CONSTRAINT_REASON_MARKERS = [
+    "Decision:",
+    "Rejected:",
+    "Why:",
+]
 
 BANNED_SUBJECTS = {"wip", "fix stuff", "updates", "changes", "misc", "final"}
+RESTRICTED_PUBLIC_METADATA_PATTERNS = [
+    re.compile(r"(?<![A-Za-z0-9])" + re.escape(bytes([111, 109, 111]).decode()) + r"(?![A-Za-z0-9])"),
+    re.compile(r"(?<![A-Za-z0-9])" + re.escape(bytes([111, 109, 120]).decode()) + r"(?![A-Za-z0-9])"),
+    re.compile(re.escape(bytes([99, 111, 100, 101, 120, 47]).decode())),
+]
+PRIVATE_PATH_PATTERNS = [
+    re.compile(r"(?<![A-Za-z0-9_])/(?:home|Users)/[^\s`'\"<>]+"),
+    re.compile(r"[A-Za-z]:\\\\Users\\\\[^\s`'\"<>]+"),
+]
+DISALLOWED_COMMIT_IDENTITY_PATTERNS = [
+    re.compile(r"\bcodex@openai\.com\b", re.IGNORECASE),
+    re.compile(r"\bcodex\s*<codex@openai\.com>", re.IGNORECASE),
+]
 
 
 def run(args: list[str]) -> str:
@@ -107,14 +131,56 @@ def section_has_content(body: str, heading: str) -> bool:
     return False
 
 
+def metadata_errors(label: str, value: str) -> list[str]:
+    lowered = value.lower()
+    found: list[str] = []
+    for pattern in RESTRICTED_PUBLIC_METADATA_PATTERNS:
+        if pattern.search(lowered):
+            found.append(f"{label} contains restricted public metadata")
+            break
+    for pattern in PRIVATE_PATH_PATTERNS:
+        if pattern.search(value):
+            found.append(f"{label} contains a private local path")
+            break
+    return found
+
+
+def commit_identity_errors(label: str, value: str) -> list[str]:
+    found = metadata_errors(label, value)
+    for pattern in DISALLOWED_COMMIT_IDENTITY_PATTERNS:
+        if pattern.search(value):
+            found.append(f"{label} contains a local automation identity")
+            break
+    return found
+
+
+def commit_has_required_evidence(message: str) -> bool:
+    has_context_style = (
+        all(marker in message for marker in REQUIRED_COMMIT_MARKERS[:3])
+        and ("Risk:" in message or "Risks:" in message)
+    )
+    has_constraint_style = (
+        all(marker in message for marker in CONSTRAINT_COMMIT_MARKERS)
+        and any(marker in message for marker in CONSTRAINT_REASON_MARKERS)
+    )
+    return has_context_style or has_constraint_style
+
+
 errors: list[str] = []
 
 branch = os.environ.get("HEAD_REF") or os.environ.get("GITHUB_HEAD_REF") or os.environ.get("BRANCH_NAME")
-if branch and not BRANCH_RE.match(branch):
+if not branch:
+    try:
+        branch = run(["git", "branch", "--show-current"])
+    except subprocess.CalledProcessError:
+        branch = ""
+if branch and branch != "main" and not BRANCH_RE.match(branch):
     errors.append(
         "branch name must match <type>/<scope-slug>: "
         + branch
     )
+if branch and branch != "main":
+    errors.extend(metadata_errors("branch name", branch))
 
 event_path = os.environ.get("GITHUB_EVENT_PATH")
 event: dict[str, object] = {}
@@ -124,6 +190,9 @@ if event_path and Path(event_path).exists():
 pull_request = event.get("pull_request") if isinstance(event.get("pull_request"), dict) else None
 if pull_request is not None:
     body = str(pull_request.get("body") or "")
+    title = str(pull_request.get("title") or "")
+    errors.extend(metadata_errors("pull request title", title))
+    errors.extend(metadata_errors("pull request body", body))
     for heading in REQUIRED_PR_HEADINGS:
         if not section_has_content(body, heading):
             errors.append(f"pull request body must fill section: {heading}")
@@ -161,6 +230,7 @@ if pull_request is not None:
 
         for sha in commits:
             message = run(["git", "show", "-s", "--format=%B", sha])
+            identity = run(["git", "show", "-s", "--format=%an <%ae>%n%cn <%ce>", sha])
             subject = message.splitlines()[0].strip() if message.splitlines() else ""
             if not subject:
                 errors.append(f"{sha}: commit subject is empty")
@@ -169,9 +239,12 @@ if pull_request is not None:
                 errors.append(f"{sha}: banned vague commit subject: {subject}")
             if len(subject) > 72:
                 errors.append(f"{sha}: commit subject exceeds 72 chars")
-            for marker in REQUIRED_COMMIT_MARKERS:
-                if marker not in message:
-                    errors.append(f"{sha}: commit message missing marker {marker}")
+            errors.extend(metadata_errors(f"{sha}: commit message", message))
+            errors.extend(commit_identity_errors(f"{sha}: commit identity", identity))
+            if not commit_has_required_evidence(message):
+                errors.append(
+                    f"{sha}: commit message must include either Context/Decision/Validation/Risk(s) or Constraint/(Decision|Rejected|Why)/Tested/Not-tested evidence"
+                )
 
 if errors:
     for error in errors:

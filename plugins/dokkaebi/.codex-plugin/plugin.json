@@ -1,0 +1,22 @@
+{
+  "name": "dokkaebi",
+  "version": "0.1.0",
+  "description": "Project Dokkaebi plugin package for contract-governed manager workflows.",
+  "author": {
+    "name": "Project Dokkaebi"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Project Dokkaebi",
+    "shortDescription": "Use Project Dokkaebi manager workflow guidance in Codex.",
+    "longDescription": "Project Dokkaebi provides repo-scoped Codex guidance for contract-first manager workflows, issue intake, review, operations, and worker bootstrap policy.",
+    "developerName": "Project Dokkaebi",
+    "category": "Productivity",
+    "capabilities": [
+      "Manager workflow guidance",
+      "Issue intake policy",
+      "Review and operations policy"
+    ],
+    "defaultPrompt": "Help me apply Project Dokkaebi manager workflow guidance."
+  }
+}

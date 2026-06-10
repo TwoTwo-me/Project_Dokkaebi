@@ -5,25 +5,35 @@ auditable project-management loop:
 
 ```text
 Human
-  -> Dokkaebi Manager
-  -> Symphony / GitHub Project control plane
-  -> isolated AI Worker
+  -> Dokkaebi Manager plugin/skillset
+  -> GitHub Project issues and Status
+  -> Dokkaebi Fire
+  -> Dokkaebi Hammer
   -> verifiable result packet
   -> Dokkaebi Manager review
   -> Human decision
 ```
 
 Dokkaebi owns intent preservation, authority policy, work-contract quality, and
-result review. Symphony is the first worker orchestration backend. It watches a
-GitHub Project, dispatches bounded worker runs, and records progress through
-issues, workpad comments, pull requests, logs, and project status.
+result review. Dokkaebi is installed into a Manager runtime as a plugin or
+skillset that configures and manages GitHub Projects and issues. Dokkaebi Fire
+is the long-running backend/orchestrator derived from Symphony. It watches a
+GitHub Project, dispatches bounded Dokkaebi Hammer runs, and records progress
+through issues, workpad comments, pull requests, logs, and project status.
+Dokkaebi Hammer is the typed Worker target/runtime launched by Fire for one
+bounded ticket.
+
+GitHub Project `Status` is the lifecycle source of truth. Fire, Hammer, issue
+comments, workpads, PRs, logs, and validation artifacts are evidence surfaces
+that explain or prove lifecycle movement; they do not replace the project
+Status field.
 
 ## Architectural goals
 
 - Preserve Human intent while converting it into worker-ready contracts.
 - Keep Manager implementations replaceable: Hermes first, but not Hermes-only.
-- Route worker execution through a visible tracker instead of ad-hoc direct
-  Human-to-Worker conversations.
+- Route worker execution through Dokkaebi Fire and a visible tracker instead of
+  ad-hoc direct Human-to-Worker conversations.
 - Enforce authority boundaries before credentials, infrastructure, worker
   scaling, merge, deploy, or production-write actions.
 - Require result packets with enough evidence for another Manager or Human to
@@ -39,8 +49,10 @@ permissions, merge/deploy work, or replace a Manager runtime.
 
 ### Dokkaebi Manager
 
-The Manager translates Human requests into inspectable work contracts and
-reviews Worker results. Its stable duties are defined by
+The Manager translates Human requests into inspectable work contracts, manages
+GitHub Project/issues for dispatch readiness, and reviews Worker results.
+Dokkaebi is delivered to the Manager runtime as an installable Manager
+plugin/skillset. Its stable duties are defined by
 [`docs/contracts/manager-contract.md`](docs/contracts/manager-contract.md), not
 by any single runtime.
 
@@ -55,33 +67,50 @@ Initial and candidate adapters:
 - **Future/custom adapters**: allowed only after implementing the same Manager
   Contract and safety gates.
 
-### Symphony / GitHub Project control plane
+### Dokkaebi Fire / GitHub Project control plane
 
-Symphony is the lower orchestration backend for the first implementation path.
-GitHub Project issues are the durable dispatch queue and visible coordination
-surface. GitHub Project `Status` is the lifecycle source of truth, while
-workpad comments, PRs, commits, logs, and validation artifacts carry execution
-evidence. Symphony consumes approved tickets, starts isolated Worker runs, and
-updates project/workpad/PR state.
+Dokkaebi Fire is the lower orchestration backend for the first implementation
+path. Fire is derived from Symphony and preserves Symphony's GitHub Project
+tracker role while naming the Dokkaebi-owned backend surface. GitHub Project
+issues are the durable dispatch queue and visible coordination surface. GitHub
+Project `Status` is the lifecycle source of truth, while workpad comments, PRs,
+commits, logs, and validation artifacts carry execution evidence. Fire consumes
+approved tickets from one or more registered GitHub Projects, starts isolated
+Hammer runs, and updates project/workpad/PR state with project-aware context.
 
-Dokkaebi must treat Symphony as an adapter behind a stable work-contract
-interface. A future backend may replace Symphony without changing the Manager's
-core responsibility to produce bounded, auditable work.
+Dokkaebi must treat Fire as a backend adapter behind a stable work-contract
+interface. A future backend may replace the Symphony-derived Fire backend
+without changing the Manager's core responsibility to produce bounded,
+auditable work.
 
-### AI Worker
+Fire's current typed Hammer routing model covers `local_worktree`, `ssh`,
+`docker`, and `kubernetes_job` profiles. Docker and Kubernetes routes are
+eligible only when the ticket or project marks the work containerizable and
+provides a compatible image/profile; Kubernetes also requires an explicit
+context and namespace. Isolated live smoke evidence exists for the approved test
+targets, but production daemons, shared clusters, and persistent remote
+resources remain approval-gated setup surfaces.
 
-A Worker executes one bounded ticket at a time in an isolated workspace. It must
-follow ticket scope, permission level, acceptance criteria, validation
-requirements, and result-packet expectations. Workers do not receive broad
-Manager authority by default and should not expand scope without Manager/Human
-approval.
+### Dokkaebi Hammer Worker runtime
+
+Dokkaebi Hammer is the typed Worker target/runtime launched by Fire. A Hammer
+executes one bounded ticket at a time in an isolated workspace. It must follow
+ticket scope, permission level, acceptance criteria, validation requirements,
+and result-packet expectations. Hammers do not receive broad Manager authority
+by default and should not expand scope without Manager/Human approval.
+
+A Hammer runtime may be local or remote only when the ticket and policy allow
+that route. `dokkaebi-hammer` reset requests are bounded by
+[`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
+and do not authorize deleting repositories, credentials, Fire state, containers,
+volumes, namespaces, or remote resources outside the approved reset target.
 
 ### Credential broker
 
-The credential broker is the boundary between Manager intent and Worker
+The credential broker is the boundary between Manager intent and Hammer Worker
 authority. It must issue only least-privilege, time-bound, task-scoped
 credentials when a ticket explicitly allows them. Manager PATs, OAuth tokens,
-SSH keys, and cloud credentials must not be copied directly into Worker spaces.
+SSH keys, and cloud credentials must not be copied directly into Hammer spaces.
 
 ### Approval gates
 
@@ -90,7 +119,7 @@ decision or a documented policy grant. At minimum, approval is required for:
 
 - cloud or Proxmox resource changes;
 - secret or credential access;
-- Worker creation, scaling, or privilege elevation;
+- Hammer creation, scaling, or privilege elevation;
 - Manager runtime replacement;
 - PR merge, deployment, or production data/infrastructure writes unless a later
   ADR explicitly narrows and grants those actions.
@@ -107,10 +136,10 @@ Human authority
 Dokkaebi Manager boundary
   | worker-ready ticket, status review, evidence review
   v
-GitHub Project / Symphony boundary
+GitHub Project / Dokkaebi Fire boundary
   | dispatch, isolated workspace, scoped credentials
   v
-Worker boundary
+Dokkaebi Hammer boundary
   | code/docs/artifacts/tests/logs
   v
 Repository / PR / result-packet boundary
@@ -120,13 +149,13 @@ Key boundary rules:
 
 1. **Human to Manager**: the Manager may clarify and draft, but may not infer
    high-impact approval from vague intent.
-2. **Manager to Symphony**: only approved, worker-ready tickets enter the
+2. **Manager to Fire**: only approved, worker-ready tickets enter the
    dispatchable queue.
-3. **Symphony to Worker**: Workers receive only the workspace, tools, labels,
+3. **Fire to Hammer**: Hammer Workers receive only the workspace, tools, labels,
    credentials, and permissions declared by the ticket and policy.
-4. **Worker to repository/PR**: Workers may prepare changes and validation
+4. **Hammer to repository/PR**: Workers may prepare changes and validation
    evidence, but merge/deploy/production-write authority remains gated.
-5. **Worker to Human**: direct Human conversation is not the default result path;
+5. **Hammer to Human**: direct Human conversation is not the default result path;
    Workers report through tracker/workpad/PR/test artifacts for Manager review.
 
 ## Authority flow
@@ -138,21 +167,21 @@ Authority flows downward only through explicit artifacts:
 3. Manager writes or updates a GitHub Project ticket with acceptance criteria,
    non-goals, permission level, validation, and expected result packet.
 4. Human approval is recorded for any gated action before dispatch.
-5. Symphony dispatches a Worker only when Status, agent, authorization,
+5. Dokkaebi Fire dispatches a Hammer only when Status, agent, authorization,
    admission, fallback labels, and policy allow it.
 6. Credential broker grants only the scoped capabilities required by the ticket.
-7. Worker returns evidence; Manager reviews it before asking the Human for any
+7. Hammer returns evidence; Manager reviews it before asking the Human for any
    next high-impact decision.
 
 Authority does not flow by implication from tool availability, local filesystem
-access, credential presence, or a Worker discovering adjacent work.
+access, credential presence, or a Hammer discovering adjacent work.
 
 ## Result flow
 
 The result path is evidence-first:
 
 ```text
-Worker changes/logs/tests
+Hammer changes/logs/tests
   -> workpad comment, PR, artifact, or project update
   -> result packet
   -> Manager review
@@ -178,7 +207,7 @@ Dokkaebi should prefer surfaces another Manager adapter can inspect:
 - GitHub Project fields and status history, especially the lifecycle `Status`;
 - issue body, comments, and workpad comments used as execution evidence;
 - PR descriptions, review threads, commits, and checks;
-- Worker logs and validation artifacts;
+- Hammer logs and validation artifacts;
 - repository documents and versioned policies;
 - Manager summaries that cite evidence instead of relying on memory.
 
@@ -199,16 +228,33 @@ Portability requirements:
 - Hermes memory, Codex session state, or future channel state must not be the
   only copy of an approval, blocker, or validation result.
 
+## Toolchain bootstrap boundary
+
+Tool installation is part of the authority model. Dokkaebi prefers user-local
+installs for Manager plugins, Fire helpers, and Hammer runtimes. Any bootstrap
+work must begin with read-only preflight, use scripted install steps when
+changes are approved, record install evidence, and include rollback notes in
+the result packet.
+
+Remote hosts, Docker, `kubectl`, and Kubernetes require explicit setup
+authority before mutation. They are implemented routing surfaces only inside
+the typed Hammer contract and the evidence-backed approval boundary; they are
+not broad authority to mutate arbitrary hosts, daemons, clusters, namespaces, or
+shared infrastructure. See
+[`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
+for local/remote install policy and `dokkaebi-hammer` reset boundaries.
+
 ## Critical risks and mitigations
 
 | Risk | Failure mode | Mitigation |
 | --- | --- | --- |
-| Authority leakage | Manager or Worker uses broad credentials beyond task scope. | Use approval gates, credential broker, least privilege, and explicit permission levels. |
+| Authority leakage | Manager or Hammer uses broad credentials beyond task scope. | Use approval gates, credential broker, least privilege, and explicit permission levels. |
 | Tracker drift | GitHub Project status, issue comments, PR state, and workspace state disagree. | Require result packets and Manager reconciliation before completion. |
-| Scope inflation | Worker expands into adjacent work without approval. | Ticket non-goals, acceptance criteria, and escalation rules. |
-| Manager ambiguity | Manager emits vague tickets that Workers cannot safely execute. | Clarify before dispatch and require worker-ready fields. |
-| Backend coupling | Dokkaebi becomes Symphony-specific. | Keep Symphony behind a Manager work-contract adapter boundary. |
+| Scope inflation | Hammer expands into adjacent work without approval. | Ticket non-goals, acceptance criteria, and escalation rules. |
+| Manager ambiguity | Manager emits vague tickets that Hammers cannot safely execute. | Clarify before dispatch and require worker-ready fields. |
+| Backend coupling | Dokkaebi becomes Fire/Symphony-specific. | Keep Fire behind a Manager work-contract adapter boundary. |
 | Human review bypass | Merge, deploy, infra, or production writes happen without approval. | Treat high-impact actions as approval-required unless policy explicitly grants a narrow exception. |
+| Bootstrap overreach | Local setup mutates shared, remote, Docker, or Kubernetes resources without approval. | Prefer user-local installs, require read-only preflight, scripted evidence, rollback notes, and explicit setup authority for remote routes. |
 
 ## Milestone 1 boundary
 
