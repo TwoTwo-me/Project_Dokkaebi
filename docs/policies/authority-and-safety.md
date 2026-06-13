@@ -132,11 +132,12 @@ Credential requests require:
 ## Multi-tenant RBAC boundary
 
 Tenant and role separation follows
-[`multi-tenant-rbac.md`](multi-tenant-rbac.md). RBAC evidence can make routine
-admission and authorization decisions reproducible, but it does not replace
-Human approval gates for credentials, infrastructure, worker privilege expansion,
-remote hosts, Docker, Kubernetes, deployment, production writes, PR merge, or
-GitHub Project control-plane changes.
+[`multi-tenant-rbac.md`](multi-tenant-rbac.md). Local replay evidence, such as
+[`multi-tenant-rbac-drill-2026-06-13.md`](multi-tenant-rbac-drill-2026-06-13.md),
+can make routine admission and authorization decisions reproducible, but it does
+not replace Human approval gates for credentials, infrastructure, worker
+privilege expansion, remote hosts, Docker, Kubernetes, deployment, production
+writes, PR merge, or GitHub Project control-plane changes.
 
 Every tenant-scoped action must name the tenant, actor role, requested
 permission, project scope, repository scope, credential scope when applicable,
