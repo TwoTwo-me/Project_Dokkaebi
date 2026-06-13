@@ -52,6 +52,7 @@ require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-central-metrics-backend.sh
 require_file scripts/validate-on-call-paging-alerting.sh
+require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-compliance-package.sh
@@ -61,6 +62,7 @@ require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/design/carbon-ui-baseline.md
+require_file docs/product/onboarding-troubleshooting.md
 require_file docs/operations/worker-cli-auth.md
 require_file docs/policies/multi-tenant-rbac.md
 require_file docs/operations/dispatch-lease-recovery.md
@@ -113,6 +115,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-worker-route-result-metadata.md'
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
 require_text docs/contracts/manager-contract.md '../design/carbon-ui-baseline.md'
+require_text docs/contracts/manager-contract.md '../product/onboarding-troubleshooting.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
@@ -173,6 +176,13 @@ require_text docs/contracts/manager-contract.md 'permission matrix'
 require_text docs/contracts/manager-contract.md 'Human-facing UI surfaces'
 require_text docs/contracts/manager-contract.md 'role-based token mapping'
 require_text docs/contracts/manager-contract.md 'visual QA checklist'
+require_text docs/contracts/manager-contract.md 'Role-based onboarding and troubleshooting guides'
+require_text docs/contracts/manager-contract.md 'admin journey'
+require_text docs/contracts/manager-contract.md 'approver journey'
+require_text docs/contracts/manager-contract.md 'operator journey'
+require_text docs/contracts/manager-contract.md 'auditor journey'
+require_text docs/contracts/manager-contract.md 'worker-author journey'
+require_text docs/contracts/manager-contract.md 'clear next actions'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -239,6 +249,29 @@ require_text docs/design/carbon-ui-baseline.md 'remaining operational gaps'
 require_text docs/design/carbon-ui-baseline.md 'permission level'
 require_text docs/design/carbon-ui-baseline.md 'docs-only'
 require_text docs/design/carbon-ui-baseline.md 'Carbon Design System'
+require_text docs/product/onboarding-troubleshooting.md '# Role-Based Onboarding And Troubleshooting Guide'
+require_text docs/product/onboarding-troubleshooting.md 'admin journey'
+require_text docs/product/onboarding-troubleshooting.md 'approver journey'
+require_text docs/product/onboarding-troubleshooting.md 'operator journey'
+require_text docs/product/onboarding-troubleshooting.md 'auditor journey'
+require_text docs/product/onboarding-troubleshooting.md 'worker-author journey'
+require_text docs/product/onboarding-troubleshooting.md 'install walkthrough'
+require_text docs/product/onboarding-troubleshooting.md 'GitHub Project setup checks'
+require_text docs/product/onboarding-troubleshooting.md 'repository setup checks'
+require_text docs/product/onboarding-troubleshooting.md 'approval and review actions'
+require_text docs/product/onboarding-troubleshooting.md 'result-packet closeout actions'
+require_text docs/product/onboarding-troubleshooting.md 'Fire failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'worker failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'GitHub failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'credential failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'validation failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'project-field failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'PR failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'result-packet failure troubleshooting'
+require_text docs/product/onboarding-troubleshooting.md 'clear next actions'
+require_text docs/product/onboarding-troubleshooting.md 'approval boundary'
+require_text docs/product/onboarding-troubleshooting.md 'permission level'
+require_text docs/product/onboarding-troubleshooting.md 'docs-only'
 
 require_text docs/policies/git-governance.md '# Dokkaebi Git Governance Policy'
 require_text docs/policies/git-governance.md '## Enforcement surfaces'
@@ -293,6 +326,7 @@ require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orch
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
+require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
@@ -760,6 +794,7 @@ bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
+bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
