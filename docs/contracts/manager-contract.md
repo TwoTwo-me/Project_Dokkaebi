@@ -62,6 +62,7 @@ Required local artifacts:
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
+- [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -195,6 +196,12 @@ orchestration condition.
 Local deterministic validation is required before the contract can be cited as
 readiness evidence; live GitHub Project residual risks remain approval-gated
 until a later runtime gate proves them.
+
+Fault-injected orchestration recovery evidence must follow
+[`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md).
+The gate must reject duplicate dispatch, early stale lease recovery, retry loss after restart,
+and closeout without route result evidence before a Manager cites the recovery path as
+readiness evidence.
 
 ## Toolchain bootstrap contract
 
