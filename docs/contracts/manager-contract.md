@@ -64,6 +64,7 @@ Required local artifacts:
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
+- [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -209,6 +210,13 @@ SRE operating evidence must follow
 The Manager must treat missing dispatch SLO, recovery SLO, review-age SLO,
 incident commander, communication, mitigation, postmortem, or resolved on-call
 decision as an operations readiness gap.
+
+Release rollback capacity evidence must follow
+[`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md).
+The Manager must treat missing staged rollout, rollback trigger, operator,
+evidence, communication, queue threshold, worker threshold, retry threshold,
+review-age threshold, local validation path, drill evidence shape, or approval
+boundary as an operations readiness gap.
 
 ## Toolchain bootstrap contract
 
