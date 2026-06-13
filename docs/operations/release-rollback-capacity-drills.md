@@ -10,6 +10,8 @@ The baseline exists so Fire operators and Human reviewers can evaluate release
 readiness without relying on private memory. Later work can replace the local
 validation path with an approved sandbox or production drill, but the evidence
 shape and approval boundary here must remain intact.
+The current local release and rollback drill package is
+[`release-rollback-drill-2026-06-13.md`](release-rollback-drill-2026-06-13.md).
 
 ## Release Runbook
 
@@ -183,7 +185,10 @@ mutation wording.
 
 ## Remaining Gaps
 
-This baseline does not finish operations readiness. Remaining work includes an
-approved release and rollback drill, measured capacity and soak evidence,
-production paging implementation, central metrics, backup and restore drills,
-and routine operations exercises.
+This baseline does not finish operations readiness. A local release and rollback
+drill is captured in
+[`release-rollback-drill-2026-06-13.md`](release-rollback-drill-2026-06-13.md),
+but automated runtime release gates, approved sandbox rollback evidence,
+measured capacity and soak evidence, production paging implementation, central
+metrics, approved sandbox restore evidence, durable backup automation, and
+routine operations exercises remain.

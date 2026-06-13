@@ -274,6 +274,9 @@ operations readiness gap.
 
 Release rollback capacity evidence must follow
 [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md).
+Local release rollback drill evidence must follow
+[`docs/operations/release-rollback-drill-2026-06-13.md`](../operations/release-rollback-drill-2026-06-13.md)
+or a later dated drill package.
 The Manager must treat missing staged rollout, rollback trigger, operator,
 evidence, communication, queue threshold, worker threshold, retry threshold,
 review-age threshold, local validation path, drill evidence shape, or approval
