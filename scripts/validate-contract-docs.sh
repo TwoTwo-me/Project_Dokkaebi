@@ -51,6 +51,7 @@ require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-compliance-package.sh
+require_file scripts/validate-compliance-audit-review.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
@@ -61,6 +62,7 @@ require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/compliance/control-map-and-evidence-package.md
+require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -108,6 +110,7 @@ require_text docs/contracts/manager-contract.md '../operations/sre-operating-bas
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
+require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -133,6 +136,9 @@ require_text docs/contracts/manager-contract.md 'backup target'
 require_text docs/contracts/manager-contract.md 'Compliance evidence packages'
 require_text docs/contracts/manager-contract.md 'approval control'
 require_text docs/contracts/manager-contract.md 'sample evidence chain'
+require_text docs/contracts/manager-contract.md 'Compliance audit review packages'
+require_text docs/contracts/manager-contract.md 'completed-change reference'
+require_text docs/contracts/manager-contract.md 'integrity check'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -214,6 +220,7 @@ require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE opera
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
+require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 
 require_text docs/operations/dispatch-lease-recovery.md '# Dispatch Lease And Restart Recovery'
 require_text docs/operations/dispatch-lease-recovery.md 'lease store'
@@ -279,6 +286,20 @@ require_text docs/compliance/control-map-and-evidence-package.md 'package conten
 require_text docs/compliance/control-map-and-evidence-package.md 'sample evidence chain'
 require_text docs/compliance/control-map-and-evidence-package.md 'approval boundary'
 require_text docs/compliance/control-map-and-evidence-package.md 'secret-bearing evidence'
+require_text docs/compliance/audit-review-2026-06-13.md '# Compliance Audit Review 2026-06-13'
+require_text docs/compliance/audit-review-2026-06-13.md 'completed change'
+require_text docs/compliance/audit-review-2026-06-13.md 'reviewer'
+require_text docs/compliance/audit-review-2026-06-13.md 'control coverage'
+require_text docs/compliance/audit-review-2026-06-13.md 'evidence links'
+require_text docs/compliance/audit-review-2026-06-13.md 'exceptions'
+require_text docs/compliance/audit-review-2026-06-13.md 'retention decision'
+require_text docs/compliance/audit-review-2026-06-13.md 'redaction decision'
+require_text docs/compliance/audit-review-2026-06-13.md 'integrity check'
+require_text docs/compliance/audit-review-2026-06-13.md 'approval-gate status'
+require_text docs/compliance/audit-review-2026-06-13.md 'residual risk'
+require_text docs/compliance/audit-review-2026-06-13.md 'next action'
+require_text docs/compliance/audit-review-2026-06-13.md 'no credential'
+require_text docs/compliance/audit-review-2026-06-13.md 'no production'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -612,5 +633,6 @@ bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
+bash scripts/validate-compliance-audit-review.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'
