@@ -55,6 +55,7 @@ require_file scripts/validate-central-metrics-backend.sh
 require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
+require_file scripts/validate-release-rollback-drill.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-compliance-package.sh
@@ -75,6 +76,7 @@ require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/central-metrics-backend.md
 require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/release-rollback-capacity-drills.md
+require_file docs/operations/release-rollback-drill-2026-06-13.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/compliance/control-map-and-evidence-package.md
@@ -346,6 +348,7 @@ require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central 
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
+require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release rollback drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
@@ -431,6 +434,15 @@ require_text docs/operations/release-rollback-capacity-drills.md 'review age'
 require_text docs/operations/release-rollback-capacity-drills.md 'local validation path'
 require_text docs/operations/release-rollback-capacity-drills.md 'drill evidence'
 require_text docs/operations/release-rollback-capacity-drills.md 'does not authorize live mutation'
+require_text docs/operations/release-rollback-drill-2026-06-13.md '# Local Release And Rollback Drill'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'release candidate'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'staged rollout step'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'rollback trigger'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'rollback decision'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'recovery path'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'command output'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'validation output'
+require_text docs/operations/release-rollback-drill-2026-06-13.md 'staged rollout decision'
 require_text docs/operations/topology-backup-restore-dr.md '# Topology Backup Restore And Disaster Recovery Baseline'
 require_text docs/operations/topology-backup-restore-dr.md 'development'
 require_text docs/operations/topology-backup-restore-dr.md 'sandbox'
@@ -847,6 +859,7 @@ bash scripts/validate-central-metrics-backend.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
+bash scripts/validate-release-rollback-drill.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
