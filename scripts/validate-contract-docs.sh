@@ -55,6 +55,7 @@ require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
+require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
@@ -72,6 +73,7 @@ require_file docs/operations/central-metrics-backend.md
 require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/topology-backup-restore-dr.md
+require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
@@ -329,6 +331,7 @@ require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call 
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
+require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
 require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 require_text scripts/validate-immutable-audit-export.sh 'PASS Dokkaebi immutable audit export validation passed'
@@ -416,6 +419,15 @@ require_text docs/operations/topology-backup-restore-dr.md 'DR role'
 require_text docs/operations/topology-backup-restore-dr.md 'evidence retention'
 require_text docs/operations/topology-backup-restore-dr.md 'drill evidence'
 require_text docs/operations/topology-backup-restore-dr.md 'does not authorize live mutation'
+require_text docs/operations/backup-restore-drill-2026-06-13.md '# Local Backup Restore And Disaster Recovery Replay Drill'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'local fixture replay'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'backup target'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'restore point'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'RPO result'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'RTO result'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'approval-gate status'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'cleanup'
+require_text docs/operations/backup-restore-drill-2026-06-13.md 'does not authorize'
 require_text docs/compliance/control-map-and-evidence-package.md '# Compliance Control Map And Evidence Package'
 require_text docs/compliance/control-map-and-evidence-package.md 'approval control'
 require_text docs/compliance/control-map-and-evidence-package.md 'access control'
@@ -797,6 +809,7 @@ bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
+bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null

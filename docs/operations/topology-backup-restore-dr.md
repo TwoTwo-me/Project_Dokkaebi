@@ -107,6 +107,7 @@ DR drill evidence must include:
 - validation output;
 - evidence retention surface;
 - approval-gate status;
+- cleanup receipt;
 - residual risk and next action.
 
 The drill evidence shape is reusable for local fixture drills, approved sandbox
@@ -133,8 +134,8 @@ bash scripts/validate-topology-backup-restore-dr.sh
 The validator checks the human-readable runbook and the structured control
 block below. It rejects empty baseline content, malformed control data, missing
 environment tier, HA assumption, backup target, restore step, RPO, RTO, DR role,
-evidence retention, drill evidence shape, approval boundary, or unauthorized
-live mutation wording.
+evidence retention, drill evidence shape, cleanup receipt, approval boundary,
+or unauthorized live mutation wording.
 
 <!-- topology-backup-dr:begin -->
 ```json
@@ -246,6 +247,7 @@ live mutation wording.
       "validationOutput": "required",
       "evidenceRetention": "required",
       "approvalGateStatus": "required",
+      "cleanup": "required",
       "residualRisk": "required"
     },
     "privateMemoryPolicy": "Evidence must be captured in GitHub issue, PR, result packet, or checked-in fixture without secrets, auth files, cookies, tokens, or private machine state",
