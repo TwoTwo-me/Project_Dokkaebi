@@ -20,10 +20,11 @@ result-packet closeout, and Human Review surfaces that are already described in
 the Manager contract, SRE baseline, central metrics design, and on-call alerting
 baseline.
 
-The SLOs are measured from central metrics once issue #57 proves ingestion,
-storage, query, dashboard, and alert evaluation evidence. Until then, they are
-reviewable through fallback GitHub issue, pull request, workflow, local replay,
-and result-packet evidence.
+The SLOs are partially exercised by the local central metrics replay. They move
+to operational evidence only after issue #80 captures approved sandbox or
+explicitly Human-approved live backend ingestion, storage, query, dashboard, and
+alert evaluation evidence. Until then, they are reviewable through fallback
+GitHub issue, pull request, workflow, local replay, and result-packet evidence.
 
 ## Initial SLOs
 
@@ -111,10 +112,11 @@ over-authorized wording, and malformed control data.
 
 ## Residual Risk And Next Action
 
-Residual risk remains because central metrics ingestion, query, dashboard,
-alert evaluation, and sandbox replay evidence are still pending. The next
-action is issue #57, which must produce or replay representative central metrics
-and alert evidence before the SLO/SLA capability can approach completion.
+Residual risk remains because approved sandbox or explicitly Human-approved
+live backend central metrics ingestion, query, dashboard, alert evaluation, and
+retention evidence are still pending. The next action is issue #80, which must
+connect an approved central metrics backend and capture backend evidence before
+the SLO/SLA capability can approach completion.
 
 <!-- service-level-objectives:begin -->
 ```json
@@ -167,7 +169,7 @@ and alert evidence before the SLO/SLA capability can approach completion.
   ],
   "availabilityPosture": {
     "internalTarget": "99 percent observable Fire control-loop availability during approved operating windows",
-    "measurementSource": "central metrics health sample and future sandbox replay evidence",
+    "measurementSource": "central metrics health sample, local replay evidence, and future approved sandbox backend evidence",
     "fallbackEvidence": "workflow status, issue timeline, or local replay transcript while metrics backend is pending",
     "noExternalCommitment": "no customer-facing SLA, uptime warranty, or production availability commitment is approved"
   },
@@ -200,13 +202,13 @@ and alert evidence before the SLO/SLA capability can approach completion.
       "contractual availability commitment"
     ]
   },
-  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/57",
+  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
   "residualRisk": [
-    "Central metrics ingestion is not yet measured",
-    "Dashboard and alert evaluation evidence is not yet captured",
+    "Approved sandbox or explicitly Human-approved live backend ingestion is not yet measured",
+    "Approved backend dashboard and alert evaluation evidence is not yet captured",
     "External SLA approval is not recorded"
   ],
-  "nextAction": "Run central metrics backend sandbox verification under issue #57",
+  "nextAction": "Connect approved central metrics sandbox backend under issue #80",
   "requiredEvidence": [
     "changed artifacts and rationale",
     "acceptance-criteria evidence",

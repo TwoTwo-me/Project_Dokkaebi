@@ -53,6 +53,7 @@ require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-incident-response-runbook.sh
 require_file scripts/validate-central-metrics-backend.sh
+require_file scripts/validate-central-metrics-replay.sh
 require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
@@ -76,6 +77,7 @@ require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/incident-response-runbook-2026-06-13.md
 require_file docs/operations/central-metrics-backend.md
+require_file docs/operations/central-metrics-replay-2026-06-13.md
 require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/release-rollback-drill-2026-06-13.md
@@ -348,6 +350,7 @@ require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE opera
 require_text scripts/validate-incident-response-runbook.sh 'PASS Dokkaebi incident response runbook validation passed'
 require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service-level objectives validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
+require_text scripts/validate-central-metrics-replay.sh 'PASS Dokkaebi central metrics replay validation passed'
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
@@ -402,7 +405,7 @@ require_text docs/operations/service-level-objectives.md 'availability posture'
 require_text docs/operations/service-level-objectives.md 'error-budget'
 require_text docs/operations/service-level-objectives.md 'fallback evidence'
 require_text docs/operations/service-level-objectives.md 'External SLA Boundary'
-require_text docs/operations/service-level-objectives.md 'issue #57'
+require_text docs/operations/service-level-objectives.md 'issue #80'
 require_text docs/operations/central-metrics-backend.md '# Central Metrics Backend Integration'
 require_text docs/operations/central-metrics-backend.md 'metric taxonomy'
 require_text docs/operations/central-metrics-backend.md 'ingestion path'
@@ -420,6 +423,15 @@ require_text docs/operations/central-metrics-backend.md 'remaining operational g
 require_text docs/operations/central-metrics-backend.md 'permission level'
 require_text docs/operations/central-metrics-backend.md 'docs-only'
 require_text docs/operations/central-metrics-backend.md 'control-plane'
+require_text docs/operations/central-metrics-backend.md 'central-metrics-replay-2026-06-13.md'
+require_text docs/operations/central-metrics-replay-2026-06-13.md '# Central Metrics Local Replay'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'representative metrics'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'ingestion output'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'storage/query output'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'parsed dashboard view'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'alert-rule evaluation'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'retention/cardinality checks'
+require_text docs/operations/central-metrics-replay-2026-06-13.md 'approval-gate status'
 require_text docs/operations/on-call-paging-alerting.md '# On-Call Paging And Alerting Baseline'
 require_text docs/operations/on-call-paging-alerting.md 'alert taxonomy'
 require_text docs/operations/on-call-paging-alerting.md 'severity mapping'
@@ -870,6 +882,7 @@ bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-incident-response-runbook.sh >/dev/null
 bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
+bash scripts/validate-central-metrics-replay.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
