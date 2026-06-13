@@ -129,6 +129,21 @@ Credential requests require:
 - expiration and revocation condition;
 - proof that the Hammer and endpoint match the approved scope.
 
+## Multi-tenant RBAC boundary
+
+Tenant and role separation follows
+[`multi-tenant-rbac.md`](multi-tenant-rbac.md). RBAC evidence can make routine
+admission and authorization decisions reproducible, but it does not replace
+Human approval gates for credentials, infrastructure, worker privilege expansion,
+remote hosts, Docker, Kubernetes, deployment, production writes, PR merge, or
+GitHub Project control-plane changes.
+
+Every tenant-scoped action must name the tenant, actor role, requested
+permission, project scope, repository scope, credential scope when applicable,
+worker route scope when applicable, approval-gate status, audit evidence, and
+next action. Missing or ambiguous tenant, role, or permission evidence fails
+closed before dispatch.
+
 ## Symphony compatibility policy and Dokkaebi Fire lineage
 
 Dokkaebi Fire is the long-running backend/orchestrator derived from Symphony.

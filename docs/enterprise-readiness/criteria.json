@@ -261,18 +261,20 @@
     {
       "id": "security_authority",
       "name": "Security and authority",
-      "currentPercent": 72,
+      "currentPercent": 78,
       "targetPercent": 100,
       "enterpriseStandard": "All credentials, approvals, worker capabilities, high-risk operations, audit events, and emergency paths are least-privilege, revocable, observable, and fail-closed.",
       "currentEvidence": [
         "docs/policies/authority-and-safety.md",
         "docs/operations/worker-cli-auth.md",
-        "symphony-github-project-tracker/elixir/lib/symphony_elixir/credential_broker"
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/credential_broker",
+        "docs/policies/multi-tenant-rbac.md",
+        "scripts/validate-multi-tenant-rbac.sh"
       ],
       "gaps": [
         "Secret lifecycle, rotation, revocation drills, and access reviews are not fully operationalized.",
         "Threat modeling and prompt-injection controls need a documented enterprise baseline.",
-        "Development auth propagation is approved only for trusted development and sandbox worker targets."
+        "Multi-tenant RBAC design exists, but runtime enforcement and access-review drill evidence are not captured."
       ],
       "evaluationQuestions": [
         "Can each credential grant be traced to an approval boundary and revoked?",
@@ -314,19 +316,21 @@
     {
       "id": "management_governance",
       "name": "Management and governance",
-      "currentPercent": 82,
+      "currentPercent": 86,
       "targetPercent": 100,
       "enterpriseStandard": "GitHub Project fields, issue intake, Human approval, PR review, result packets, and closeout reconciliation are governed by reproducible policy and auditable roles.",
       "currentEvidence": [
         "WORKFLOW.md",
         "docs/policies/git-governance.md",
+        "docs/policies/multi-tenant-rbac.md",
+        "scripts/validate-multi-tenant-rbac.sh",
         "docs/templates/worker-ticket.md",
         "docs/templates/worker-result-packet.md",
         ".github/pull_request_template.md"
       ],
       "gaps": [
         "GitHub branch protection and project rules are documented but not fully codified as reproducible settings.",
-        "Role matrix and stale Human Review escalation need stronger operating policy.",
+        "Role matrix is documented in the RBAC model, but stale Human Review escalation needs stronger operating policy.",
         "Closeout reconciliation between issue, PR, result packet, and project state is not automated."
       ],
       "evaluationQuestions": [
@@ -859,20 +863,20 @@
     {
       "id": "multi_tenant_rbac",
       "name": "Multi-tenant RBAC",
-      "currentPercent": 0,
+      "currentPercent": 55,
       "targetPercent": 100,
-      "nextIssueTitle": "Design multi-tenant RBAC model",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/33",
+      "nextIssueTitle": "Run multi-tenant RBAC enforcement and access-review drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/59",
       "acceptanceCriteria": [
-        "Define the enterprise standard for multi_tenant_rbac.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Run or replay representative project owner, tenant admin, issue approver, Fire operator, Hammer operator, security admin, auditor, and break-glass flows against docs/policies/multi-tenant-rbac.md.",
+        "Capture admission decision output, authorization decision output, denied cross-tenant operation evidence, credential grant boundary evidence, worker route boundary evidence, audit log evidence, access-review evidence, cleanup, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json after enforcement or access-review evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-multi-tenant-rbac.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted multi-tenant RBAC enforcement or local replay validation named by the implementation"
       ],
       "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
