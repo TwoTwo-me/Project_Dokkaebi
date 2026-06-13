@@ -33,11 +33,11 @@ The export design is evidence-oriented and intentionally conservative.
 | --- | --- |
 | Retention | Each evidence package names retention duration, retention owner, and deletion or extension decision. |
 | Redaction | Evidence must exclude secrets, auth files, cookies, tokens, private machine state, and secret-bearing evidence. |
-| Integrity | Each package records source links, commit SHAs, check run URLs, and a manifest hash once immutable export exists. |
+| Integrity | Each package records source links, commit SHAs, check run URLs, a replayable manifest hash, and signed export status. |
 | Ownership | Each package names the Manager reviewer, control owner, and evidence package owner. |
-| Storage | GitHub issue/PR timelines and repository fixtures are current storage; immutable audit export remains future work. |
+| Storage | GitHub issue/PR timelines and repository fixtures are current storage; signed immutable object storage remains future work. |
 
-Until immutable audit export exists, the package records an explicit
+Until signed immutable storage exists, the package records an explicit
 `immutableExportGap` rather than pretending to be tamper-proof.
 
 ## Package Contents
@@ -112,6 +112,10 @@ boundary, or secret-bearing evidence wording.
   docs-only export package contract, manifest hash, source links, redaction
   manifest, retention metadata, ownership, verification steps, failure
   handling, approval boundary, and remaining operational gaps.
+- [`immutable-audit-export-verification-2026-06-13.md`](immutable-audit-export-verification-2026-06-13.md)
+  records one docs-only local replay verification drill with a recomputed
+  manifest hash, redaction manifest, retention metadata, owner review,
+  approval-gate status, cleanup, residual risk, and next action.
 
 <!-- compliance-package:begin -->
 ```json
@@ -160,10 +164,10 @@ boundary, or secret-bearing evidence wording.
   "exportDesign": {
     "retention": "Evidence package names retention duration, retention owner, and deletion or extension decision",
     "redaction": "Evidence excludes secrets, auth files, cookies, tokens, private machine state, and secret-bearing evidence",
-    "integrity": "Package records source links, commit SHAs, check run URLs, and future manifest hash",
+    "integrity": "Package records source links, commit SHAs, check run URLs, a replayable manifest hash, and signed export status",
     "ownership": "Package names Manager reviewer, control owner, and evidence package owner",
-    "storageSurface": "GitHub issue/PR timelines and repository fixtures are current storage",
-    "immutableExportGap": "Immutable audit export remains future work and must stay visible in readiness criteria"
+    "storageSurface": "GitHub issue/PR timelines and repository fixtures are current storage; signed immutable object storage remains future work",
+    "immutableExportGap": "Local replay verification exists; signed export storage, key management, and retention enforcement remain future work and must stay visible in readiness criteria"
   },
   "packageContents": [
     "package ID and date",
@@ -202,6 +206,6 @@ boundary, or secret-bearing evidence wording.
 ## Remaining Gaps
 
 This package skeleton does not finish compliance readiness. Remaining work
-includes a real audit review walkthrough, immutable audit export, measured
-retention enforcement, signed export manifests, access-review drills, and
-external-control mapping if a Human owner chooses a formal framework.
+includes measured retention enforcement, signed export manifests, key
+management, access-review drills, and external-control mapping if a Human
+owner chooses a formal framework.
