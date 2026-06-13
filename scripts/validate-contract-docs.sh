@@ -66,6 +66,7 @@ require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
 require_file scripts/validate-immutable-audit-export-verification.sh
+require_file scripts/validate-signed-immutable-audit-export.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
@@ -91,6 +92,7 @@ require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
 require_file docs/compliance/immutable-audit-export-verification-2026-06-13.md
+require_file docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -146,6 +148,7 @@ require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-d
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
+require_text docs/contracts/manager-contract.md '../compliance/signed-immutable-audit-export-key-management-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -192,6 +195,10 @@ require_text docs/contracts/manager-contract.md 'integrity check'
 require_text docs/contracts/manager-contract.md 'Immutable audit export designs'
 require_text docs/contracts/manager-contract.md 'manifest hash'
 require_text docs/contracts/manager-contract.md 'redaction manifest'
+require_text docs/contracts/manager-contract.md 'Signed immutable audit export key-management evidence'
+require_text docs/contracts/manager-contract.md 'signed manifest storage'
+require_text docs/contracts/manager-contract.md 'signing-key ownership'
+require_text docs/contracts/manager-contract.md 'verification cadence'
 require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
 require_text docs/contracts/manager-contract.md 'tenant boundaries'
 require_text docs/contracts/manager-contract.md 'permission matrix'
@@ -574,6 +581,19 @@ require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md '
 require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'residual risk'
 require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'next action'
 require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'does not authorize'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md '# Signed Immutable Audit Export Key Management Drill 2026-06-13'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'signed manifest storage'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'signing-key ownership'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'rotation'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'revocation'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'verification cadence'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'retention enforcement'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'redaction review'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'owner review'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'cleanup'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'residual risk'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'next action'
+require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'does not authorize'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -923,5 +943,6 @@ bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null
 bash scripts/validate-immutable-audit-export-verification.sh >/dev/null
+bash scripts/validate-signed-immutable-audit-export.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'

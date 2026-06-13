@@ -311,6 +311,12 @@ The Manager must treat missing manifest hash, source links, redaction manifest,
 retention metadata, ownership, verification steps, failure handling, approval
 boundary, remaining operational gaps, or permission level as an immutable audit
 export readiness gap.
+Signed immutable audit export key-management evidence must follow
+[`docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md`](../compliance/signed-immutable-audit-export-key-management-2026-06-13.md).
+The Manager must treat missing signed manifest storage, signing-key ownership,
+rotation cadence, revocation triggers, verification cadence, retention
+enforcement, redaction review, owner review, signature verification, cleanup,
+residual risk, or next action as an immutable audit export readiness gap.
 
 ## Toolchain bootstrap contract
 
