@@ -97,7 +97,7 @@
     {
       "id": "core_orchestration",
       "name": "Core orchestration",
-      "currentPercent": 84,
+      "currentPercent": 94,
       "targetPercent": 100,
       "enterpriseStandard": "Fire reliably discovers, admits, dispatches, monitors, retries, and closes work without duplicate execution, stale state, or silent loss across restarts.",
       "currentEvidence": [
@@ -106,11 +106,12 @@
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/worker_pool.ex",
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/hammer/router.ex",
         "docs/operations/dispatch-lease-recovery.md",
-        "scripts/validate-dispatch-lease-recovery.sh"
+        "scripts/validate-dispatch-lease-recovery.sh",
+        "docs/operations/orchestration-recovery-gate.md",
+        "scripts/validate-orchestration-recovery-gate.sh"
       ],
       "gaps": [
-        "Long-running and fault-injected orchestration evidence is not a default gate.",
-        "The lease/recovery contract is validated locally, but live GitHub Project operation still needs a runtime recovery gate."
+        "Sandbox issue processing transcript is not yet captured as auditable closeout evidence."
       ],
       "evaluationQuestions": [
         "Can Fire restart without duplicate dispatch or lost retry intent?",
@@ -124,19 +125,19 @@
       ],
       "nextIssues": [
         {
-          "title": "Add fault-injected orchestration recovery gate",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/42",
+          "title": "Add sandbox issue processing transcript gate",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/44",
           "acceptanceCriteria": [
-            "A deterministic gate simulates or runs worker failure, Fire restart, stale lease recovery, retry persistence, and closeout evidence.",
-            "The gate is wired into the documented validation path for orchestration changes.",
-            "The evidence explains remaining live GitHub Project limitations and the approval boundary for any live test target."
+            "A sandbox transcript shows one issue moving through discovery, admission, dispatch readiness, worker result evidence, Manager review, and closeout.",
+            "The transcript records approval-gate status and authority boundaries for every live or sandbox operation.",
+            "The transcript is referenced by readiness criteria and can be replayed or audited without private memory."
           ],
           "validationRequired": [
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted orchestration fault-injection validation named by the implementation"
+            "Targeted sandbox transcript validation named by the implementation"
           ],
-          "authorityRequirement": "Local deterministic validation does not require additional approval. Live worker, Docker, Kubernetes, remote host, credential, production, deployment, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "docs-and-approved-sandbox-validation only after the sandbox target and allowed operations are explicitly approved. Live worker, Docker, Kubernetes, remote host, credential, production, deployment, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
