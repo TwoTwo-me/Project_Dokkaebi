@@ -61,6 +61,7 @@ Required local artifacts:
 - [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
 - [`docs/policies/credential-lifecycle-and-revocation.md`](../policies/credential-lifecycle-and-revocation.md)
+- [`docs/policies/credential-revocation-access-review-drill-2026-06-13.md`](../policies/credential-revocation-access-review-drill-2026-06-13.md)
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
@@ -165,6 +166,14 @@ The Manager must treat missing token classes, owners, storage, rotation cadence,
 revocation triggers, audit evidence, narrow development/sandbox auth exception,
 dry-run revocation checklist, approval-gate status, cleanup receipt, residual
 risk, or next action as a security-authority readiness gap.
+
+Approved credential revocation and access-review drills must follow
+[`docs/policies/credential-revocation-access-review-drill-2026-06-13.md`](../policies/credential-revocation-access-review-drill-2026-06-13.md)
+or a later dated drill package.
+The Manager must treat missing owner approval, grant scope, expiration,
+revocation trigger, denial output, sandbox or runtime revocation output,
+access-review output, audit evidence, approval-gate status, cleanup receipt,
+residual risk, or next action as a security-authority readiness gap.
 
 Multi-tenant RBAC designs must follow
 [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md).
