@@ -66,6 +66,7 @@ Required local artifacts:
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
+- [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -224,6 +225,13 @@ Topology backup restore and disaster recovery evidence must follow
 The Manager must treat missing environment tier, HA assumption, backup target,
 restore step, RPO, RTO, DR role, evidence retention, drill evidence shape, or
 approval boundary as an infrastructure readiness gap.
+
+Compliance evidence packages must follow
+[`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md).
+The Manager must treat missing approval control, access control, change
+management control, logging control, incident control, credential control,
+retention, redaction, integrity, ownership, export design, package contents,
+sample evidence chain, or approval boundary as a compliance readiness gap.
 
 ## Toolchain bootstrap contract
 
