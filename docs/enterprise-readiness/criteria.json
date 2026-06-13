@@ -417,15 +417,17 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 24,
+      "currentPercent": 48,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
         "docs/operations/fire-sandbox-service.md",
-        "docs/operations/toolchain-bootstrap.md"
+        "docs/operations/toolchain-bootstrap.md",
+        "docs/operations/sre-operating-baseline.md",
+        "scripts/validate-sre-operating-baseline.sh"
       ],
       "gaps": [
-        "Incident response, on-call, paging, SLO, error budget, and production runbooks are absent.",
+        "SLO, incident response, and on-call boundaries are documented, but paging implementation and routine drills are not operational.",
         "Capacity planning and long-running soak tests are not defined.",
         "Release and rollback procedures do not yet reach production service quality."
       ],
@@ -442,17 +444,17 @@
       ],
       "nextIssues": [
         {
-          "title": "Create SLO, incident response, and on-call baseline",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/21",
+          "title": "Add release rollback and capacity drill baseline",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/46",
           "acceptanceCriteria": [
-            "Define dispatch, recovery, and review-age SLOs with initial targets.",
-            "Incident runbook covers severity, commander, communication, mitigation, and postmortem.",
-            "On-call and paging path is documented as either implemented or intentionally deferred with owner decision."
+            "Release and rollback runbook defines staged rollout, rollback trigger, operator, evidence, and communication path.",
+            "Capacity and soak plan defines queue, worker, retry, and review-age thresholds with a local or approved-sandbox validation path.",
+            "Drill evidence can be captured without private memory and is referenced by readiness criteria."
           ],
           "validationRequired": [
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted release, rollback, capacity, and drill validation named by the implementation"
           ],
           "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
@@ -625,15 +627,14 @@
     {
       "id": "incident_response",
       "name": "Incident Response",
-      "currentPercent": 0,
+      "currentPercent": 55,
       "targetPercent": 100,
       "nextIssueTitle": "Create incident response runbook",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/25",
       "acceptanceCriteria": [
-        "Define the enterprise standard for incident_response.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Run an incident response tabletop or approved sandbox drill.",
+        "Capture severity, commander, communication, mitigation, postmortem, and follow-up evidence.",
+        "Update docs/enterprise-readiness/criteria.json after drill evidence exists."
       ],
       "validationRequired": [
         "bash scripts/validate-readiness-criteria.sh",
@@ -652,15 +653,14 @@
     {
       "id": "on_call_paging_alerting",
       "name": "On-call, paging, and alerting",
-      "currentPercent": 0,
+      "currentPercent": 35,
       "targetPercent": 100,
       "nextIssueTitle": "Create on-call, paging, and alerting baseline",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/26",
       "acceptanceCriteria": [
-        "Define the enterprise standard for on_call_paging_alerting.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Approve or implement a paging backend and escalation roster.",
+        "Capture alert routing, quiet-hours behavior, and test evidence.",
+        "Update docs/enterprise-readiness/criteria.json after on-call evidence exists."
       ],
       "validationRequired": [
         "bash scripts/validate-readiness-criteria.sh",
@@ -679,15 +679,14 @@
     {
       "id": "slo_sla",
       "name": "SLO and SLA",
-      "currentPercent": 0,
+      "currentPercent": 45,
       "targetPercent": 100,
       "nextIssueTitle": "Define initial service-level objectives",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/27",
       "acceptanceCriteria": [
-        "Define the enterprise standard for slo_sla.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Connect SLO targets to measured metrics or approved sandbox evidence.",
+        "Define an external SLA only after Human owner approval.",
+        "Update docs/enterprise-readiness/criteria.json after measured SLO evidence exists."
       ],
       "validationRequired": [
         "bash scripts/validate-readiness-criteria.sh",

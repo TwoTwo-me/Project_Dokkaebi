@@ -63,6 +63,7 @@ Required local artifacts:
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
+- [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -202,6 +203,12 @@ Fault-injected orchestration recovery evidence must follow
 The gate must reject duplicate dispatch, early stale lease recovery, retry loss after restart,
 and closeout without route result evidence before a Manager cites the recovery path as
 readiness evidence.
+
+SRE operating evidence must follow
+[`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md).
+The Manager must treat missing dispatch SLO, recovery SLO, review-age SLO,
+incident commander, communication, mitigation, postmortem, or resolved on-call
+decision as an operations readiness gap.
 
 ## Toolchain bootstrap contract
 
