@@ -59,6 +59,7 @@ Required local artifacts:
 - [`WORKFLOW.md`](../../WORKFLOW.md)
 - [`docs/contracts/hammer-worker-contract.md`](hammer-worker-contract.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
+- [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
@@ -153,6 +154,14 @@ prompts or hidden memory. A credential broker must issue task-scoped grants with
 repository/service allowlists, branch or environment binding, expiry, and endpoint
 proof. Grant metadata belongs in the audit trail; secret material should remain
 outside ticket prose and Worker result summaries.
+
+Multi-tenant RBAC designs must follow
+[`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md).
+The Manager must treat missing tenant boundaries, role taxonomy, permission matrix,
+admission checks, authorization checks, GitHub Project scope mapping, repository
+scope mapping, credential boundary, worker route boundary, break-glass path,
+access review, audit evidence, onboarding and offboarding, failure handling,
+remaining operational gaps, or permission level as an authority readiness gap.
 
 ## Symphony compatibility and Dokkaebi Fire lineage
 

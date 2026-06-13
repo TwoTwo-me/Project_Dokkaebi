@@ -45,6 +45,7 @@ require_file .github/workflows/dokkaebi-governance.yml
 require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
+require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
@@ -58,6 +59,7 @@ require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/operations/worker-cli-auth.md
+require_file docs/policies/multi-tenant-rbac.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
@@ -107,6 +109,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-worker-route-result-metadata.md'
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
+require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
@@ -151,6 +154,9 @@ require_text docs/contracts/manager-contract.md 'integrity check'
 require_text docs/contracts/manager-contract.md 'Immutable audit export designs'
 require_text docs/contracts/manager-contract.md 'manifest hash'
 require_text docs/contracts/manager-contract.md 'redaction manifest'
+require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
+require_text docs/contracts/manager-contract.md 'tenant boundaries'
+require_text docs/contracts/manager-contract.md 'permission matrix'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -171,6 +177,8 @@ require_text docs/policies/authority-and-safety.md '## Human approval required'
 require_text docs/policies/authority-and-safety.md '## Approval evidence record'
 require_text docs/policies/authority-and-safety.md '## Fail-closed preflight'
 require_text docs/policies/authority-and-safety.md '## Credential broker boundary'
+require_text docs/policies/authority-and-safety.md '## Multi-tenant RBAC boundary'
+require_text docs/policies/authority-and-safety.md '[`multi-tenant-rbac.md`](multi-tenant-rbac.md)'
 require_text docs/policies/authority-and-safety.md '## Symphony compatibility policy'
 require_text docs/policies/authority-and-safety.md 'planned result-packet or Manager-review surface'
 require_text docs/policies/authority-and-safety.md 'required at closeout'
@@ -179,6 +187,26 @@ require_text docs/policies/authority-and-safety.md 'approved setup authority'
 require_text docs/policies/authority-and-safety.md '## Git governance boundary'
 require_text docs/policies/authority-and-safety.md '[`git-governance.md`](git-governance.md)'
 require_no_text docs/policies/authority-and-safety.md 'link to the resulting Worker result packet or Manager review'
+
+require_text docs/policies/multi-tenant-rbac.md '# Multi-Tenant RBAC Model'
+require_text docs/policies/multi-tenant-rbac.md 'tenant boundaries'
+require_text docs/policies/multi-tenant-rbac.md 'role taxonomy'
+require_text docs/policies/multi-tenant-rbac.md 'permission matrix'
+require_text docs/policies/multi-tenant-rbac.md 'admission checks'
+require_text docs/policies/multi-tenant-rbac.md 'authorization checks'
+require_text docs/policies/multi-tenant-rbac.md 'GitHub Project scope mapping'
+require_text docs/policies/multi-tenant-rbac.md 'repository scope mapping'
+require_text docs/policies/multi-tenant-rbac.md 'credential boundary'
+require_text docs/policies/multi-tenant-rbac.md 'worker route boundary'
+require_text docs/policies/multi-tenant-rbac.md 'break-glass path'
+require_text docs/policies/multi-tenant-rbac.md 'access review'
+require_text docs/policies/multi-tenant-rbac.md 'audit evidence'
+require_text docs/policies/multi-tenant-rbac.md 'onboarding and offboarding'
+require_text docs/policies/multi-tenant-rbac.md 'failure handling'
+require_text docs/policies/multi-tenant-rbac.md 'remaining operational gaps'
+require_text docs/policies/multi-tenant-rbac.md 'permission level'
+require_text docs/policies/multi-tenant-rbac.md 'docs-only'
+require_text docs/policies/multi-tenant-rbac.md 'control-plane'
 
 require_text docs/policies/git-governance.md '# Dokkaebi Git Governance Policy'
 require_text docs/policies/git-governance.md '## Enforcement surfaces'
@@ -226,6 +254,7 @@ require_text scripts/validate-git-governance.sh 'Validation:'
 require_text scripts/validate-git-governance.sh 'Risks:'
 require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
 require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise readiness criteria are present and structurally valid'
+require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant RBAC validation passed'
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
@@ -673,6 +702,7 @@ if errors:
 PY
 
 bash scripts/validate-readiness-criteria.sh >/dev/null
+bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
