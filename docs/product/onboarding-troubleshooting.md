@@ -206,12 +206,15 @@ or GitHub Project control-plane mutation requires explicit Human approval under
 
 ## Remaining Productization Gaps
 
-- A guided onboarding UI or admin wizard is not implemented.
-- Screenshots for admin, approver, operator, auditor, and worker-author flows are
-  not captured.
+- The guided onboarding UI is implemented in the Symphony web surface, but setup
+  remains read-only and not yet connected to multi-project field discovery or
+  dry-run setup.
+- Role-specific screenshots and browser QA exist for the first UI pass, but are
+  not yet retained by CI as product UI regression artifacts.
 - Multi-project setup still requires experienced review of GitHub Project fields
   and backend configuration.
-- Troubleshooting remains document-led rather than embedded in the product UI.
+- Troubleshooting remains partially document-led rather than fully embedded in
+  the product UI.
 
 <!-- onboarding-troubleshooting:begin -->
 ```json
@@ -392,10 +395,10 @@ or GitHub Project control-plane mutation requires explicit Human approval under
     }
   },
   "remainingProductizationGaps": [
-    "guided onboarding UI or admin wizard is not implemented",
-    "role-specific screenshots are not captured",
+    "guided onboarding UI exists but needs multi-project setup workflow integration",
+    "role-specific screenshots are captured locally but not yet retained as CI product UI regression evidence",
     "multi-project setup still requires experienced review",
-    "troubleshooting is document-led rather than embedded in product UI"
+    "troubleshooting is not fully embedded in product UI"
   ]
 }
 ```
