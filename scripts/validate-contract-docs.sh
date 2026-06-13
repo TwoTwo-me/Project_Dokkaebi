@@ -61,6 +61,7 @@ require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-release-rollback-drill.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-backup-restore-drill.sh
+require_file scripts/validate-sandbox-restore-drill.sh
 require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
@@ -85,6 +86,7 @@ require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/release-rollback-drill-2026-06-13.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/operations/backup-restore-drill-2026-06-13.md
+require_file docs/operations/sandbox-restore-drill-2026-06-13.md
 require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
@@ -140,6 +142,7 @@ require_text docs/contracts/manager-contract.md '../operations/central-metrics-b
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
+require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-drill-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
@@ -177,6 +180,9 @@ require_text docs/contracts/manager-contract.md 'staged rollout'
 require_text docs/contracts/manager-contract.md 'Topology backup restore and disaster recovery evidence'
 require_text docs/contracts/manager-contract.md 'environment tier'
 require_text docs/contracts/manager-contract.md 'backup target'
+require_text docs/contracts/manager-contract.md 'Credential-free sandbox restore drill evidence'
+require_text docs/contracts/manager-contract.md 'measured RPO/RTO'
+require_text docs/contracts/manager-contract.md 'cleanup receipt'
 require_text docs/contracts/manager-contract.md 'Compliance evidence packages'
 require_text docs/contracts/manager-contract.md 'approval control'
 require_text docs/contracts/manager-contract.md 'sample evidence chain'
@@ -360,6 +366,7 @@ require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi
 require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release rollback drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
+require_text scripts/validate-sandbox-restore-drill.sh 'PASS Dokkaebi sandbox restore drill validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
 require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 require_text scripts/validate-immutable-audit-export.sh 'PASS Dokkaebi immutable audit export validation passed'
@@ -501,6 +508,17 @@ require_text docs/operations/backup-restore-drill-2026-06-13.md 'RTO result'
 require_text docs/operations/backup-restore-drill-2026-06-13.md 'approval-gate status'
 require_text docs/operations/backup-restore-drill-2026-06-13.md 'cleanup'
 require_text docs/operations/backup-restore-drill-2026-06-13.md 'does not authorize'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md '# Credential-Free Sandbox Restore Drill'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'credential-free sandbox restore drill'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'sandbox target'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'restore point'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'Measured RPO'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'Measured RTO'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'DR Roles'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'validation output'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'approval-gate status'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'cleanup receipt'
+require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'does not authorize'
 require_text docs/compliance/control-map-and-evidence-package.md '# Compliance Control Map And Evidence Package'
 require_text docs/compliance/control-map-and-evidence-package.md 'approval control'
 require_text docs/compliance/control-map-and-evidence-package.md 'access control'
@@ -900,6 +918,7 @@ bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-release-rollback-drill.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-backup-restore-drill.sh >/dev/null
+bash scripts/validate-sandbox-restore-drill.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null
