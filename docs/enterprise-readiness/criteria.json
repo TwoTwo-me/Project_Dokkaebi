@@ -11,6 +11,7 @@
       "name": "Carbon Design System color guidance",
       "url": "https://carbondesignsystem.com/elements/color/overview/",
       "requiredInterpretation": [
+        "Use docs/design/carbon-ui-baseline.md as the repository-owned interpretation for UI PRs.",
         "Use role-based color tokens rather than hard-coded product colors for UI surfaces.",
         "Use Carbon light and dark theme layering rules when Dokkaebi introduces product UI.",
         "Use the core blue action family intentionally, with support colors reserved for status and alerts.",
@@ -544,18 +545,19 @@
     {
       "id": "productization_ux",
       "name": "Productization and UX",
-      "currentPercent": 46,
+      "currentPercent": 48,
       "targetPercent": 100,
       "enterpriseStandard": "Admins, approvers, operators, auditors, and worker authors can install, configure, monitor, approve, troubleshoot, and learn the product without relying on private maintainer context.",
       "currentEvidence": [
         "README.md",
         "plugins/dokkaebi",
         "docs/operations/fire-sandbox-service.md",
-        "docs/operations/toolchain-bootstrap.md"
+        "docs/operations/toolchain-bootstrap.md",
+        "docs/design/carbon-ui-baseline.md"
       ],
       "gaps": [
         "Admin UI and guided setup are incomplete.",
-        "Operator journeys for triage, approval, result review, and troubleshooting need product-grade flows.",
+        "Operator journeys for triage, approval, result review, and troubleshooting need product-grade flows tied to implemented UI or onboarding evidence.",
         "Human-facing docs are strong in contracts but not yet packaged as onboarding."
       ],
       "evaluationQuestions": [
@@ -597,16 +599,18 @@
     {
       "id": "design_system",
       "name": "Design system and visual quality",
-      "currentPercent": 10,
+      "currentPercent": 46,
       "targetPercent": 100,
       "enterpriseStandard": "All Dokkaebi UI surfaces use a documented Carbon Design System baseline for color, interaction states, accessibility, and enterprise information density.",
       "currentEvidence": [
-        "docs/enterprise-readiness/criteria.json"
+        "docs/enterprise-readiness/criteria.json",
+        "docs/design/carbon-ui-baseline.md",
+        "scripts/validate-carbon-ui-baseline.sh"
       ],
       "gaps": [
         "No first-party UI implementation currently proves Carbon token usage.",
-        "Visual QA and accessibility checks are not defined for future UI surfaces.",
-        "Design tokens are not mapped to product components."
+        "Desktop and mobile visual QA captures are not available for a real Dokkaebi UI surface.",
+        "Automated contrast evidence and component-library token proof are not available."
       ],
       "evaluationQuestions": [
         "Do UI surfaces use Carbon tokens and theme layering instead of arbitrary palettes?",
@@ -621,24 +625,28 @@
       ],
       "nextIssues": [
         {
-          "title": "Define Carbon-based UI token and accessibility baseline",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/24",
+          "title": "Add first-party UI token proof and visual QA captures",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/61",
           "acceptanceCriteria": [
-            "Document maps Dokkaebi UI roles to Carbon color tokens and themes.",
-            "Focus and contrast requirements are stated for interactive elements and data visualization.",
-            "Future UI PRs have a visual QA checklist tied to the baseline."
+            "Implement or identify a first-party UI surface that uses Carbon role-based tokens instead of arbitrary hard-coded UI colors.",
+            "Capture desktop and mobile visual QA evidence for default, hover, selected, active, focus, disabled, error, warning, success, and data/status states where applicable.",
+            "Capture contrast evidence for text, focus indicators, graphical elements, data visualization, and status indicators.",
+            "Update docs/enterprise-readiness/criteria.json after implementation and visual QA evidence exists."
           ],
           "validationRequired": [
+            "bash scripts/validate-carbon-ui-baseline.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted visual QA and accessibility validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "docs-only or local UI validation unless a later PR explicitly records higher approved authority. Deployment, production write, credential, infrastructure, worker, remote host, Docker, Kubernetes, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Visual QA capture paths or CI artifact links",
+            "Accessibility and contrast evidence",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }

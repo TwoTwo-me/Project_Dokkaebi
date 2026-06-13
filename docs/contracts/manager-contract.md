@@ -58,6 +58,7 @@ Required local artifacts:
 - [`ARCHITECTURE.md`](../../ARCHITECTURE.md)
 - [`WORKFLOW.md`](../../WORKFLOW.md)
 - [`docs/contracts/hammer-worker-contract.md`](hammer-worker-contract.md)
+- [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
@@ -162,6 +163,13 @@ admission checks, authorization checks, GitHub Project scope mapping, repository
 scope mapping, credential boundary, worker route boundary, break-glass path,
 access review, audit evidence, onboarding and offboarding, failure handling,
 remaining operational gaps, or permission level as an authority readiness gap.
+
+Human-facing UI surfaces must follow
+[`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).
+The Manager must treat missing theme choice, role-based token mapping, layering
+model, interaction states, focus requirements, contrast thresholds, data
+visualization rules, status color rules, component state inventory, visual QA checklist,
+remaining operational gaps, or permission level as a design readiness gap.
 
 ## Symphony compatibility and Dokkaebi Fire lineage
 

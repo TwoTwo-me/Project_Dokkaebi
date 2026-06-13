@@ -45,6 +45,7 @@ require_file .github/workflows/dokkaebi-governance.yml
 require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
+require_file scripts/validate-carbon-ui-baseline.sh
 require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
@@ -58,6 +59,7 @@ require_file scripts/validate-immutable-audit-export.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
+require_file docs/design/carbon-ui-baseline.md
 require_file docs/operations/worker-cli-auth.md
 require_file docs/policies/multi-tenant-rbac.md
 require_file docs/operations/dispatch-lease-recovery.md
@@ -108,6 +110,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-approval-evidence.md'
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-worker-route-result-metadata.md'
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
+require_text docs/contracts/manager-contract.md '../design/carbon-ui-baseline.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
@@ -157,6 +160,9 @@ require_text docs/contracts/manager-contract.md 'redaction manifest'
 require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
 require_text docs/contracts/manager-contract.md 'tenant boundaries'
 require_text docs/contracts/manager-contract.md 'permission matrix'
+require_text docs/contracts/manager-contract.md 'Human-facing UI surfaces'
+require_text docs/contracts/manager-contract.md 'role-based token mapping'
+require_text docs/contracts/manager-contract.md 'visual QA checklist'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -208,6 +214,22 @@ require_text docs/policies/multi-tenant-rbac.md 'permission level'
 require_text docs/policies/multi-tenant-rbac.md 'docs-only'
 require_text docs/policies/multi-tenant-rbac.md 'control-plane'
 
+require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
+require_text docs/design/carbon-ui-baseline.md 'theme choice'
+require_text docs/design/carbon-ui-baseline.md 'role-based token mapping'
+require_text docs/design/carbon-ui-baseline.md 'layering model'
+require_text docs/design/carbon-ui-baseline.md 'interaction states'
+require_text docs/design/carbon-ui-baseline.md 'focus requirements'
+require_text docs/design/carbon-ui-baseline.md 'contrast thresholds'
+require_text docs/design/carbon-ui-baseline.md 'data visualization rules'
+require_text docs/design/carbon-ui-baseline.md 'status color rules'
+require_text docs/design/carbon-ui-baseline.md 'component state inventory'
+require_text docs/design/carbon-ui-baseline.md 'visual QA checklist'
+require_text docs/design/carbon-ui-baseline.md 'remaining operational gaps'
+require_text docs/design/carbon-ui-baseline.md 'permission level'
+require_text docs/design/carbon-ui-baseline.md 'docs-only'
+require_text docs/design/carbon-ui-baseline.md 'Carbon Design System'
+
 require_text docs/policies/git-governance.md '# Dokkaebi Git Governance Policy'
 require_text docs/policies/git-governance.md '## Enforcement surfaces'
 require_text docs/policies/git-governance.md '## GitHub Flow'
@@ -254,6 +276,7 @@ require_text scripts/validate-git-governance.sh 'Validation:'
 require_text scripts/validate-git-governance.sh 'Risks:'
 require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
 require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise readiness criteria are present and structurally valid'
+require_text scripts/validate-carbon-ui-baseline.sh 'PASS Dokkaebi Carbon UI baseline validation passed'
 require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant RBAC validation passed'
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
@@ -702,6 +725,7 @@ if errors:
 PY
 
 bash scripts/validate-readiness-criteria.sh >/dev/null
+bash scripts/validate-carbon-ui-baseline.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
