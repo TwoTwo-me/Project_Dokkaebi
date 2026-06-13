@@ -67,6 +67,7 @@ Required local artifacts:
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
+- [`docs/compliance/audit-review-2026-06-13.md`](../compliance/audit-review-2026-06-13.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -232,6 +233,12 @@ The Manager must treat missing approval control, access control, change
 management control, logging control, incident control, credential control,
 retention, redaction, integrity, ownership, export design, package contents,
 sample evidence chain, or approval boundary as a compliance readiness gap.
+Compliance audit review packages must follow
+[`docs/compliance/audit-review-2026-06-13.md`](../compliance/audit-review-2026-06-13.md).
+The Manager must treat missing completed-change reference, reviewer, control
+coverage, evidence links, exceptions, retention decision, redaction decision,
+integrity check, approval-gate status, residual risk, or next action as a
+compliance package readiness gap.
 
 ## Toolchain bootstrap contract
 

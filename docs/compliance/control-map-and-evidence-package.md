@@ -102,6 +102,13 @@ incident control, credential control, retention, redaction, integrity,
 ownership, export design, package contents, sample evidence chain, approval
 boundary, or secret-bearing evidence wording.
 
+## Implemented Review Packages
+
+- [`audit-review-2026-06-13.md`](audit-review-2026-06-13.md) reviews PR
+  #53 against this package shape and captures reviewer, control coverage,
+  evidence links, exceptions, retention decision, redaction decision, integrity
+  check, approval-gate status, residual risk, and next action.
+
 <!-- compliance-package:begin -->
 ```json
 {
