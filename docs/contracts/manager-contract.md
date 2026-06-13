@@ -65,6 +65,7 @@ Required local artifacts:
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
+- [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -217,6 +218,12 @@ The Manager must treat missing staged rollout, rollback trigger, operator,
 evidence, communication, queue threshold, worker threshold, retry threshold,
 review-age threshold, local validation path, drill evidence shape, or approval
 boundary as an operations readiness gap.
+
+Topology backup restore and disaster recovery evidence must follow
+[`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md).
+The Manager must treat missing environment tier, HA assumption, backup target,
+restore step, RPO, RTO, DR role, evidence retention, drill evidence shape, or
+approval boundary as an infrastructure readiness gap.
 
 ## Toolchain bootstrap contract
 
