@@ -437,7 +437,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 82,
+      "currentPercent": 86,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -454,12 +454,14 @@
         "scripts/validate-release-rollback-drill.sh",
         "docs/operations/release-rollback-drill-2026-06-13.md",
         "docs/operations/on-call-paging-alerting.md",
-        "scripts/validate-on-call-paging-alerting.sh"
+        "scripts/validate-on-call-paging-alerting.sh",
+        "docs/operations/incident-response-runbook-2026-06-13.md",
+        "scripts/validate-incident-response-runbook.sh"
       ],
       "gaps": [
-        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented; one local release rollback drill exists, but paging implementation and routine approved drills are not operational.",
+        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented; local release rollback and incident response tabletop evidence exists, but paging implementation and routine approved drills are not operational.",
         "Capacity, soak, and central metrics thresholds exist, but long-running measured soak or metrics tests are not yet captured from a local or approved-sandbox run.",
-        "Release and rollback procedures and one local drill are documented, but automated runtime gates and approved sandbox rollback evidence are still required before production service quality can be claimed."
+        "Incident response and release/rollback procedures have local tabletop or drill evidence, but automated runtime gates, approved sandbox incident and rollback evidence, live paging delivery, and postmortem automation are still required before production service quality can be claimed."
       ],
       "evaluationQuestions": [
         "What happens when Fire is down, GitHub API is rate-limited, or all workers are unhealthy?",
@@ -693,28 +695,32 @@
     {
       "id": "incident_response",
       "name": "Incident Response",
-      "currentPercent": 58,
+      "currentPercent": 74,
       "targetPercent": 100,
-      "nextIssueTitle": "Create incident response runbook",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/25",
+      "nextIssueTitle": "Run approved incident response drill and postmortem exercise",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/78",
       "acceptanceCriteria": [
-        "Run an incident response tabletop or approved sandbox drill using the SRE and on-call paging baselines.",
-        "Capture severity, commander, communication, mitigation, postmortem, alert routing decision, and follow-up evidence.",
-        "Update docs/enterprise-readiness/criteria.json after drill evidence exists."
+        "Run an approved incident response drill or sandbox exercise using the dedicated runbook, SRE baseline, and on-call paging baseline.",
+        "Capture detection input, severity declaration, commander assignment, communication timeline, mitigation decision, rollback or recovery decision, alert routing decision, validation output, cleanup, and postmortem evidence.",
+        "Prove the exercise fails closed when commander, communication, mitigation, approval-gate status, or postmortem evidence is missing.",
+        "Update docs/enterprise-readiness/criteria.json only from captured approved drill or sandbox evidence."
       ],
       "validationRequired": [
-        "bash scripts/validate-on-call-paging-alerting.sh",
+        "bash scripts/validate-incident-response-runbook.sh",
         "bash scripts/validate-sre-operating-baseline.sh",
+        "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted approved drill or sandbox validation named by the implementation"
       ],
-      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Docs-only planning by default. Sandbox, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",
         "Validation command output",
         "Approval-gate status",
+        "Cleanup receipt",
+        "Postmortem evidence",
         "Residual risk and next action"
       ]
     },
