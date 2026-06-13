@@ -317,6 +317,12 @@ The Manager must treat missing signed manifest storage, signing-key ownership,
 rotation cadence, revocation triggers, verification cadence, retention
 enforcement, redaction review, owner review, signature verification, cleanup,
 residual risk, or next action as an immutable audit export readiness gap.
+Runtime quality gates must follow
+[`docs/enterprise-readiness/runtime-quality-gate-matrix.md`](../enterprise-readiness/runtime-quality-gate-matrix.md).
+The Manager must treat missing orchestration, credential, GitHub adapter,
+worker provider, or UI risk-surface coverage, missing required tests, missing
+accepted risk, missing approval-gate status, missing cleanup receipt, or
+missing next action as a development-quality readiness gap.
 
 ## Toolchain bootstrap contract
 
