@@ -13,7 +13,9 @@ implemented systems, but they must preserve the evidence requirements here.
 ## Service Objectives
 
 Initial SLOs are measured from GitHub issue, PR, project, log, and result-packet
-evidence until a central metrics backend exists.
+evidence until the central metrics backend design in
+[`central-metrics-backend.md`](central-metrics-backend.md) is proven by local
+replay or approved sandbox metrics evidence.
 
 The three initial SLO names are dispatch latency, recovery time, and review age,
 and each one carries an error budget for review.
@@ -163,5 +165,5 @@ mitigation, postmortem, or resolved on-call decision.
 
 This baseline does not finish operations readiness. Remaining work includes
 release and rollback drills, capacity planning, long-running soak tests, backup
-and restore drills, production paging implementation, central metrics backend,
-and routine incident drills.
+and restore drills, production paging implementation, central metrics backend
+verification, and routine incident drills.

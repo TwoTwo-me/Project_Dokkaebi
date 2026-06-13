@@ -64,6 +64,7 @@ Required local artifacts:
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
+- [`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
@@ -214,6 +215,14 @@ SRE operating evidence must follow
 The Manager must treat missing dispatch SLO, recovery SLO, review-age SLO,
 incident commander, communication, mitigation, postmortem, or resolved on-call
 decision as an operations readiness gap.
+
+Central metrics backend designs must follow
+[`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md).
+The Manager must treat missing metric taxonomy, ingestion path, storage backend
+assumptions, retention, label and cardinality controls, dashboard and alert
+integration, SLO linkage, ownership, security boundary, rollout phases,
+validation steps, failure handling, remaining operational gaps, or permission
+level as an observability readiness gap.
 
 Release rollback capacity evidence must follow
 [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md).
