@@ -35,6 +35,9 @@ discipline and error-budget discussion only.
 
 Use this incident response path for Fire, Manager, Hammer route, GitHub adapter,
 credential, dispatch, closeout, and evidence-integrity failures.
+The dedicated incident response runbook and current docs-only tabletop package
+are captured in
+[`incident-response-runbook-2026-06-13.md`](incident-response-runbook-2026-06-13.md).
 
 | Severity | Trigger | Response target | Commander |
 | --- | --- | --- | --- |
@@ -171,6 +174,7 @@ mitigation, postmortem, or resolved on-call decision.
 ## Remaining Gaps
 
 This baseline does not finish operations readiness. Remaining work includes
-release and rollback drills, capacity planning, long-running soak tests, backup
-and restore drills, production paging implementation, central metrics backend
-verification, and routine incident drills.
+approved sandbox incident drills, runtime postmortem automation, capacity
+planning, long-running soak tests, production paging implementation, central
+metrics backend verification, approved sandbox restore evidence, and routine
+operations exercises.
