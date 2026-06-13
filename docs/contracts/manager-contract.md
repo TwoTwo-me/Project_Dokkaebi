@@ -64,6 +64,11 @@ Required local artifacts:
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
+- [`docs/examples/result-packets/accepted.md`](../examples/result-packets/accepted.md)
+- [`docs/examples/result-packets/rejected-missing-acceptance-evidence.md`](../examples/result-packets/rejected-missing-acceptance-evidence.md)
+- [`docs/examples/result-packets/rejected-missing-validation-evidence.md`](../examples/result-packets/rejected-missing-validation-evidence.md)
+- [`docs/examples/result-packets/rejected-missing-scope-control.md`](../examples/result-packets/rejected-missing-scope-control.md)
+- [`docs/examples/result-packets/rejected-missing-approval-status.md`](../examples/result-packets/rejected-missing-approval-status.md)
 
 ## Authority levels
 
@@ -206,6 +211,27 @@ capabilities to concrete behavior:
 
 Hermes baseline conformance is documented in
 [`docs/adapters/hermes.md`](../adapters/hermes.md).
+
+### Adapter conformance proof
+
+A new Manager adapter proves conformance by publishing an adapter note like
+[`docs/adapters/hermes.md`](../adapters/hermes.md) and by producing replayable
+evidence for the contract surfaces it claims to support. The proof must include:
+
+1. A Worker ticket generated from
+   [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md).
+2. One accepted result packet equivalent to
+   [`docs/examples/result-packets/accepted.md`](../examples/result-packets/accepted.md).
+3. Rejected result-packet evidence equivalent to the missing acceptance,
+   validation, scope-control, and approval-gate examples under
+   [`docs/examples/result-packets/`](../examples/result-packets/).
+4. Validator output showing accepted packets pass and rejected packets fail for
+   the intended reason.
+5. A Manager review summary that links request, ticket, approval state, Worker
+   result, validation evidence, residual risk, and next decision.
+
+Hidden adapter memory is not conformance evidence. Another Manager adapter must
+be able to inspect the artifacts and reach the same accept or reject decision.
 
 ## Result packet minimum
 
