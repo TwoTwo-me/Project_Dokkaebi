@@ -172,6 +172,18 @@ model, interaction states, focus requirements, contrast thresholds, data
 visualization rules, status color rules, component state inventory, visual QA checklist,
 remaining operational gaps, or permission level as a design readiness gap.
 
+Role-based onboarding and troubleshooting guides must follow
+[`docs/product/onboarding-troubleshooting.md`](../product/onboarding-troubleshooting.md).
+The Manager must treat missing admin journey, approver journey, operator journey,
+auditor journey, worker-author journey, install walkthrough, GitHub
+Project setup checks, repository setup checks, approval and review actions,
+result-packet closeout actions, Fire failure troubleshooting, worker failure
+troubleshooting, GitHub failure troubleshooting, credential failure
+troubleshooting, validation failure troubleshooting, project-field failure
+troubleshooting, PR failure troubleshooting, result-packet failure
+troubleshooting, clear next actions, approval boundary, or permission level as a
+productization readiness gap.
+
 ## Symphony compatibility and Dokkaebi Fire lineage
 
 Dokkaebi Fire is the long-running backend/orchestrator derived from Symphony.
