@@ -70,6 +70,7 @@ Required local artifacts:
 - [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
+- [`docs/operations/sandbox-restore-drill-2026-06-13.md`](../operations/sandbox-restore-drill-2026-06-13.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
 - [`docs/compliance/audit-review-2026-06-13.md`](../compliance/audit-review-2026-06-13.md)
 - [`docs/compliance/immutable-audit-export.md`](../compliance/immutable-audit-export.md)
@@ -284,9 +285,13 @@ boundary as an operations readiness gap.
 
 Topology backup restore and disaster recovery evidence must follow
 [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md).
+Credential-free sandbox restore drill evidence must follow
+[`docs/operations/sandbox-restore-drill-2026-06-13.md`](../operations/sandbox-restore-drill-2026-06-13.md)
+or a later dated drill package.
 The Manager must treat missing environment tier, HA assumption, backup target,
-restore step, RPO, RTO, DR role, evidence retention, drill evidence shape, or
-approval boundary as an infrastructure readiness gap.
+restore step, RPO, RTO, measured RPO/RTO, DR role, evidence retention, drill
+evidence shape, sandbox target, cleanup receipt, or approval boundary as an
+infrastructure readiness gap.
 
 Compliance evidence packages must follow
 [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md).
