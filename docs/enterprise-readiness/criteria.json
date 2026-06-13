@@ -608,18 +608,24 @@
     {
       "id": "design_system",
       "name": "Design system and visual quality",
-      "currentPercent": 46,
+      "currentPercent": 74,
       "targetPercent": 100,
       "enterpriseStandard": "All Dokkaebi UI surfaces use a documented Carbon Design System baseline for color, interaction states, accessibility, and enterprise information density.",
       "currentEvidence": [
         "docs/enterprise-readiness/criteria.json",
         "docs/design/carbon-ui-baseline.md",
-        "scripts/validate-carbon-ui-baseline.sh"
+        "scripts/validate-carbon-ui-baseline.sh",
+        "symphony-github-project-tracker/docs/design/dashboard-carbon-proof.md",
+        "symphony-github-project-tracker/docs/design/evidence/dashboard-carbon-proof/desktop.png",
+        "symphony-github-project-tracker/docs/design/evidence/dashboard-carbon-proof/mobile.png",
+        "symphony-github-project-tracker/docs/design/evidence/dashboard-carbon-proof/contrast-report.json",
+        "symphony-github-project-tracker/scripts/validate-dashboard-carbon-proof.sh",
+        "https://github.com/TwoTwo-me/symphony-github-project-tracker/pull/16"
       ],
       "gaps": [
-        "No first-party UI implementation currently proves Carbon token usage.",
-        "Desktop and mobile visual QA captures are not available for a real Dokkaebi UI surface.",
-        "Automated contrast evidence and component-library token proof are not available."
+        "Only the Symphony observability dashboard currently proves Carbon token usage, responsive mobile layout, contrast evidence, and CJK-safe dynamic text on a first-party UI surface.",
+        "Reusable component-library token proof is not complete across all Dokkaebi UI surfaces.",
+        "CI visual regression capture and full cross-browser visual regression matrix are not complete."
       ],
       "evaluationQuestions": [
         "Do UI surfaces use Carbon tokens and theme layering instead of arbitrary palettes?",
@@ -634,26 +640,29 @@
       ],
       "nextIssues": [
         {
-          "title": "Add first-party UI token proof and visual QA captures",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/61",
+          "title": "Add component library and CI visual regression gate",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/67",
           "acceptanceCriteria": [
-            "Implement or identify a first-party UI surface that uses Carbon role-based tokens instead of arbitrary hard-coded UI colors.",
-            "Capture desktop and mobile visual QA evidence for default, hover, selected, active, focus, disabled, error, warning, success, and data/status states where applicable.",
-            "Capture contrast evidence for text, focus indicators, graphical elements, data visualization, and status indicators.",
-            "Update docs/enterprise-readiness/criteria.json after implementation and visual QA evidence exists."
+            "Define a reusable Carbon component or token inventory for first-party UI surfaces instead of relying on one dashboard screen only.",
+            "Add CI visual regression evidence or artifact capture for desktop and mobile dashboard views.",
+            "Include contrast and state coverage for focus, hover, selected, active, disabled, error, warning, success, status, and data elements where applicable.",
+            "Document residual cross-browser matrix gaps or add the first cross-browser validation lane.",
+            "Update docs/enterprise-readiness/criteria.json after component-library and CI visual regression evidence exists."
           ],
           "validationRequired": [
             "bash scripts/validate-carbon-ui-baseline.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted visual QA and accessibility validation named by the implementation"
+            "bash scripts/validate-git-governance.sh",
+            "Targeted component inventory and CI visual regression validation named by the implementation"
           ],
-          "authorityRequirement": "docs-only or local UI validation unless a later PR explicitly records higher approved authority. Deployment, production write, credential, infrastructure, worker, remote host, Docker, Kubernetes, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "docs-only, local UI validation, or CI artifact validation unless a later PR explicitly records higher approved authority. Deployment, production write, credential, infrastructure, worker, remote host, Docker, Kubernetes, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Visual QA capture paths or CI artifact links",
-            "Accessibility and contrast evidence",
-            "Validation command output",
+            "Component inventory or design token library evidence",
+            "CI visual regression output or artifact links",
+            "Desktop and mobile visual QA evidence",
+            "Contrast and state validation output",
             "Approval-gate status",
             "Cleanup receipt",
             "Residual risk and next action"
