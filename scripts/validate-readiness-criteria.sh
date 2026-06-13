@@ -6,10 +6,13 @@ cd "$ROOT_DIR"
 
 python3 - <<'PY'
 import json
+import os
 from pathlib import Path
 import sys
 
-criteria_path = Path("docs/enterprise-readiness/criteria.json")
+criteria_path = Path(
+    os.environ.get("READINESS_CRITERIA_PATH", "docs/enterprise-readiness/criteria.json")
+)
 report_path = Path("docs/reports/company-readiness-assessment.md")
 loop_path = Path("docs/enterprise-readiness/development-loop.md")
 issue_form_path = Path(".github/ISSUE_TEMPLATE/development-system-task.yml")
@@ -64,9 +67,26 @@ for key in [
     "pullRequestContract",
     "mergeContract",
     "evaluationLoop",
+    "selfImprovementContract",
+    "improvementTriggers",
+    "improvementEvidence",
 ]:
     if not workflow.get(key):
         errors.append(f"workflow missing {key}")
+for key in ["improvementTriggers", "improvementEvidence"]:
+    value = workflow.get(key)
+    if not isinstance(value, list) or len(value) < 3:
+        errors.append(f"workflow {key} must list at least three items")
+
+if loop_path.is_file():
+    loop_text = loop_path.read_text()
+    for required_text in [
+        "## Self-Improvement Contract",
+        "Capture RED evidence",
+        "must not use self-improvement to bypass Human approval",
+    ]:
+        if required_text not in loop_text:
+            errors.append(f"development loop missing self-improvement text: {required_text}")
 
 areas = data.get("areas", [])
 if not isinstance(areas, list) or not areas:

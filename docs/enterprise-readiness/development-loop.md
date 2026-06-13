@@ -46,6 +46,37 @@ Each readiness phase follows this loop:
 The loop stops only when a required enterprise standard is genuinely undefined
 or needs a Human product decision.
 
+## Self-Improvement Contract
+
+The loop may improve itself when evidence shows the current process is failing
+to drive readiness work safely or clearly. Valid triggers include:
+
+- a readiness issue is missing scope, authority, validation, result evidence,
+  or metadata hygiene needed for dispatch;
+- a criterion cannot be scored from repository, GitHub, CI, runtime, or
+  operations evidence;
+- a validator passes while a documented loop requirement is absent or
+  unenforced;
+- a review, incident, or failed pull request identifies a repeatable gap in the
+  loop itself;
+- an enterprise standard is undefined and needs a Human decision before scoring
+  can continue.
+
+Self-improvement work follows the same loop as product work:
+
+1. Open or update a GitHub issue that names the loop gap and acceptance
+   criteria.
+2. Capture RED evidence showing the missing or weak loop behavior.
+3. Make the smallest criteria, documentation, issue-template, or validator
+   change that closes the gap.
+4. Run readiness, contract, package, git-governance, and targeted validation.
+5. Open and merge a pull request before using the improved loop to rescore
+   readiness.
+
+The loop must not use self-improvement to bypass Human approval, weaken result
+evidence, skip validation, mutate production or infrastructure, or mark a
+criterion 100% without evidence.
+
 ## Issue Contract
 
 Every readiness issue should include:
