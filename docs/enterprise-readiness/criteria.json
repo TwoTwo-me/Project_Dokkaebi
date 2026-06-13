@@ -152,7 +152,7 @@
     {
       "id": "infrastructure_platform",
       "name": "Infrastructure and platform",
-      "currentPercent": 64,
+      "currentPercent": 72,
       "targetPercent": 100,
       "enterpriseStandard": "Development, sandbox, staging, and production topologies are reproducible, isolated, monitored, backed up, and recoverable with least-privilege worker routes.",
       "currentEvidence": [
@@ -160,11 +160,13 @@
         "docs/operations/toolchain-bootstrap.md",
         "docs/operations/topology-backup-restore-dr.md",
         "scripts/validate-topology-backup-restore-dr.sh",
+        "docs/operations/backup-restore-drill-2026-06-13.md",
+        "scripts/validate-backup-restore-drill.sh",
         "symphony-github-project-tracker/docker",
         "symphony-github-project-tracker/elixir/config"
       ],
       "gaps": [
-        "Topology, HA, backup, restore, and DR evidence shape is defined, but approved sandbox restore evidence and measured RPO/RTO results are not captured.",
+        "Topology, HA, backup, restore, and DR evidence shape plus a local replay with measured RPO/RTO results are captured, but approved credential-free sandbox restore evidence is still pending.",
         "Docker and Kubernetes route maturity is uneven.",
         "Remote worker bootstrap is approved only for named development and sandbox targets."
       ],
@@ -181,25 +183,27 @@
       ],
       "nextIssues": [
         {
-          "title": "Run approved sandbox backup restore DR drill",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/50",
+          "title": "Run approved credential-free sandbox restore drill",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/69",
           "acceptanceCriteria": [
-            "Run or replay a sandbox restore drill using the documented topology and DR evidence shape.",
-            "Capture backup target, restore point, restore steps, RPO result, RTO result, DR roles, validation output, approval-gate status, cleanup, residual risk, and next action.",
-            "Update docs/enterprise-readiness/criteria.json after evidence exists."
+            "Run an approved credential-free sandbox restore drill using the documented topology and local replay evidence shape.",
+            "Capture sandbox target, restore point, restore steps, measured RPO and RTO, DR roles, validation output, approval-gate status, cleanup receipt, residual risk, and next action.",
+            "Update docs/enterprise-readiness/criteria.json only from captured sandbox evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-backup-restore-drill.sh",
             "bash scripts/validate-topology-backup-restore-dr.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
             "Targeted sandbox drill validation named by the implementation"
           ],
-          "authorityRequirement": "approved-sandbox-validation only after Human approval records the target, operations, credentials, and rollback path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "approved-sandbox-validation only after Human approval records the exact sandbox target, operations, credentials-none statement, rollback path, and cleanup path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }
@@ -759,27 +763,29 @@
     {
       "id": "backup_restore_dr",
       "name": "Backup, restore, and disaster recovery",
-      "currentPercent": 42,
+      "currentPercent": 66,
       "targetPercent": 100,
-      "nextIssueTitle": "Run approved sandbox backup restore DR drill",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/50",
+      "nextIssueTitle": "Run approved credential-free sandbox restore drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/69",
       "acceptanceCriteria": [
-        "Run or replay a sandbox restore drill using the documented topology and DR evidence shape.",
-        "Capture backup target, restore point, restore steps, RPO result, RTO result, DR roles, validation output, approval-gate status, cleanup, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Run an approved credential-free sandbox restore drill using the documented topology and local replay evidence shape.",
+        "Capture sandbox target, restore point, restore steps, measured RPO and RTO, DR roles, validation output, approval-gate status, cleanup receipt, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json only from captured sandbox evidence."
       ],
       "validationRequired": [
+        "bash scripts/validate-backup-restore-drill.sh",
         "bash scripts/validate-topology-backup-restore-dr.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
         "Targeted sandbox drill validation named by the implementation"
       ],
-      "authorityRequirement": "approved-sandbox-validation only after Human approval records the target, operations, credentials, and rollback path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "approved-sandbox-validation only after Human approval records the exact sandbox target, operations, credentials-none statement, rollback path, and cleanup path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",
         "Validation command output",
         "Approval-gate status",
+        "Cleanup receipt",
         "Residual risk and next action"
       ]
     },

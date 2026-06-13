@@ -31,6 +31,7 @@ for term in \
   "DR role" \
   "evidence retention" \
   "drill evidence" \
+  "cleanup" \
   "approval boundary" \
   "does not authorize live mutation"; do
   require_text "$DOC_PATH" "$term"
@@ -169,6 +170,7 @@ def validate_payload(payload: dict[str, Any]) -> None:
         "validationOutput",
         "evidenceRetention",
         "approvalGateStatus",
+        "cleanup",
         "residualRisk",
     }
     missing_shape = required_shape - shape.keys()
@@ -239,6 +241,10 @@ expect_reject("missing evidence retention", mutated)
 mutated = copy.deepcopy(baseline)
 mutated["drillEvidence"]["shape"] = {}
 expect_reject("missing drill evidence shape", mutated)
+
+mutated = copy.deepcopy(baseline)
+del mutated["drillEvidence"]["shape"]["cleanup"]
+expect_reject("missing cleanup", mutated)
 
 mutated = copy.deepcopy(baseline)
 mutated["approvalGateStatus"] = ""
