@@ -475,18 +475,20 @@
     {
       "id": "compliance_audit",
       "name": "Compliance and audit",
-      "currentPercent": 34,
+      "currentPercent": 58,
       "targetPercent": 100,
       "enterpriseStandard": "The system can produce control-mapped, retained, tamper-evident evidence for approvals, credentials, code changes, worker execution, and operational incidents.",
       "currentEvidence": [
         "docs/templates/worker-result-packet.md",
         "docs/policies/authority-and-safety.md",
-        "docs/policies/git-governance.md"
+        "docs/policies/git-governance.md",
+        "docs/compliance/control-map-and-evidence-package.md",
+        "scripts/validate-compliance-package.sh"
       ],
       "gaps": [
-        "Control mapping for SOC 2, ISO 27001, or internal audit is absent.",
-        "Retention and immutable export policy is not defined.",
-        "Evidence is distributed across issues, PRs, logs, and comments without a compliance package."
+        "Internal control mapping and package shape exist, but a real audit review walkthrough is not captured.",
+        "Immutable export policy is designed as a gap but not implemented.",
+        "Retention and redaction are documented, but enforcement and signed export manifests are not operational."
       ],
       "evaluationQuestions": [
         "Can an auditor reconstruct who approved a worker action and why?",
@@ -501,19 +503,20 @@
       ],
       "nextIssues": [
         {
-          "title": "Create compliance control map and audit evidence export design",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/22",
+          "title": "Run compliance package audit review",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/52",
           "acceptanceCriteria": [
-            "Control map covers approval, access, change management, logging, incident, and credential controls.",
-            "Export design includes retention, redaction, integrity, and ownership.",
-            "At least one sample evidence chain is documented end to end."
+            "Walk one completed change through the compliance package evidence chain.",
+            "Capture reviewer, control coverage, evidence links, exceptions, retention decision, redaction decision, integrity check, residual risk, and next action.",
+            "Update docs/enterprise-readiness/criteria.json after review evidence exists."
           ],
           "validationRequired": [
+            "bash scripts/validate-compliance-package.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted review validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "docs-only or approved review evidence unless a later issue explicitly records higher authority. Credential, production, infrastructure, worker, remote host, Proxmox, Docker, Kubernetes, deployment, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
@@ -737,22 +740,22 @@
     {
       "id": "compliance_package",
       "name": "Compliance package",
-      "currentPercent": 0,
+      "currentPercent": 45,
       "targetPercent": 100,
-      "nextIssueTitle": "Create enterprise compliance package skeleton",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/29",
+      "nextIssueTitle": "Run compliance package audit review",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/52",
       "acceptanceCriteria": [
-        "Define the enterprise standard for compliance_package.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
+        "Walk one completed change through the compliance package evidence chain.",
+        "Capture reviewer, control coverage, evidence links, exceptions, retention decision, redaction decision, integrity check, residual risk, and next action.",
         "Update docs/enterprise-readiness/criteria.json after evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-compliance-package.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted review validation named by the implementation"
       ],
-      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "docs-only or approved review evidence unless a later issue explicitly records higher authority. Credential, production, infrastructure, worker, remote host, Proxmox, Docker, Kubernetes, deployment, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",
