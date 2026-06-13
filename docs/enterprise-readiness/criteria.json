@@ -417,19 +417,21 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 48,
+      "currentPercent": 66,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
         "docs/operations/fire-sandbox-service.md",
         "docs/operations/toolchain-bootstrap.md",
         "docs/operations/sre-operating-baseline.md",
-        "scripts/validate-sre-operating-baseline.sh"
+        "scripts/validate-sre-operating-baseline.sh",
+        "docs/operations/release-rollback-capacity-drills.md",
+        "scripts/validate-release-rollback-capacity-drills.sh"
       ],
       "gaps": [
-        "SLO, incident response, and on-call boundaries are documented, but paging implementation and routine drills are not operational.",
-        "Capacity planning and long-running soak tests are not defined.",
-        "Release and rollback procedures do not yet reach production service quality."
+        "SLO, incident response, on-call boundaries, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
+        "Capacity and soak thresholds exist, but long-running measured soak tests are not yet captured from a local or approved-sandbox run.",
+        "Release and rollback procedures are documented, but approved drill evidence is still required before production service quality can be claimed."
       ],
       "evaluationQuestions": [
         "What happens when Fire is down, GitHub API is rate-limited, or all workers are unhealthy?",
@@ -444,17 +446,17 @@
       ],
       "nextIssues": [
         {
-          "title": "Add release rollback and capacity drill baseline",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/46",
+          "title": "Run approved release and rollback drill",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/48",
           "acceptanceCriteria": [
-            "Release and rollback runbook defines staged rollout, rollback trigger, operator, evidence, and communication path.",
-            "Capacity and soak plan defines queue, worker, retry, and review-age thresholds with a local or approved-sandbox validation path.",
-            "Drill evidence can be captured without private memory and is referenced by readiness criteria."
+            "Drill identifies release candidate, staged rollout step, rollback trigger, operator, communication surface, and closeout evidence.",
+            "Drill proves rollback decision and recovery path through captured command output, transcript, or approved sandbox evidence.",
+            "Readiness criteria are updated only from evidence produced by the drill."
           ],
           "validationRequired": [
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted release, rollback, capacity, and drill validation named by the implementation"
+            "Targeted release/rollback drill validation named by the implementation"
           ],
           "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
@@ -759,20 +761,19 @@
     {
       "id": "production_release_rollback_runbook",
       "name": "Production release and rollback runbook",
-      "currentPercent": 0,
+      "currentPercent": 55,
       "targetPercent": 100,
-      "nextIssueTitle": "Create production release and rollback runbook",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/30",
+      "nextIssueTitle": "Run approved release and rollback drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/48",
       "acceptanceCriteria": [
-        "Define the enterprise standard for production_release_rollback_runbook.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Run an approved local or sandbox release and rollback drill.",
+        "Capture staged rollout, rollback trigger, operator, communication, evidence, approval-gate status, and closeout.",
+        "Update docs/enterprise-readiness/criteria.json after drill evidence exists."
       ],
       "validationRequired": [
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted release/rollback drill validation named by the implementation"
       ],
       "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
