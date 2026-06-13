@@ -69,6 +69,11 @@ Required local artifacts:
 - [`docs/examples/result-packets/rejected-missing-validation-evidence.md`](../examples/result-packets/rejected-missing-validation-evidence.md)
 - [`docs/examples/result-packets/rejected-missing-scope-control.md`](../examples/result-packets/rejected-missing-scope-control.md)
 - [`docs/examples/result-packets/rejected-missing-approval-status.md`](../examples/result-packets/rejected-missing-approval-status.md)
+- [`docs/examples/replays/accepted-manager-fire-hammer.md`](../examples/replays/accepted-manager-fire-hammer.md)
+- [`docs/examples/replays/rejected-missing-dispatch-readiness.md`](../examples/replays/rejected-missing-dispatch-readiness.md)
+- [`docs/examples/replays/rejected-missing-approval-evidence.md`](../examples/replays/rejected-missing-approval-evidence.md)
+- [`docs/examples/replays/rejected-missing-worker-route-result-metadata.md`](../examples/replays/rejected-missing-worker-route-result-metadata.md)
+- [`docs/examples/replays/rejected-missing-closeout-review-evidence.md`](../examples/replays/rejected-missing-closeout-review-evidence.md)
 
 ## Authority levels
 
@@ -229,6 +234,13 @@ evidence for the contract surfaces it claims to support. The proof must include:
    the intended reason.
 5. A Manager review summary that links request, ticket, approval state, Worker
    result, validation evidence, residual risk, and next decision.
+6. A Manager-Fire-Hammer replay suite equivalent to
+   [`docs/examples/replays/accepted-manager-fire-hammer.md`](../examples/replays/accepted-manager-fire-hammer.md)
+   and the rejected replay fixtures under
+   [`docs/examples/replays/`](../examples/replays/). The suite must prove
+   dispatch readiness, approval evidence, Worker route metadata, result
+   evidence, and Manager closeout evidence are accepted or rejected
+   deterministically.
 
 Hidden adapter memory is not conformance evidence. Another Manager adapter must
 be able to inspect the artifacts and reach the same accept or reject decision.

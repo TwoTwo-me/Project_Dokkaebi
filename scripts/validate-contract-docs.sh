@@ -54,6 +54,11 @@ require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.m
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
 require_file docs/examples/result-packets/rejected-missing-scope-control.md
 require_file docs/examples/result-packets/rejected-missing-approval-status.md
+require_file docs/examples/replays/accepted-manager-fire-hammer.md
+require_file docs/examples/replays/rejected-missing-dispatch-readiness.md
+require_file docs/examples/replays/rejected-missing-approval-evidence.md
+require_file docs/examples/replays/rejected-missing-worker-route-result-metadata.md
+require_file docs/examples/replays/rejected-missing-closeout-review-evidence.md
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -78,6 +83,11 @@ require_text docs/contracts/manager-contract.md '../examples/result-packets/reje
 require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-validation-evidence.md'
 require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-scope-control.md'
 require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-approval-status.md'
+require_text docs/contracts/manager-contract.md '../examples/replays/accepted-manager-fire-hammer.md'
+require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-dispatch-readiness.md'
+require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-approval-evidence.md'
+require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-worker-route-result-metadata.md'
+require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
@@ -88,6 +98,9 @@ require_text docs/contracts/manager-contract.md 'closeout evidence'
 require_text docs/contracts/manager-contract.md 'acceptance-criteria evidence'
 require_text docs/contracts/manager-contract.md 'scope-control statement'
 require_text docs/contracts/manager-contract.md 'approval-gate status'
+require_text docs/contracts/manager-contract.md 'Manager-Fire-Hammer replay suite'
+require_text docs/contracts/manager-contract.md 'dispatch readiness'
+require_text docs/contracts/manager-contract.md 'Worker route metadata'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -345,6 +358,79 @@ def validate_result_packet_fixture(path: Path) -> list[str]:
     return found
 
 
+def validate_replay_fixture(path: Path) -> list[str]:
+    text = path.read_text()
+    found: list[str] = []
+    required_sections = [
+        '## Replay identity',
+        '## Manager intake',
+        '## Approval gate state',
+        '## Fire dispatch readiness',
+        '## Hammer work result',
+        '## Manager review and closeout',
+        '## Replay decision',
+    ]
+    for heading in required_sections:
+        if heading not in text:
+            found.append(f'missing required section: {heading}')
+
+    replay_identity = markdown_section(text, '## Replay identity')
+    if replay_identity is not None:
+        for field in ['**Replay ID:**', '**Contract version:**', '**Source ticket:**',
+                      '**Expected replay result:**']:
+            if field not in replay_identity:
+                found.append(f'missing replay identity field: {field}')
+
+    manager_intake = markdown_section(text, '## Manager intake')
+    if manager_intake is not None:
+        for field in ['**Source request preserved:** yes', '**Goal:**',
+                      '**Acceptance criteria:**', '**Permission level:**',
+                      '**Result packet surface:**']:
+            if field not in manager_intake:
+                found.append(f'missing manager intake field: {field}')
+
+    approval = markdown_section(text, '## Approval gate state')
+    if approval is not None:
+        for field in ['**Approval evidence:**', '**PR merge approval:**',
+                      '**Credential/infrastructure/deployment gates:**',
+                      '**Worker authority:**']:
+            if field not in approval:
+                found.append(f'missing approval gate field: {field}')
+
+    dispatch = markdown_section(text, '## Fire dispatch readiness')
+    if dispatch is not None:
+        for field in ['**Semantic status:** Dispatchable',
+                      '**Project source of truth:** GitHub Project Status',
+                      '**Ticket link:**', '**Route metadata:**',
+                      '**Admission check:**']:
+            if field not in dispatch:
+                found.append(f'missing dispatch readiness field: {field}')
+
+    hammer = markdown_section(text, '## Hammer work result')
+    if hammer is not None:
+        for field in ['**Worker route metadata:**', '**Result packet:**',
+                      '**Acceptance criteria evidence:**',
+                      '**Validation evidence:**', '**Scope control:**',
+                      '**Approval-gate status:**']:
+            if field not in hammer:
+                found.append(f'missing hammer result field: {field}')
+
+    closeout = markdown_section(text, '## Manager review and closeout')
+    if closeout is not None:
+        for field in ['**Review decision:**', '**Closeout evidence:**',
+                      '**Residual risk:**', '**Next state:**']:
+            if field not in closeout:
+                found.append(f'missing manager closeout field: {field}')
+
+    replay_decision = markdown_section(text, '## Replay decision')
+    if replay_decision is not None:
+        for field in ['**Expected replay result:**', '**Reason:**']:
+            if field not in replay_decision:
+                found.append(f'missing replay decision field: {field}')
+
+    return found
+
+
 accepted_packet = Path('docs/examples/result-packets/accepted.md')
 accepted_errors = validate_result_packet_fixture(accepted_packet)
 if accepted_errors:
@@ -368,6 +454,33 @@ for packet, expected_error in rejected_packets.items():
     if expected_error not in fixture_errors:
         errors.append(
             f'{packet} did not fail for expected reason: {expected_error}; '
+            + 'actual: '
+            + ('; '.join(fixture_errors) if fixture_errors else 'no validation errors')
+        )
+
+accepted_replay = Path('docs/examples/replays/accepted-manager-fire-hammer.md')
+accepted_replay_errors = validate_replay_fixture(accepted_replay)
+if accepted_replay_errors:
+    errors.append(
+        f'{accepted_replay} should pass replay validation: '
+        + '; '.join(accepted_replay_errors)
+    )
+
+rejected_replays = {
+    Path('docs/examples/replays/rejected-missing-dispatch-readiness.md'):
+        'missing required section: ## Fire dispatch readiness',
+    Path('docs/examples/replays/rejected-missing-approval-evidence.md'):
+        'missing approval gate field: **Approval evidence:**',
+    Path('docs/examples/replays/rejected-missing-worker-route-result-metadata.md'):
+        'missing hammer result field: **Worker route metadata:**',
+    Path('docs/examples/replays/rejected-missing-closeout-review-evidence.md'):
+        'missing required section: ## Manager review and closeout',
+}
+for replay, expected_error in rejected_replays.items():
+    fixture_errors = validate_replay_fixture(replay)
+    if expected_error not in fixture_errors:
+        errors.append(
+            f'{replay} did not fail for expected reason: {expected_error}; '
             + 'actual: '
             + ('; '.join(fixture_errors) if fixture_errors else 'no validation errors')
         )
