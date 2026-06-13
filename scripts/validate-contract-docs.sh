@@ -59,6 +59,7 @@ require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
+require_file scripts/validate-immutable-audit-export-verification.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
@@ -77,6 +78,7 @@ require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
+require_file docs/compliance/immutable-audit-export-verification-2026-06-13.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -485,6 +487,17 @@ require_text docs/compliance/immutable-audit-export.md 'permission level'
 require_text docs/compliance/immutable-audit-export.md 'docs-only'
 require_text docs/compliance/immutable-audit-export.md 'no production'
 require_text docs/compliance/immutable-audit-export.md 'control-plane'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md '# Immutable Audit Export Verification Drill 2026-06-13'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'manifest hash'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'source links'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'redaction manifest'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'retention metadata'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'verification output'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'approval-gate status'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'cleanup'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'residual risk'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'next action'
+require_text docs/compliance/immutable-audit-export-verification-2026-06-13.md 'does not authorize'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -827,5 +840,6 @@ bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null
+bash scripts/validate-immutable-audit-export-verification.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'
