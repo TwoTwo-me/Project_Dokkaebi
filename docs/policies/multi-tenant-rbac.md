@@ -12,6 +12,8 @@ review, and audit evidence reviewable before runtime enforcement work starts.
 A later enforcement and access-review drill must prove the model with local
 replay, approved sandbox validation, or runtime policy tests before this
 capability can be treated as operational.
+The current local replay package is
+[`multi-tenant-rbac-drill-2026-06-13.md`](multi-tenant-rbac-drill-2026-06-13.md).
 
 The validation contract for this docs-only baseline explicitly covers tenant
 boundaries, role taxonomy, permission matrix, admission checks, authorization
@@ -499,10 +501,10 @@ or GitHub Project control-plane mutation wording.
   ],
   "remainingOperationalGaps": [
     "runtime enforcement is not implemented",
-    "access-review drill evidence is not captured",
-    "cross-tenant denial replay is not captured",
-    "credential grant denial replay is not captured",
-    "GitHub Project field mapping export is not captured",
+    "local access-review drill evidence is captured in multi-tenant-rbac-drill-2026-06-13.md but is not generated from runtime state",
+    "local cross-tenant denial replay is captured in multi-tenant-rbac-drill-2026-06-13.md but is not enforced by runtime gates",
+    "local credential grant denial replay is captured in multi-tenant-rbac-drill-2026-06-13.md but live credential broker denial evidence is not captured",
+    "GitHub Project field mapping export and reconciliation are not captured",
     "tenant lifecycle integration with identity provider is not selected"
   ],
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/59"

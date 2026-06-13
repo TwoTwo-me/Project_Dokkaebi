@@ -47,6 +47,7 @@ require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
 require_file scripts/validate-carbon-ui-baseline.sh
 require_file scripts/validate-multi-tenant-rbac.sh
+require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
@@ -67,6 +68,7 @@ require_file docs/design/carbon-ui-baseline.md
 require_file docs/product/onboarding-troubleshooting.md
 require_file docs/operations/worker-cli-auth.md
 require_file docs/policies/multi-tenant-rbac.md
+require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
@@ -239,6 +241,15 @@ require_text docs/policies/multi-tenant-rbac.md 'remaining operational gaps'
 require_text docs/policies/multi-tenant-rbac.md 'permission level'
 require_text docs/policies/multi-tenant-rbac.md 'docs-only'
 require_text docs/policies/multi-tenant-rbac.md 'control-plane'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md '# Multi-Tenant RBAC Replay Drill'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'admission decision output'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'authorization decision output'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'denied cross-tenant operation evidence'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'credential grant boundary evidence'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'worker route boundary evidence'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'access-review evidence'
+require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'approval-gate status'
+require_text scripts/validate-multi-tenant-rbac-drill.sh 'PASS Dokkaebi multi-tenant RBAC drill validation passed'
 
 require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
 require_text docs/design/carbon-ui-baseline.md 'theme choice'
@@ -827,6 +838,7 @@ PY
 bash scripts/validate-readiness-criteria.sh >/dev/null
 bash scripts/validate-carbon-ui-baseline.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
+bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null

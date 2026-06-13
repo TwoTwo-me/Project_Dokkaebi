@@ -159,6 +159,9 @@ outside ticket prose and Worker result summaries.
 
 Multi-tenant RBAC designs must follow
 [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md).
+Local RBAC replay drills must follow
+[`docs/policies/multi-tenant-rbac-drill-2026-06-13.md`](../policies/multi-tenant-rbac-drill-2026-06-13.md)
+or a later dated drill package.
 The Manager must treat missing tenant boundaries, role taxonomy, permission matrix,
 admission checks, authorization checks, GitHub Project scope mapping, repository
 scope mapping, credential boundary, worker route boundary, break-glass path,
