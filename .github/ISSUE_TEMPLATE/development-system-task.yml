@@ -1,0 +1,109 @@
+name: Development System Task
+description: Track a readiness, governance, platform, security, or operations improvement.
+title: "[readiness] "
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: Describe the outcome this issue must achieve.
+      placeholder: Improve one readiness criterion with evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: List the files, systems, or operating surfaces in scope and out of scope.
+    validations:
+      required: true
+  - type: input
+    id: criteria_ids
+    attributes:
+      label: Criteria IDs
+      description: Reference area or capability IDs from docs/enterprise-readiness/criteria.json.
+      placeholder: infrastructure_platform, backup_restore_dr
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List observable conditions that must be true before closeout.
+      placeholder: "- Validation command passes\n- Evidence document includes owner and residual risk"
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation
+      description: List commands, review checks, live smoke tests, or manual QA required.
+      placeholder: bash scripts/validate-readiness-criteria.sh
+    validations:
+      required: true
+  - type: dropdown
+    id: permission_level
+    attributes:
+      label: Permission Level
+      description: Select the highest authority this issue requires.
+      options:
+        - docs-only
+        - local-read
+        - local-write
+        - sandbox-worker
+        - credentialed-sandbox
+        - production-or-infrastructure-approval-required
+    validations:
+      required: true
+  - type: textarea
+    id: approval_gates
+    attributes:
+      label: Approval Gates
+      description: Name any Human approval required before dispatch, credential access, infrastructure mutation, merge, deploy, or production write.
+      placeholder: No additional approval required, or name the exact approval evidence.
+    validations:
+      required: true
+  - type: textarea
+    id: manual_qa_channel
+    attributes:
+      label: Manual QA Channel
+      description: Describe how QA evidence should be captured without relying on private memory.
+      placeholder: tmux transcript, CI run, local command output, screenshot, or result packet.
+    validations:
+      required: true
+  - type: input
+    id: enterprise_readiness
+    attributes:
+      label: Enterprise Readiness Gap
+      description: Link the current gap or score in the criteria source.
+      placeholder: docs/enterprise-readiness/criteria.json#operations_sre
+    validations:
+      required: true
+  - type: dropdown
+    id: carbon_baseline
+    attributes:
+      label: Carbon Design Baseline
+      description: Select whether this issue changes user-visible UI or design tokens.
+      options:
+        - not-applicable
+        - applicable-token-or-color-review-required
+        - applicable-full-visual-qa-required
+    validations:
+      required: true
+  - type: checkboxes
+    id: metadata_hygiene
+    attributes:
+      label: Public Metadata Hygiene
+      options:
+        - label: Title, branch, commit, pull request, and issue metadata describe product work without private tool execution labels.
+          required: true
+        - label: No secrets, auth file contents, tokens, cookies, or private machine state are included.
+          required: true
+  - type: textarea
+    id: result_packet
+    attributes:
+      label: Expected Result Evidence
+      description: Describe the result packet, PR evidence, or closeout summary expected.
+      placeholder: Changed artifacts, acceptance evidence, validation output, approval-gate status, residual risk, and next action.
+    validations:
+      required: true
