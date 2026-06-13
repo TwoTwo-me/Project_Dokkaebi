@@ -141,7 +141,12 @@ Every alert routing drill must capture:
 
 ## SLO Linkage
 
-The on-call baseline links to the SRE operating baseline:
+The on-call baseline links to the service-level objectives document and the SRE
+operating baseline:
+
+- [`service-level-objectives.md`](service-level-objectives.md) owns SLO IDs,
+  targets, fallback evidence, error-budget policy, and the external SLA
+  boundary;
 
 - dispatch latency burn alerts map to the dispatch-latency SLO, error-budget
   review, dashboard panel, and fallback GitHub evidence;

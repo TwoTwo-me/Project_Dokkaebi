@@ -433,7 +433,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 72,
+      "currentPercent": 76,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -441,6 +441,8 @@
         "docs/operations/toolchain-bootstrap.md",
         "docs/operations/sre-operating-baseline.md",
         "scripts/validate-sre-operating-baseline.sh",
+        "docs/operations/service-level-objectives.md",
+        "scripts/validate-service-level-objectives.sh",
         "docs/operations/central-metrics-backend.md",
         "scripts/validate-central-metrics-backend.sh",
         "docs/operations/release-rollback-capacity-drills.md",
@@ -449,7 +451,7 @@
         "scripts/validate-on-call-paging-alerting.sh"
       ],
       "gaps": [
-        "SLO, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
+        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
         "Capacity, soak, and central metrics thresholds exist, but long-running measured soak or metrics tests are not yet captured from a local or approved-sandbox run.",
         "Release and rollback procedures are documented, but approved drill evidence is still required before production service quality can be claimed."
       ],
@@ -737,19 +739,22 @@
     {
       "id": "slo_sla",
       "name": "SLO and SLA",
-      "currentPercent": 52,
+      "currentPercent": 72,
       "targetPercent": 100,
-      "nextIssueTitle": "Define initial service-level objectives",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/27",
+      "nextIssueTitle": "Run central metrics backend sandbox verification",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/57",
       "acceptanceCriteria": [
-        "Connect SLO targets to measured metrics or approved sandbox evidence.",
-        "Define an external SLA only after Human owner approval.",
+        "Produce or replay measured dispatch-latency, recovery-time, review-age, and availability posture evidence using docs/operations/service-level-objectives.md and docs/operations/central-metrics-backend.md.",
+        "Capture metric query output, fallback evidence, error-budget result, alert linkage, approval-gate status, cleanup, residual risk, and next action.",
         "Update docs/enterprise-readiness/criteria.json after measured SLO evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-service-level-objectives.sh",
+        "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted central metrics sandbox or local replay validation named by the implementation"
       ],
       "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
