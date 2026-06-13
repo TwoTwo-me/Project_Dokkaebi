@@ -49,6 +49,11 @@ require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/operations/worker-cli-auth.md
+require_file docs/examples/result-packets/accepted.md
+require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
+require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
+require_file docs/examples/result-packets/rejected-missing-scope-control.md
+require_file docs/examples/result-packets/rejected-missing-approval-status.md
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -67,6 +72,12 @@ require_text docs/contracts/manager-contract.md '## Fail-closed preflight'
 require_text docs/contracts/manager-contract.md '## Credential broker boundary'
 require_text docs/contracts/manager-contract.md '## Symphony compatibility'
 require_text docs/contracts/manager-contract.md '## Adapter conformance'
+require_text docs/contracts/manager-contract.md '### Adapter conformance proof'
+require_text docs/contracts/manager-contract.md '../examples/result-packets/accepted.md'
+require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-acceptance-evidence.md'
+require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-validation-evidence.md'
+require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-scope-control.md'
+require_text docs/contracts/manager-contract.md '../examples/result-packets/rejected-missing-approval-status.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
@@ -282,6 +293,84 @@ for heading in ['## Acceptance criteria evidence', '## Validation evidence',
                 '## Scope control', 'Human approval gates reached']:
     if heading not in result:
         errors.append(f'result packet template missing: {heading}')
+
+def markdown_section(text: str, heading: str) -> str | None:
+    marker = re.search(rf'^{re.escape(heading)}\s*$', text, re.MULTILINE)
+    if marker is None:
+        return None
+    rest = text[marker.end():]
+    next_heading = re.search(r'^##\s+', rest, re.MULTILINE)
+    return rest[: next_heading.start()] if next_heading else rest
+
+
+def validate_result_packet_fixture(path: Path) -> list[str]:
+    text = path.read_text()
+    found: list[str] = []
+    for heading in [
+        '## Task identity',
+        '## Changed artifacts',
+        '## Acceptance criteria evidence',
+        '## Validation evidence',
+        '## Blockers or missing permissions',
+        '## Residual risks',
+        '## Scope control',
+        '## Recommended Manager/Human next action',
+    ]:
+        if heading not in text:
+            found.append(f'missing required section: {heading}')
+
+    acceptance = markdown_section(text, '## Acceptance criteria evidence')
+    if acceptance is not None:
+        if '| Criterion | Evidence | Status |' not in acceptance:
+            found.append('missing acceptance evidence table')
+        if re.search(r'\|\s*(pass|fail|blocked)\s*\|', acceptance, re.IGNORECASE) is None:
+            found.append('missing acceptance status')
+
+    validation = markdown_section(text, '## Validation evidence')
+    if validation is not None:
+        if '```text' not in validation:
+            found.append('missing validation command block')
+        if 'PASS ' not in validation and 'FAIL ' not in validation:
+            found.append('missing validation command outcome')
+
+    scope = markdown_section(text, '## Scope control')
+    if scope is not None:
+        if '**Stayed within ticket scope:**' not in scope:
+            found.append('missing scope-control statement')
+        if '**Scope deviations:**' not in scope:
+            found.append('missing scope deviation statement')
+        if '**Human approval gates reached:**' not in scope:
+            found.append('missing approval-gate status')
+
+    return found
+
+
+accepted_packet = Path('docs/examples/result-packets/accepted.md')
+accepted_errors = validate_result_packet_fixture(accepted_packet)
+if accepted_errors:
+    errors.append(
+        f'{accepted_packet} should pass result-packet validation: '
+        + '; '.join(accepted_errors)
+    )
+
+rejected_packets = {
+    Path('docs/examples/result-packets/rejected-missing-acceptance-evidence.md'):
+        'missing required section: ## Acceptance criteria evidence',
+    Path('docs/examples/result-packets/rejected-missing-validation-evidence.md'):
+        'missing required section: ## Validation evidence',
+    Path('docs/examples/result-packets/rejected-missing-scope-control.md'):
+        'missing required section: ## Scope control',
+    Path('docs/examples/result-packets/rejected-missing-approval-status.md'):
+        'missing approval-gate status',
+}
+for packet, expected_error in rejected_packets.items():
+    fixture_errors = validate_result_packet_fixture(packet)
+    if expected_error not in fixture_errors:
+        errors.append(
+            f'{packet} did not fail for expected reason: {expected_error}; '
+            + 'actual: '
+            + ('; '.join(fixture_errors) if fixture_errors else 'no validation errors')
+        )
 
 for path in [Path('ARCHITECTURE.md'), Path('WORKFLOW.md'), Path('docs/templates/worker-ticket.md')]:
     if 'later policy' in path.read_text() or 'later approved policy' in path.read_text():

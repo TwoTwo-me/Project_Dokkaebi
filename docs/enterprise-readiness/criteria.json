@@ -59,7 +59,7 @@
     {
       "id": "architecture_contracts",
       "name": "Architecture and contracts",
-      "currentPercent": 88,
+      "currentPercent": 92,
       "targetPercent": 100,
       "enterpriseStandard": "Manager, Fire, Hammer, GitHub Project state, credential, approval, and result-packet boundaries are complete, versioned, validated, and exercised by at least one live or replayed operating scenario.",
       "currentEvidence": [
@@ -68,10 +68,15 @@
         "WORKFLOW.md",
         "docs/contracts/manager-contract.md",
         "docs/contracts/hammer-worker-contract.md",
+        "docs/examples/result-packets/accepted.md",
+        "docs/examples/result-packets/rejected-missing-acceptance-evidence.md",
+        "docs/examples/result-packets/rejected-missing-validation-evidence.md",
+        "docs/examples/result-packets/rejected-missing-scope-control.md",
+        "docs/examples/result-packets/rejected-missing-approval-status.md",
         "scripts/validate-contract-docs.sh"
       ],
       "gaps": [
-        "Contract conformance is mostly document-validated, not yet backed by a complete replay suite.",
+        "Worker result-packet conformance is example-validated, but Manager-Fire-Hammer end-to-end replay fixtures are still incomplete.",
         "Versioned compatibility expectations between Manager, Fire, and Hammer still need stronger change-control tests."
       ],
       "evaluationQuestions": [
@@ -86,17 +91,18 @@
       ],
       "nextIssues": [
         {
-          "title": "Add contract conformance examples for Manager and worker result packets",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/14",
+          "title": "Add Manager-Fire-Hammer contract replay suite",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/37",
           "acceptanceCriteria": [
-            "Repository contains accepted and rejected result-packet examples.",
-            "Validation catches missing acceptance evidence, validation evidence, scope control, and approval status.",
-            "Docs explain how a new Manager adapter proves conformance."
+            "Repository contains replay fixtures that cover accepted and rejected Manager-Fire-Hammer flows.",
+            "Validation catches missing dispatch readiness, missing approval evidence, missing worker route/result metadata, and missing closeout review evidence.",
+            "Docs explain how replay fixtures support Manager adapter compatibility.",
+            "docs/enterprise-readiness/criteria.json is reassessed from the new evidence."
           ],
           "validationRequired": [
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted replay validation introduced by the implementation PR"
           ],
           "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
