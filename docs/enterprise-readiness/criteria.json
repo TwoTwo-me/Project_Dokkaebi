@@ -279,7 +279,7 @@
     {
       "id": "security_authority",
       "name": "Security and authority",
-      "currentPercent": 78,
+      "currentPercent": 84,
       "targetPercent": 100,
       "enterpriseStandard": "All credentials, approvals, worker capabilities, high-risk operations, audit events, and emergency paths are least-privilege, revocable, observable, and fail-closed.",
       "currentEvidence": [
@@ -289,10 +289,12 @@
         "docs/policies/multi-tenant-rbac.md",
         "scripts/validate-multi-tenant-rbac.sh",
         "docs/policies/multi-tenant-rbac-drill-2026-06-13.md",
-        "scripts/validate-multi-tenant-rbac-drill.sh"
+        "scripts/validate-multi-tenant-rbac-drill.sh",
+        "docs/policies/credential-lifecycle-and-revocation.md",
+        "scripts/validate-credential-lifecycle.sh"
       ],
       "gaps": [
-        "Secret lifecycle, rotation, revocation drills, and access reviews are not fully operationalized.",
+        "Credential lifecycle, rotation, revocation dry-run, and access-review evidence shape is documented and locally validated, but runtime broker denial, approved revocation output, and generated access-review output are not captured.",
         "Threat modeling and prompt-injection controls need a documented enterprise baseline.",
         "Multi-tenant RBAC design and local replay drill evidence are captured, but runtime enforcement, generated access-review output, and live credential/worker-route gates are not complete."
       ],
@@ -310,24 +312,30 @@
       ],
       "nextIssues": [
         {
-          "title": "Write enterprise credential lifecycle and revocation drill",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/18",
+          "title": "Run approved credential revocation and access-review drill",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/92",
           "acceptanceCriteria": [
-            "Document covers token classes, owners, storage, rotation, revocation, and audit evidence.",
-            "Development and sandbox auth exception remains narrow and explicitly approved.",
-            "A dry-run revocation checklist can be executed without exposing secrets."
+            "Execute credential broker denial or revocation drill against an approved runtime or sandbox target without exposing secrets.",
+            "Capture owner approval, grant scope, expiration, revocation trigger, denial or revocation output, access-review output, audit evidence, cleanup, residual risk, and next action.",
+            "Prove the gate fails closed when owner, scope, expiration, revocation trigger, audit evidence, cleanup, or approval-gate status is missing.",
+            "Update docs/enterprise-readiness/criteria.json only from captured runtime or explicitly approved sandbox evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-credential-lifecycle.sh",
+            "bash scripts/validate-multi-tenant-rbac.sh",
+            "bash scripts/validate-multi-tenant-rbac-drill.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted approved credential revocation and access-review validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only planning by default. Credential use, broker mutation, runtime, worker, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Runtime or approved sandbox credential drill output",
+            "Access-review output",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }
