@@ -61,6 +61,7 @@ Required local artifacts:
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
+- [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -184,6 +185,16 @@ fake command/manifest verification, and isolated live-routing smoke evidence for
 approved test targets. Live Docker, `kubectl`, or Kubernetes mutation remains
 approval-gated outside those approved targets and must be re-proven through the
 toolchain bootstrap path before production or shared infrastructure use.
+
+Fire dispatch must follow the durable lease and restart recovery contract in
+[`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md).
+The Manager must treat missing lease store, owner identity, retry persistence,
+recovery behavior, lease token, idempotency key, stale lease handling, or
+missing evidence for no duplicate dispatch after restart as a blocked
+orchestration condition.
+Local deterministic validation is required before the contract can be cited as
+readiness evidence; live GitHub Project residual risks remain approval-gated
+until a later runtime gate proves them.
 
 ## Toolchain bootstrap contract
 

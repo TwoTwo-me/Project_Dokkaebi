@@ -97,18 +97,20 @@
     {
       "id": "core_orchestration",
       "name": "Core orchestration",
-      "currentPercent": 72,
+      "currentPercent": 84,
       "targetPercent": 100,
       "enterpriseStandard": "Fire reliably discovers, admits, dispatches, monitors, retries, and closes work without duplicate execution, stale state, or silent loss across restarts.",
       "currentEvidence": [
         "symphony-github-project-tracker/SPEC.md",
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/orchestrator.ex",
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/worker_pool.ex",
-        "symphony-github-project-tracker/elixir/lib/symphony_elixir/hammer/router.ex"
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/hammer/router.ex",
+        "docs/operations/dispatch-lease-recovery.md",
+        "scripts/validate-dispatch-lease-recovery.sh"
       ],
       "gaps": [
-        "Durable dispatch leases and restart recovery are not complete.",
-        "Long-running and fault-injected orchestration evidence is not a default gate."
+        "Long-running and fault-injected orchestration evidence is not a default gate.",
+        "The lease/recovery contract is validated locally, but live GitHub Project operation still needs a runtime recovery gate."
       ],
       "evaluationQuestions": [
         "Can Fire restart without duplicate dispatch or lost retry intent?",
@@ -122,19 +124,19 @@
       ],
       "nextIssues": [
         {
-          "title": "Add durable dispatch lease and restart recovery design",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/15",
+          "title": "Add fault-injected orchestration recovery gate",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/42",
           "acceptanceCriteria": [
-            "Design identifies lease store, owner identity, retry persistence, and recovery behavior.",
-            "Implementation or prototype proves no duplicate dispatch after restart.",
-            "Residual risks are listed for live GitHub Project operation."
+            "A deterministic gate simulates or runs worker failure, Fire restart, stale lease recovery, retry persistence, and closeout evidence.",
+            "The gate is wired into the documented validation path for orchestration changes.",
+            "The evidence explains remaining live GitHub Project limitations and the approval boundary for any live test target."
           ],
           "validationRequired": [
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted orchestration fault-injection validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Local deterministic validation does not require additional approval. Live worker, Docker, Kubernetes, remote host, credential, production, deployment, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
