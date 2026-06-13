@@ -44,6 +44,11 @@ require_file .github/pull_request_template.md
 require_file .github/workflows/dokkaebi-governance.yml
 require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
+require_file scripts/validate-readiness-criteria.sh
+require_file docs/enterprise-readiness/criteria.json
+require_file docs/enterprise-readiness/development-loop.md
+require_file docs/reports/company-readiness-assessment.md
+require_file docs/operations/worker-cli-auth.md
 
 require_text ARCHITECTURE.md '# Project Dokkaebi Architecture'
 require_text ARCHITECTURE.md 'Dokkaebi Manager'
@@ -137,6 +142,7 @@ require_text .github/workflows/dokkaebi-governance.yml 'git-governance'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-contract-docs.sh'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-git-governance.sh'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-dokkaebi-plugin.sh'
+require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-readiness-criteria.sh'
 
 require_text scripts/validate-git-governance.sh 'PASS Dokkaebi Git governance checks passed'
 require_text scripts/validate-git-governance.sh 'Context:'
@@ -145,6 +151,7 @@ require_text scripts/validate-git-governance.sh 'Why:'
 require_text scripts/validate-git-governance.sh 'Validation:'
 require_text scripts/validate-git-governance.sh 'Risks:'
 require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
+require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise readiness criteria are present and structurally valid'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -188,6 +195,8 @@ require_text README.md 'docs/contracts/hammer-worker-contract.md'
 require_text README.md 'docs/deep-interview-project-dokkaebi.md'
 require_text README.md 'docs/policies/authority-and-safety.md'
 require_text README.md 'docs/policies/git-governance.md'
+require_text README.md 'docs/enterprise-readiness/criteria.json'
+require_text README.md 'docs/enterprise-readiness/development-loop.md'
 require_text README.md 'docs/adapters/hermes.md'
 require_text README.md 'docs/templates/worker-ticket.md'
 require_text README.md 'docs/templates/worker-result-packet.md'
@@ -290,5 +299,7 @@ if errors:
         print('FAIL ' + error, file=sys.stderr)
     sys.exit(1)
 PY
+
+bash scripts/validate-readiness-criteria.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'

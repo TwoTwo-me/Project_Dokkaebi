@@ -27,6 +27,9 @@ jobs:
       - name: Validate Dokkaebi plugin package
         run: bash scripts/validate-dokkaebi-plugin.sh
 
+      - name: Validate enterprise readiness criteria
+        run: bash scripts/validate-readiness-criteria.sh
+
   git-governance:
     name: git-governance
     if: github.event_name == 'pull_request'

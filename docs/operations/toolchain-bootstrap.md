@@ -55,6 +55,13 @@ Remote bootstrap is approval-gated. A ticket must explicitly name the remote
 host, container runtime, cluster, namespace, service account, credential scope,
 and allowed mutation before Fire or a Manager may proceed.
 
+The current development/sandbox exception for copying file-based Codex CLI auth
+to trusted Hammer workers is defined in
+[`worker-cli-auth.md`](worker-cli-auth.md). That exception is limited to
+Codex worker authentication for dev/sandbox targets and must not be reused for
+GitHub Manager tokens, SSH private keys, kubeconfig files, Proxmox credentials,
+production accounts, or persistent Kubernetes secrets.
+
 Docker, `kubectl`, and Kubernetes may be checked in read-only preflight, such as
 detecting whether commands exist or reading the active context. Creating or
 deleting images, containers, volumes, contexts, namespaces, deployments,

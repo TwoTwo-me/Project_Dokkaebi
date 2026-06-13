@@ -1,0 +1,866 @@
+{
+  "version": 1,
+  "updated": "2026-06-13",
+  "purpose": "Single source of truth for Project Dokkaebi enterprise-readiness evaluation, issue generation, worktree execution, pull request review, merge, and re-evaluation.",
+  "sourceReports": [
+    "docs/reports/company-readiness-assessment.md"
+  ],
+  "designStandards": [
+    {
+      "id": "carbon_color",
+      "name": "Carbon Design System color guidance",
+      "url": "https://carbondesignsystem.com/elements/color/overview/",
+      "requiredInterpretation": [
+        "Use role-based color tokens rather than hard-coded product colors for UI surfaces.",
+        "Use Carbon light and dark theme layering rules when Dokkaebi introduces product UI.",
+        "Use the core blue action family intentionally, with support colors reserved for status and alerts.",
+        "Require accessible contrast for text, icons, graphical elements, focus states, and data visualization."
+      ]
+    }
+  ],
+  "scoringScale": {
+    "0": "Required for company use but absent or not evidenced.",
+    "1-30": "Direction exists, but the implementation or operating evidence is too thin for company use.",
+    "31-60": "Partially implemented, mostly manual, sandbox-oriented, or not yet auditable enough.",
+    "61-80": "Usable for internal pilots, with important enterprise controls still missing.",
+    "81-95": "Strong enough to become an internal standard after targeted proof and automation.",
+    "96-100": "Production-ready, auditable, supportable, and validated against realistic operating scenarios."
+  },
+  "workflow": {
+    "sourceOfTruth": "This file is the readiness criteria source of truth. GitHub Project Status remains the lifecycle state source of truth for work items.",
+    "phaseModel": "For each area below, open or update a GitHub issue from nextIssues as a backlog candidate. The issue becomes dispatchable only after it is added to an approved GitHub Project with lifecycle/admission fields. Then create a short-lived worktree and branch, implement with evidence, open a pull request, merge only after required validation, and update currentPercent and nextIssues from the new evidence.",
+    "issueContract": "Each issue must cite the relevant area id, scope, currentPercent, targetPercent, acceptance criteria, validation requirements, authority requirements, metadata hygiene expectation, and result evidence expected from the worker.",
+    "worktreeContract": "Each issue is solved in an isolated worktree or worker workspace. Branch names follow docs/policies/git-governance.md and do not use actor prefixes.",
+    "pullRequestContract": "Each pull request must include context, decision, why, validation, residual risks, git status, and issue linkage.",
+    "mergeContract": "Merge only after the applicable repository checks pass and approval requirements in docs/policies/git-governance.md are satisfied.",
+    "evaluationLoop": "After merge, re-run the relevant validation, reassess all criteria from evidence, create follow-up issues for any area below 100%, and repeat until every area and zero-percent capability reaches 100%."
+  },
+  "metadataHygiene": {
+    "publicBranchRule": "Use <type>/<scope-slug> branch names without actor prefixes.",
+    "publicCommitRule": "Commit messages must explain process, decision, validation, and residual risk without exposing internal automation labels.",
+    "publicIssueRule": "Issue and pull request metadata must describe product work, not private tool execution details."
+  },
+  "areas": [
+    {
+      "id": "architecture_contracts",
+      "name": "Architecture and contracts",
+      "currentPercent": 88,
+      "targetPercent": 100,
+      "enterpriseStandard": "Manager, Fire, Hammer, GitHub Project state, credential, approval, and result-packet boundaries are complete, versioned, validated, and exercised by at least one live or replayed operating scenario.",
+      "currentEvidence": [
+        "README.md",
+        "ARCHITECTURE.md",
+        "WORKFLOW.md",
+        "docs/contracts/manager-contract.md",
+        "docs/contracts/hammer-worker-contract.md",
+        "scripts/validate-contract-docs.sh"
+      ],
+      "gaps": [
+        "Contract conformance is mostly document-validated, not yet backed by a complete replay suite.",
+        "Versioned compatibility expectations between Manager, Fire, and Hammer still need stronger change-control tests."
+      ],
+      "evaluationQuestions": [
+        "Can a new Manager implementation pass the contract without reading private project memory?",
+        "Can a worker result packet be rejected deterministically when required evidence is missing?",
+        "Do contract validators catch drift across architecture, workflow, policy, and templates?"
+      ],
+      "evidenceRequired": [
+        "Contract validator output",
+        "Cross-document link and vocabulary checks",
+        "Example accepted and rejected worker result packets"
+      ],
+      "nextIssues": [
+        {
+          "title": "Add contract conformance examples for Manager and worker result packets",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/14",
+          "acceptanceCriteria": [
+            "Repository contains accepted and rejected result-packet examples.",
+            "Validation catches missing acceptance evidence, validation evidence, scope control, and approval status.",
+            "Docs explain how a new Manager adapter proves conformance."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "core_orchestration",
+      "name": "Core orchestration",
+      "currentPercent": 72,
+      "targetPercent": 100,
+      "enterpriseStandard": "Fire reliably discovers, admits, dispatches, monitors, retries, and closes work without duplicate execution, stale state, or silent loss across restarts.",
+      "currentEvidence": [
+        "symphony-github-project-tracker/SPEC.md",
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/orchestrator.ex",
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/worker_pool.ex",
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/hammer/router.ex"
+      ],
+      "gaps": [
+        "Durable dispatch leases and restart recovery are not complete.",
+        "Long-running and fault-injected orchestration evidence is not a default gate."
+      ],
+      "evaluationQuestions": [
+        "Can Fire restart without duplicate dispatch or lost retry intent?",
+        "Can worker route selection explain why each target was selected or skipped?",
+        "Can failed workers produce actionable state and evidence for Human Review?"
+      ],
+      "evidenceRequired": [
+        "Unit and integration tests for admission, route selection, retry, and closeout",
+        "Restart recovery evidence",
+        "Sandbox issue processing transcript"
+      ],
+      "nextIssues": [
+        {
+          "title": "Add durable dispatch lease and restart recovery design",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/15",
+          "acceptanceCriteria": [
+            "Design identifies lease store, owner identity, retry persistence, and recovery behavior.",
+            "Implementation or prototype proves no duplicate dispatch after restart.",
+            "Residual risks are listed for live GitHub Project operation."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "infrastructure_platform",
+      "name": "Infrastructure and platform",
+      "currentPercent": 48,
+      "targetPercent": 100,
+      "enterpriseStandard": "Development, sandbox, staging, and production topologies are reproducible, isolated, monitored, backed up, and recoverable with least-privilege worker routes.",
+      "currentEvidence": [
+        "docs/operations/fire-sandbox-service.md",
+        "docs/operations/toolchain-bootstrap.md",
+        "symphony-github-project-tracker/docker",
+        "symphony-github-project-tracker/elixir/config"
+      ],
+      "gaps": [
+        "Production topology, HA, backup, restore, and DR are not defined.",
+        "Docker and Kubernetes route maturity is uneven.",
+        "Remote worker bootstrap is approved only for named development and sandbox targets."
+      ],
+      "evaluationQuestions": [
+        "Can a new environment be rebuilt from documented commands and checked state?",
+        "Are local, SSH, Docker, and Kubernetes workers registered with clear capabilities and cleanup rules?",
+        "Can Fire recover its state and workspaces after host or process failure?"
+      ],
+      "evidenceRequired": [
+        "Environment inventory",
+        "Rebuild transcript",
+        "Backup and restore drill",
+        "Worker route health report"
+      ],
+      "nextIssues": [
+        {
+          "title": "Define staging and production topology with backup and restore boundaries",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/16",
+          "acceptanceCriteria": [
+            "Topology separates development, sandbox, staging, and production concerns.",
+            "Backup targets and restore drill are documented with RPO and RTO assumptions.",
+            "Infrastructure mutation remains approval-gated."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "development_quality",
+      "name": "Development and quality",
+      "currentPercent": 76,
+      "targetPercent": 100,
+      "enterpriseStandard": "Every change has focused tests, deterministic validation, risk-based coverage, release evidence, and regression protection for adjacent contracts.",
+      "currentEvidence": [
+        ".github/workflows/dokkaebi-governance.yml",
+        "scripts/validate-contract-docs.sh",
+        "scripts/validate-git-governance.sh",
+        "symphony-github-project-tracker/elixir/Makefile",
+        "symphony-github-project-tracker/elixir/test"
+      ],
+      "gaps": [
+        "Important runtime modules are not fully covered by default quality gates.",
+        "Live end-to-end, soak, and failure injection tests are not routine merge gates.",
+        "Release candidate and rollback validation are incomplete."
+      ],
+      "evaluationQuestions": [
+        "Does every readiness criterion map to an executable or reviewable validation?",
+        "Are high-risk runtime paths covered by tests that fail for the right reason?",
+        "Can a release candidate be verified and rolled back from documented evidence?"
+      ],
+      "evidenceRequired": [
+        "Root and submodule validation output",
+        "Targeted test output for changed areas",
+        "Risk coverage matrix",
+        "Release and rollback smoke evidence"
+      ],
+      "nextIssues": [
+        {
+          "title": "Create risk-based quality gate matrix for runtime modules",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/17",
+          "acceptanceCriteria": [
+            "Matrix lists orchestration, credential, GitHub adapter, worker provider, and UI risk surfaces.",
+            "Each risk surface has required tests or explicit accepted risk.",
+            "Validation command verifies the matrix exists and names the required surfaces."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security_authority",
+      "name": "Security and authority",
+      "currentPercent": 72,
+      "targetPercent": 100,
+      "enterpriseStandard": "All credentials, approvals, worker capabilities, high-risk operations, audit events, and emergency paths are least-privilege, revocable, observable, and fail-closed.",
+      "currentEvidence": [
+        "docs/policies/authority-and-safety.md",
+        "docs/operations/worker-cli-auth.md",
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/credential_broker"
+      ],
+      "gaps": [
+        "Secret lifecycle, rotation, revocation drills, and access reviews are not fully operationalized.",
+        "Threat modeling and prompt-injection controls need a documented enterprise baseline.",
+        "Development auth propagation is approved only for trusted development and sandbox worker targets."
+      ],
+      "evaluationQuestions": [
+        "Can each credential grant be traced to an approval boundary and revoked?",
+        "Can a worker perform only the operations authorized by its ticket and route?",
+        "Are high-impact operations blocked without explicit Human approval evidence?"
+      ],
+      "evidenceRequired": [
+        "Threat model",
+        "Credential inventory",
+        "Rotation and revocation transcript",
+        "Broker policy tests",
+        "Approval evidence examples"
+      ],
+      "nextIssues": [
+        {
+          "title": "Write enterprise credential lifecycle and revocation drill",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/18",
+          "acceptanceCriteria": [
+            "Document covers token classes, owners, storage, rotation, revocation, and audit evidence.",
+            "Development and sandbox auth exception remains narrow and explicitly approved.",
+            "A dry-run revocation checklist can be executed without exposing secrets."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "management_governance",
+      "name": "Management and governance",
+      "currentPercent": 82,
+      "targetPercent": 100,
+      "enterpriseStandard": "GitHub Project fields, issue intake, Human approval, PR review, result packets, and closeout reconciliation are governed by reproducible policy and auditable roles.",
+      "currentEvidence": [
+        "WORKFLOW.md",
+        "docs/policies/git-governance.md",
+        "docs/templates/worker-ticket.md",
+        "docs/templates/worker-result-packet.md",
+        ".github/pull_request_template.md"
+      ],
+      "gaps": [
+        "GitHub branch protection and project rules are documented but not fully codified as reproducible settings.",
+        "Role matrix and stale Human Review escalation need stronger operating policy.",
+        "Closeout reconciliation between issue, PR, result packet, and project state is not automated."
+      ],
+      "evaluationQuestions": [
+        "Can a non-automation team member understand why an item is in its current state?",
+        "Can role boundaries explain who may authorize, dispatch, merge, and audit work?",
+        "Can mismatches between issue status, PR state, and result evidence be detected?"
+      ],
+      "evidenceRequired": [
+        "Project field schema",
+        "Role and responsibility matrix",
+        "Branch protection or ruleset export",
+        "Closeout reconciliation report"
+      ],
+      "nextIssues": [
+        {
+          "title": "Add GitHub Project governance matrix and closeout reconciliation plan",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/19",
+          "acceptanceCriteria": [
+            "Role matrix names project owner, approver, Fire operator, Hammer operator, security reviewer, and auditor.",
+            "Plan defines stale Human Review and mismatch handling.",
+            "Validation checks that required roles and reconciliation surfaces are present."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logging_observability",
+      "name": "Logging and observability",
+      "currentPercent": 58,
+      "targetPercent": 100,
+      "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
+      "currentEvidence": [
+        "symphony-github-project-tracker/elixir/docs/logging.md",
+        "symphony-github-project-tracker/elixir/docs/observability.md",
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/http_server.ex"
+      ],
+      "gaps": [
+        "Central metrics backend, tracing, alert rules, and long-term retention are absent.",
+        "Operational dashboards are useful but not tied to SLOs or paging.",
+        "Audit export is not immutable or retention-managed."
+      ],
+      "evaluationQuestions": [
+        "Can an operator identify stalled dispatch, unhealthy workers, and credential denial within minutes?",
+        "Can metrics and logs be correlated by issue, route, worker, session, and commit?",
+        "Can audit records be exported without leaking secrets?"
+      ],
+      "evidenceRequired": [
+        "Metrics catalog",
+        "Alert rules",
+        "Dashboard screenshot or terminal capture",
+        "Redacted audit export sample"
+      ],
+      "nextIssues": [
+        {
+          "title": "Define observability metrics catalog and alert rules",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/20",
+          "acceptanceCriteria": [
+            "Metrics catalog covers dispatch latency, queue depth, worker health, retries, failures, credential denials, and review age.",
+            "Alert rules map to operator actions and severity.",
+            "Docs define redaction and retention expectations."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operations_sre",
+      "name": "Operations and SRE",
+      "currentPercent": 24,
+      "targetPercent": 100,
+      "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
+      "currentEvidence": [
+        "docs/operations/fire-sandbox-service.md",
+        "docs/operations/toolchain-bootstrap.md"
+      ],
+      "gaps": [
+        "Incident response, on-call, paging, SLO, error budget, and production runbooks are absent.",
+        "Capacity planning and long-running soak tests are not defined.",
+        "Release and rollback procedures do not yet reach production service quality."
+      ],
+      "evaluationQuestions": [
+        "What happens when Fire is down, GitHub API is rate-limited, or all workers are unhealthy?",
+        "Who is paged and what runbook do they follow?",
+        "What are acceptable dispatch latency and recovery objectives?"
+      ],
+      "evidenceRequired": [
+        "SLO document",
+        "Incident response runbook",
+        "On-call and escalation policy",
+        "Release and rollback drill"
+      ],
+      "nextIssues": [
+        {
+          "title": "Create SLO, incident response, and on-call baseline",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/21",
+          "acceptanceCriteria": [
+            "Define dispatch, recovery, and review-age SLOs with initial targets.",
+            "Incident runbook covers severity, commander, communication, mitigation, and postmortem.",
+            "On-call and paging path is documented as either implemented or intentionally deferred with owner decision."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "compliance_audit",
+      "name": "Compliance and audit",
+      "currentPercent": 34,
+      "targetPercent": 100,
+      "enterpriseStandard": "The system can produce control-mapped, retained, tamper-evident evidence for approvals, credentials, code changes, worker execution, and operational incidents.",
+      "currentEvidence": [
+        "docs/templates/worker-result-packet.md",
+        "docs/policies/authority-and-safety.md",
+        "docs/policies/git-governance.md"
+      ],
+      "gaps": [
+        "Control mapping for SOC 2, ISO 27001, or internal audit is absent.",
+        "Retention and immutable export policy is not defined.",
+        "Evidence is distributed across issues, PRs, logs, and comments without a compliance package."
+      ],
+      "evaluationQuestions": [
+        "Can an auditor reconstruct who approved a worker action and why?",
+        "Can evidence be exported with redaction and integrity proof?",
+        "Do policies map to common enterprise controls?"
+      ],
+      "evidenceRequired": [
+        "Control mapping",
+        "Retention policy",
+        "Immutable export sample",
+        "Evidence chain walkthrough"
+      ],
+      "nextIssues": [
+        {
+          "title": "Create compliance control map and audit evidence export design",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/22",
+          "acceptanceCriteria": [
+            "Control map covers approval, access, change management, logging, incident, and credential controls.",
+            "Export design includes retention, redaction, integrity, and ownership.",
+            "At least one sample evidence chain is documented end to end."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "productization_ux",
+      "name": "Productization and UX",
+      "currentPercent": 46,
+      "targetPercent": 100,
+      "enterpriseStandard": "Admins, approvers, operators, auditors, and worker authors can install, configure, monitor, approve, troubleshoot, and learn the product without relying on private maintainer context.",
+      "currentEvidence": [
+        "README.md",
+        "plugins/dokkaebi",
+        "docs/operations/fire-sandbox-service.md",
+        "docs/operations/toolchain-bootstrap.md"
+      ],
+      "gaps": [
+        "Admin UI and guided setup are incomplete.",
+        "Operator journeys for triage, approval, result review, and troubleshooting need product-grade flows.",
+        "Human-facing docs are strong in contracts but not yet packaged as onboarding."
+      ],
+      "evaluationQuestions": [
+        "Can a new admin install and configure a sandbox without maintainer help?",
+        "Can a Human reviewer approve or reject work from GitHub issue and PR surfaces confidently?",
+        "Can an operator troubleshoot worker failures from documented symptoms?"
+      ],
+      "evidenceRequired": [
+        "Install walkthrough",
+        "Role-based user journeys",
+        "Troubleshooting guide",
+        "Admin UI or CLI screenshots when available"
+      ],
+      "nextIssues": [
+        {
+          "title": "Create role-based onboarding and troubleshooting guide",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/23",
+          "acceptanceCriteria": [
+            "Guide covers admin, approver, operator, auditor, and worker-author journeys.",
+            "Troubleshooting covers common Fire, worker, GitHub, credential, and validation failures.",
+            "Docs include clear next actions without private maintainer context."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "design_system",
+      "name": "Design system and visual quality",
+      "currentPercent": 10,
+      "targetPercent": 100,
+      "enterpriseStandard": "All Dokkaebi UI surfaces use a documented Carbon Design System baseline for color, interaction states, accessibility, and enterprise information density.",
+      "currentEvidence": [
+        "docs/enterprise-readiness/criteria.json"
+      ],
+      "gaps": [
+        "No first-party UI implementation currently proves Carbon token usage.",
+        "Visual QA and accessibility checks are not defined for future UI surfaces.",
+        "Design tokens are not mapped to product components."
+      ],
+      "evaluationQuestions": [
+        "Do UI surfaces use Carbon tokens and theme layering instead of arbitrary palettes?",
+        "Do focus, hover, selected, active, disabled, error, warning, and success states meet accessibility requirements?",
+        "Does the interface feel like a dense operational product rather than a marketing page?"
+      ],
+      "evidenceRequired": [
+        "Carbon token mapping",
+        "Accessibility contrast proof",
+        "Desktop and mobile visual QA captures",
+        "Component state inventory"
+      ],
+      "nextIssues": [
+        {
+          "title": "Define Carbon-based UI token and accessibility baseline",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/24",
+          "acceptanceCriteria": [
+            "Document maps Dokkaebi UI roles to Carbon color tokens and themes.",
+            "Focus and contrast requirements are stated for interactive elements and data visualization.",
+            "Future UI PRs have a visual QA checklist tied to the baseline."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "Targeted validation named by the issue implementation"
+          ],
+          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Acceptance-criteria evidence",
+            "Validation command output",
+            "Approval-gate status",
+            "Residual risk and next action"
+          ]
+        }
+      ]
+    }
+  ],
+  "zeroPercentCapabilities": [
+    {
+      "id": "incident_response",
+      "name": "Incident Response",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Create incident response runbook",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/25",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for incident_response.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "on_call_paging_alerting",
+      "name": "On-call, paging, and alerting",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Create on-call, paging, and alerting baseline",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/26",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for on_call_paging_alerting.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "slo_sla",
+      "name": "SLO and SLA",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Define initial service-level objectives",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/27",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for slo_sla.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "backup_restore_dr",
+      "name": "Backup, restore, and disaster recovery",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Define backup, restore, and disaster recovery drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/28",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for backup_restore_dr.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "compliance_package",
+      "name": "Compliance package",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Create enterprise compliance package skeleton",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/29",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for compliance_package.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "production_release_rollback_runbook",
+      "name": "Production release and rollback runbook",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Create production release and rollback runbook",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/30",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for production_release_rollback_runbook.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "central_metrics_backend",
+      "name": "Central metrics backend",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Design central metrics backend integration",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/31",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for central_metrics_backend.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "immutable_audit_export",
+      "name": "Immutable audit export",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Design immutable audit export",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/32",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for immutable_audit_export.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    },
+    {
+      "id": "multi_tenant_rbac",
+      "name": "Multi-tenant RBAC",
+      "currentPercent": 0,
+      "targetPercent": 100,
+      "nextIssueTitle": "Design multi-tenant RBAC model",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/33",
+      "acceptanceCriteria": [
+        "Define the enterprise standard for multi_tenant_rbac.",
+        "Add implementation, operating documentation, or an explicit approved deferral path.",
+        "Add validation or review evidence that can raise this capability above 0%.",
+        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+      ],
+      "validationRequired": [
+        "bash scripts/validate-readiness-criteria.sh",
+        "bash scripts/validate-contract-docs.sh",
+        "Targeted validation named by the issue implementation"
+      ],
+      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "resultEvidence": [
+        "Changed artifacts and rationale",
+        "Acceptance-criteria evidence",
+        "Validation command output",
+        "Approval-gate status",
+        "Residual risk and next action"
+      ]
+    }
+  ]
+}
