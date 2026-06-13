@@ -158,8 +158,9 @@ evaluation drills must satisfy.
 
 ## SLO Linkage
 
-The SRE operating baseline names dispatch latency, recovery time, and review age
-as the initial SLOs. The central metrics backend must map those SLOs to:
+The service-level objectives document and SRE operating baseline name dispatch
+latency, recovery time, and review age as the initial SLOs. The central metrics
+backend must map those SLOs to:
 
 - source metric names;
 - query expressions or alert expressions;

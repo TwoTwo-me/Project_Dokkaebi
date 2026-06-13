@@ -12,10 +12,11 @@ implemented systems, but they must preserve the evidence requirements here.
 
 ## Service Objectives
 
-Initial SLOs are measured from GitHub issue, PR, project, log, and result-packet
-evidence until the central metrics backend design in
-[`central-metrics-backend.md`](central-metrics-backend.md) is proven by local
-replay or approved sandbox metrics evidence.
+Initial SLOs are governed by
+[`service-level-objectives.md`](service-level-objectives.md) and measured from
+GitHub issue, PR, project, log, and result-packet evidence until the central
+metrics backend design in [`central-metrics-backend.md`](central-metrics-backend.md)
+is proven by local replay or approved sandbox metrics evidence.
 
 The three initial SLO names are dispatch latency, recovery time, and review age,
 and each one carries an error budget for review.

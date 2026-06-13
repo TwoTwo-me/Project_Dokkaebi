@@ -148,6 +148,8 @@ require_text docs/contracts/manager-contract.md 'Fault-injected orchestration re
 require_text docs/contracts/manager-contract.md 'retry loss after restart'
 require_text docs/contracts/manager-contract.md 'SRE operating evidence'
 require_text docs/contracts/manager-contract.md 'review-age SLO'
+require_text docs/contracts/manager-contract.md 'Service-level objective evidence'
+require_text docs/contracts/manager-contract.md 'external SLA approval boundary'
 require_text docs/contracts/manager-contract.md 'Central metrics backend designs'
 require_text docs/contracts/manager-contract.md 'metric taxonomy'
 require_text docs/contracts/manager-contract.md 'label and cardinality controls'
@@ -326,6 +328,7 @@ require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant R
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
+require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service-level objectives validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
@@ -361,6 +364,16 @@ require_text docs/operations/sre-operating-baseline.md 'incident commander'
 require_text docs/operations/sre-operating-baseline.md 'postmortem'
 require_text docs/operations/sre-operating-baseline.md 'intentionally deferred'
 require_text docs/operations/sre-operating-baseline.md 'central-metrics-backend.md'
+require_text docs/operations/sre-operating-baseline.md 'service-level-objectives.md'
+require_text docs/operations/service-level-objectives.md '# Service-Level Objectives And SLA Boundary'
+require_text docs/operations/service-level-objectives.md 'dispatch latency'
+require_text docs/operations/service-level-objectives.md 'recovery time'
+require_text docs/operations/service-level-objectives.md 'review age'
+require_text docs/operations/service-level-objectives.md 'availability posture'
+require_text docs/operations/service-level-objectives.md 'error-budget'
+require_text docs/operations/service-level-objectives.md 'fallback evidence'
+require_text docs/operations/service-level-objectives.md 'External SLA Boundary'
+require_text docs/operations/service-level-objectives.md 'issue #57'
 require_text docs/operations/central-metrics-backend.md '# Central Metrics Backend Integration'
 require_text docs/operations/central-metrics-backend.md 'metric taxonomy'
 require_text docs/operations/central-metrics-backend.md 'ingestion path'
@@ -804,6 +817,7 @@ bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
+bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null

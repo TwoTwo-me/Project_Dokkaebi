@@ -246,6 +246,13 @@ The Manager must treat missing dispatch SLO, recovery SLO, review-age SLO,
 incident commander, communication, mitigation, postmortem, or resolved on-call
 decision as an operations readiness gap.
 
+Service-level objective evidence must follow
+[`docs/operations/service-level-objectives.md`](../operations/service-level-objectives.md).
+The Manager must treat missing SLO target, measurement source, fallback
+evidence, error-budget policy, review cadence, owner action, availability
+posture, external SLA approval boundary, residual risk, or next action as an
+SLO/SLA readiness gap.
+
 Central metrics backend designs must follow
 [`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md).
 The Manager must treat missing metric taxonomy, ingestion path, storage backend
