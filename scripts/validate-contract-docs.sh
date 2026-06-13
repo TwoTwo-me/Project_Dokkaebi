@@ -51,6 +51,7 @@ require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-central-metrics-backend.sh
+require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-compliance-package.sh
@@ -66,6 +67,7 @@ require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/central-metrics-backend.md
+require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/compliance/control-map-and-evidence-package.md
@@ -118,6 +120,7 @@ require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-re
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
 require_text docs/contracts/manager-contract.md '../operations/central-metrics-backend.md'
+require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
@@ -143,6 +146,13 @@ require_text docs/contracts/manager-contract.md 'review-age SLO'
 require_text docs/contracts/manager-contract.md 'Central metrics backend designs'
 require_text docs/contracts/manager-contract.md 'metric taxonomy'
 require_text docs/contracts/manager-contract.md 'label and cardinality controls'
+require_text docs/contracts/manager-contract.md 'On-call paging and alerting baselines'
+require_text docs/contracts/manager-contract.md 'alert taxonomy'
+require_text docs/contracts/manager-contract.md 'severity mapping'
+require_text docs/contracts/manager-contract.md 'quiet-hours behavior'
+require_text docs/contracts/manager-contract.md 'notification routing'
+require_text docs/contracts/manager-contract.md 'test evidence shape'
+require_text docs/contracts/manager-contract.md 'metrics linkage'
 require_text docs/contracts/manager-contract.md 'Release rollback capacity evidence'
 require_text docs/contracts/manager-contract.md 'staged rollout'
 require_text docs/contracts/manager-contract.md 'Topology backup restore and disaster recovery evidence'
@@ -282,6 +292,7 @@ require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
+require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
@@ -330,6 +341,23 @@ require_text docs/operations/central-metrics-backend.md 'remaining operational g
 require_text docs/operations/central-metrics-backend.md 'permission level'
 require_text docs/operations/central-metrics-backend.md 'docs-only'
 require_text docs/operations/central-metrics-backend.md 'control-plane'
+require_text docs/operations/on-call-paging-alerting.md '# On-Call Paging And Alerting Baseline'
+require_text docs/operations/on-call-paging-alerting.md 'alert taxonomy'
+require_text docs/operations/on-call-paging-alerting.md 'severity mapping'
+require_text docs/operations/on-call-paging-alerting.md 'escalation roster shape'
+require_text docs/operations/on-call-paging-alerting.md 'paging backend decision'
+require_text docs/operations/on-call-paging-alerting.md 'quiet-hours behavior'
+require_text docs/operations/on-call-paging-alerting.md 'notification routing'
+require_text docs/operations/on-call-paging-alerting.md 'test evidence shape'
+require_text docs/operations/on-call-paging-alerting.md 'SLO linkage'
+require_text docs/operations/on-call-paging-alerting.md 'metrics linkage'
+require_text docs/operations/on-call-paging-alerting.md 'ownership'
+require_text docs/operations/on-call-paging-alerting.md 'failure handling'
+require_text docs/operations/on-call-paging-alerting.md 'approval boundary'
+require_text docs/operations/on-call-paging-alerting.md 'remaining operational gaps'
+require_text docs/operations/on-call-paging-alerting.md 'permission level'
+require_text docs/operations/on-call-paging-alerting.md 'docs-only'
+require_text docs/operations/on-call-paging-alerting.md 'control-plane'
 require_text docs/operations/release-rollback-capacity-drills.md '# Release Rollback Capacity And Drill Baseline'
 require_text docs/operations/release-rollback-capacity-drills.md 'staged rollout'
 require_text docs/operations/release-rollback-capacity-drills.md 'rollback trigger'
@@ -731,6 +759,7 @@ bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
+bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null

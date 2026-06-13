@@ -67,6 +67,7 @@ Required local artifacts:
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md)
+- [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
@@ -240,6 +241,14 @@ assumptions, retention, label and cardinality controls, dashboard and alert
 integration, SLO linkage, ownership, security boundary, rollout phases,
 validation steps, failure handling, remaining operational gaps, or permission
 level as an observability readiness gap.
+
+On-call paging and alerting baselines must follow
+[`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md).
+The Manager must treat missing alert taxonomy, severity mapping, escalation
+roster shape, paging backend decision, quiet-hours behavior, notification routing,
+test evidence shape, SLO linkage, metrics linkage, ownership, failure handling,
+approval boundary, remaining operational gaps, or permission level as an
+operations readiness gap.
 
 Release rollback capacity evidence must follow
 [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md).
