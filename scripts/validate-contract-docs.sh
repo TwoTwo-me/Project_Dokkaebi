@@ -45,10 +45,12 @@ require_file .github/workflows/dokkaebi-governance.yml
 require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
+require_file scripts/validate-dispatch-lease-recovery.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/operations/worker-cli-auth.md
+require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -90,6 +92,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
+require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -101,6 +104,8 @@ require_text docs/contracts/manager-contract.md 'approval-gate status'
 require_text docs/contracts/manager-contract.md 'Manager-Fire-Hammer replay suite'
 require_text docs/contracts/manager-contract.md 'dispatch readiness'
 require_text docs/contracts/manager-contract.md 'Worker route metadata'
+require_text docs/contracts/manager-contract.md 'durable lease and restart recovery contract'
+require_text docs/contracts/manager-contract.md 'no duplicate dispatch after restart'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -176,6 +181,18 @@ require_text scripts/validate-git-governance.sh 'Validation:'
 require_text scripts/validate-git-governance.sh 'Risks:'
 require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
 require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise readiness criteria are present and structurally valid'
+require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
+
+require_text docs/operations/dispatch-lease-recovery.md '# Dispatch Lease And Restart Recovery'
+require_text docs/operations/dispatch-lease-recovery.md 'lease store'
+require_text docs/operations/dispatch-lease-recovery.md 'owner identity'
+require_text docs/operations/dispatch-lease-recovery.md 'retry persistence'
+require_text docs/operations/dispatch-lease-recovery.md 'recovery behavior'
+require_text docs/operations/dispatch-lease-recovery.md 'no duplicate dispatch after restart'
+require_text docs/operations/dispatch-lease-recovery.md 'live GitHub Project residual risks'
+require_text docs/operations/dispatch-lease-recovery.md 'lease_token'
+require_text docs/operations/dispatch-lease-recovery.md 'idempotency_key'
+require_text docs/operations/dispatch-lease-recovery.md 'stale lease'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -503,5 +520,6 @@ if errors:
 PY
 
 bash scripts/validate-readiness-criteria.sh >/dev/null
+bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'
