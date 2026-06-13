@@ -279,7 +279,7 @@
     {
       "id": "security_authority",
       "name": "Security and authority",
-      "currentPercent": 84,
+      "currentPercent": 90,
       "targetPercent": 100,
       "enterpriseStandard": "All credentials, approvals, worker capabilities, high-risk operations, audit events, and emergency paths are least-privilege, revocable, observable, and fail-closed.",
       "currentEvidence": [
@@ -291,10 +291,12 @@
         "docs/policies/multi-tenant-rbac-drill-2026-06-13.md",
         "scripts/validate-multi-tenant-rbac-drill.sh",
         "docs/policies/credential-lifecycle-and-revocation.md",
-        "scripts/validate-credential-lifecycle.sh"
+        "scripts/validate-credential-lifecycle.sh",
+        "docs/policies/credential-revocation-access-review-drill-2026-06-13.md",
+        "scripts/validate-credential-revocation-drill.sh"
       ],
       "gaps": [
-        "Credential lifecycle, rotation, revocation dry-run, and access-review evidence shape is documented and locally validated, but runtime broker denial, approved revocation output, and generated access-review output are not captured.",
+        "Credential lifecycle, rotation, revocation dry-run, approved local sandbox denial/revocation output, and access-review evidence shape are documented and locally validated, but live broker enforcement and worker-route credential gate runtime output are not captured.",
         "Threat modeling and prompt-injection controls need a documented enterprise baseline.",
         "Multi-tenant RBAC design and local replay drill evidence are captured, but runtime enforcement, generated access-review output, and live credential/worker-route gates are not complete."
       ],
@@ -312,27 +314,23 @@
       ],
       "nextIssues": [
         {
-          "title": "Run approved credential revocation and access-review drill",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/92",
+          "title": "Add enterprise threat model and prompt-injection controls",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/94",
           "acceptanceCriteria": [
-            "Execute credential broker denial or revocation drill against an approved runtime or sandbox target without exposing secrets.",
-            "Capture owner approval, grant scope, expiration, revocation trigger, denial or revocation output, access-review output, audit evidence, cleanup, residual risk, and next action.",
-            "Prove the gate fails closed when owner, scope, expiration, revocation trigger, audit evidence, cleanup, or approval-gate status is missing.",
-            "Update docs/enterprise-readiness/criteria.json only from captured runtime or explicitly approved sandbox evidence."
+            "Document threat actors, trust boundaries, assets, abuse cases, prompt-injection paths, data exfiltration paths, credential-broker misuse paths, worker-route escalation paths, and GitHub Project control-plane risks.",
+            "Define mitigations, detection evidence, fail-closed behavior, owner review cadence, residual risk, and next action for each high-risk path.",
+            "Add deterministic validation that rejects missing threat classes, missing prompt-injection controls, missing credential/worker boundaries, unsafe authority wording, private local paths, and secret-bearing evidence.",
+            "Update docs/enterprise-readiness/criteria.json only from captured repository, runtime, or explicitly approved sandbox evidence."
           ],
           "validationRequired": [
-            "bash scripts/validate-credential-lifecycle.sh",
-            "bash scripts/validate-multi-tenant-rbac.sh",
-            "bash scripts/validate-multi-tenant-rbac-drill.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted approved credential revocation and access-review validation named by the implementation"
+            "Targeted threat model validation named by the implementation"
           ],
-          "authorityRequirement": "Docs-only planning by default. Credential use, broker mutation, runtime, worker, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only planning by default. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Runtime or approved sandbox credential drill output",
-            "Access-review output",
+            "Threat model and prompt-injection control evidence",
             "Validation command output",
             "Approval-gate status",
             "Cleanup receipt",
