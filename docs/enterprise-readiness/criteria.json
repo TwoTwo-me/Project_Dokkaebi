@@ -215,20 +215,22 @@
     {
       "id": "development_quality",
       "name": "Development and quality",
-      "currentPercent": 76,
+      "currentPercent": 84,
       "targetPercent": 100,
       "enterpriseStandard": "Every change has focused tests, deterministic validation, risk-based coverage, release evidence, and regression protection for adjacent contracts.",
       "currentEvidence": [
         ".github/workflows/dokkaebi-governance.yml",
         "scripts/validate-contract-docs.sh",
         "scripts/validate-git-governance.sh",
+        "docs/enterprise-readiness/runtime-quality-gate-matrix.md",
+        "scripts/validate-runtime-quality-gates.sh",
         "symphony-github-project-tracker/elixir/Makefile",
         "symphony-github-project-tracker/elixir/test"
       ],
       "gaps": [
-        "Important runtime modules are not fully covered by default quality gates.",
-        "Live end-to-end, soak, and failure injection tests are not routine merge gates.",
-        "Release candidate and rollback validation are incomplete."
+        "Risk-based quality gate matrix now covers orchestration, credential, GitHub adapter, worker provider, and UI risk surfaces with required tests, accepted risk, evidence artifacts, and next actions.",
+        "Live end-to-end, soak, and failure injection tests are still not routine merge gates.",
+        "Release candidate and rollback validation are documented but not routine runtime merge evidence."
       ],
       "evaluationQuestions": [
         "Does every readiness criterion map to an executable or reviewable validation?",
@@ -243,24 +245,32 @@
       ],
       "nextIssues": [
         {
-          "title": "Create risk-based quality gate matrix for runtime modules",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/17",
+          "title": "Add routine runtime failure-injection and soak quality gates",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/90",
           "acceptanceCriteria": [
-            "Matrix lists orchestration, credential, GitHub adapter, worker provider, and UI risk surfaces.",
-            "Each risk surface has required tests or explicit accepted risk.",
-            "Validation command verifies the matrix exists and names the required surfaces."
+            "Run failure-injection checks for duplicate dispatch, retry persistence, credential denial, GitHub API failure, worker route failure, and UI error-state regression through runtime or explicitly approved sandbox evidence.",
+            "Capture end-to-end issue processing evidence and measured soak evidence with cleanup, residual risk, and next action.",
+            "Promote release-candidate and rollback quality gates into routine PR or release evidence.",
+            "Update docs/enterprise-readiness/criteria.json only from captured runtime or approved sandbox evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-runtime-quality-gates.sh",
+            "bash scripts/validate-dispatch-lease-recovery.sh",
+            "bash scripts/validate-orchestration-recovery-gate.sh",
+            "bash scripts/validate-release-rollback-drill.sh",
+            "bash scripts/validate-release-rollback-capacity-drills.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted runtime or approved sandbox quality-gate validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only planning by default. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Runtime or approved sandbox failure-injection evidence",
+            "End-to-end and soak output",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }

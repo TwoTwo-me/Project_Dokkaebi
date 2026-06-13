@@ -67,8 +67,10 @@ require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
 require_file scripts/validate-immutable-audit-export-verification.sh
 require_file scripts/validate-signed-immutable-audit-export.sh
+require_file scripts/validate-runtime-quality-gates.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
+require_file docs/enterprise-readiness/runtime-quality-gate-matrix.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/design/carbon-ui-baseline.md
 require_file docs/product/onboarding-troubleshooting.md
@@ -149,6 +151,7 @@ require_text docs/contracts/manager-contract.md '../compliance/control-map-and-e
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
 require_text docs/contracts/manager-contract.md '../compliance/signed-immutable-audit-export-key-management-2026-06-13.md'
+require_text docs/contracts/manager-contract.md '../enterprise-readiness/runtime-quality-gate-matrix.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -199,6 +202,9 @@ require_text docs/contracts/manager-contract.md 'Signed immutable audit export k
 require_text docs/contracts/manager-contract.md 'signed manifest storage'
 require_text docs/contracts/manager-contract.md 'signing-key ownership'
 require_text docs/contracts/manager-contract.md 'verification cadence'
+require_text docs/contracts/manager-contract.md 'Runtime quality gates'
+require_text docs/contracts/manager-contract.md 'required tests'
+require_text docs/contracts/manager-contract.md 'accepted risk'
 require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
 require_text docs/contracts/manager-contract.md 'tenant boundaries'
 require_text docs/contracts/manager-contract.md 'permission matrix'
@@ -594,6 +600,19 @@ require_text docs/compliance/signed-immutable-audit-export-key-management-2026-0
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'residual risk'
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'next action'
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'does not authorize'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md '# Runtime Quality Gate Matrix'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'orchestration'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'credential'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'GitHub adapter'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'worker provider'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'UI'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'required tests'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'accepted risk'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'approval-gate status'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'cleanup receipt'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'residual risk'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'next action'
+require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'does not authorize'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -944,5 +963,6 @@ bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null
 bash scripts/validate-immutable-audit-export-verification.sh >/dev/null
 bash scripts/validate-signed-immutable-audit-export.sh >/dev/null
+bash scripts/validate-runtime-quality-gates.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'
