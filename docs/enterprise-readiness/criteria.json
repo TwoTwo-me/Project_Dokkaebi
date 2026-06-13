@@ -33,7 +33,22 @@
     "worktreeContract": "Each issue is solved in an isolated worktree or worker workspace. Branch names follow docs/policies/git-governance.md and do not use actor prefixes.",
     "pullRequestContract": "Each pull request must include context, decision, why, validation, residual risks, git status, and issue linkage.",
     "mergeContract": "Merge only after the applicable repository checks pass and approval requirements in docs/policies/git-governance.md are satisfied.",
-    "evaluationLoop": "After merge, re-run the relevant validation, reassess all criteria from evidence, create follow-up issues for any area below 100%, and repeat until every area and zero-percent capability reaches 100%."
+    "evaluationLoop": "After merge, re-run the relevant validation, reassess all criteria from evidence, create follow-up issues for any area below 100%, and repeat until every area and zero-percent capability reaches 100%.",
+    "selfImprovementContract": "The readiness loop may change its own criteria, validation, issue contract, or phase model when evidence shows the loop is failing to drive work, omits required enterprise evidence, creates ambiguous issues, cannot safely score a criterion, or repeatedly blocks on the same operational gap.",
+    "improvementTriggers": [
+      "A readiness issue is not dispatchable because required scope, authority, validation, result evidence, or metadata hygiene is missing.",
+      "A criterion cannot be scored from repository, GitHub, CI, runtime, or operations evidence.",
+      "A validator passes while a documented loop requirement is absent or unenforced.",
+      "A review, incident, or failed PR identifies a repeatable gap in the loop itself.",
+      "The loop reaches an enterprise standard that is undefined and requires a Human decision before scoring can continue."
+    ],
+    "improvementEvidence": [
+      "Open or update a GitHub issue that names the loop gap and its acceptance criteria.",
+      "Capture RED evidence showing the missing or weak loop behavior before changing criteria or validation.",
+      "Make the smallest criteria, documentation, issue-template, or validator change that closes the gap.",
+      "Run readiness, contract, package, git-governance, and relevant targeted validation before PR.",
+      "Open and merge a PR before using the improved loop to rescore readiness."
+    ]
   },
   "metadataHygiene": {
     "publicBranchRule": "Use <type>/<scope-slug> branch names without actor prefixes.",
