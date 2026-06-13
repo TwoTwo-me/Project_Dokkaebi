@@ -68,6 +68,7 @@ Required local artifacts:
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
 - [`docs/compliance/audit-review-2026-06-13.md`](../compliance/audit-review-2026-06-13.md)
+- [`docs/compliance/immutable-audit-export.md`](../compliance/immutable-audit-export.md)
 - [`docs/adapters/hermes.md`](../adapters/hermes.md)
 - [`docs/templates/worker-ticket.md`](../templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](../templates/worker-result-packet.md)
@@ -239,6 +240,12 @@ The Manager must treat missing completed-change reference, reviewer, control
 coverage, evidence links, exceptions, retention decision, redaction decision,
 integrity check, approval-gate status, residual risk, or next action as a
 compliance package readiness gap.
+Immutable audit export designs must follow
+[`docs/compliance/immutable-audit-export.md`](../compliance/immutable-audit-export.md).
+The Manager must treat missing manifest hash, source links, redaction manifest,
+retention metadata, ownership, verification steps, failure handling, approval
+boundary, remaining operational gaps, or permission level as an immutable audit
+export readiness gap.
 
 ## Toolchain bootstrap contract
 

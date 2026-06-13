@@ -108,6 +108,10 @@ boundary, or secret-bearing evidence wording.
   #53 against this package shape and captures reviewer, control coverage,
   evidence links, exceptions, retention decision, redaction decision, integrity
   check, approval-gate status, residual risk, and next action.
+- [`immutable-audit-export.md`](immutable-audit-export.md) defines the
+  docs-only export package contract, manifest hash, source links, redaction
+  manifest, retention metadata, ownership, verification steps, failure
+  handling, approval boundary, and remaining operational gaps.
 
 <!-- compliance-package:begin -->
 ```json
