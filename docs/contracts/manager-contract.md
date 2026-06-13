@@ -60,6 +60,7 @@ Required local artifacts:
 - [`docs/contracts/hammer-worker-contract.md`](hammer-worker-contract.md)
 - [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md)
 - [`docs/policies/authority-and-safety.md`](../policies/authority-and-safety.md)
+- [`docs/policies/credential-lifecycle-and-revocation.md`](../policies/credential-lifecycle-and-revocation.md)
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
@@ -157,6 +158,13 @@ prompts or hidden memory. A credential broker must issue task-scoped grants with
 repository/service allowlists, branch or environment binding, expiry, and endpoint
 proof. Grant metadata belongs in the audit trail; secret material should remain
 outside ticket prose and Worker result summaries.
+
+Credential lifecycle and revocation dry runs must follow
+[`docs/policies/credential-lifecycle-and-revocation.md`](../policies/credential-lifecycle-and-revocation.md).
+The Manager must treat missing token classes, owners, storage, rotation cadence,
+revocation triggers, audit evidence, narrow development/sandbox auth exception,
+dry-run revocation checklist, approval-gate status, cleanup receipt, residual
+risk, or next action as a security-authority readiness gap.
 
 Multi-tenant RBAC designs must follow
 [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md).

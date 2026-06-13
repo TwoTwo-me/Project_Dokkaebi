@@ -46,6 +46,7 @@ require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
 require_file scripts/validate-carbon-ui-baseline.sh
+require_file scripts/validate-credential-lifecycle.sh
 require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
@@ -75,6 +76,7 @@ require_file docs/reports/company-readiness-assessment.md
 require_file docs/design/carbon-ui-baseline.md
 require_file docs/product/onboarding-troubleshooting.md
 require_file docs/operations/worker-cli-auth.md
+require_file docs/policies/credential-lifecycle-and-revocation.md
 require_file docs/policies/multi-tenant-rbac.md
 require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
@@ -137,6 +139,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../design/carbon-ui-baseline.md'
 require_text docs/contracts/manager-contract.md '../product/onboarding-troubleshooting.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
+require_text docs/contracts/manager-contract.md '../policies/credential-lifecycle-and-revocation.md'
 require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
@@ -205,6 +208,9 @@ require_text docs/contracts/manager-contract.md 'verification cadence'
 require_text docs/contracts/manager-contract.md 'Runtime quality gates'
 require_text docs/contracts/manager-contract.md 'required tests'
 require_text docs/contracts/manager-contract.md 'accepted risk'
+require_text docs/contracts/manager-contract.md 'Credential lifecycle and revocation dry runs'
+require_text docs/contracts/manager-contract.md 'token classes'
+require_text docs/contracts/manager-contract.md 'dry-run revocation checklist'
 require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
 require_text docs/contracts/manager-contract.md 'tenant boundaries'
 require_text docs/contracts/manager-contract.md 'permission matrix'
@@ -277,6 +283,22 @@ require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'worker route b
 require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'access-review evidence'
 require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'approval-gate status'
 require_text scripts/validate-multi-tenant-rbac-drill.sh 'PASS Dokkaebi multi-tenant RBAC drill validation passed'
+
+require_text docs/policies/credential-lifecycle-and-revocation.md '# Credential Lifecycle And Revocation Dry Run'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'token classes'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'owners'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'storage'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'rotation cadence'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'revocation triggers'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'audit evidence'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'development and sandbox auth exception'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'dry-run revocation checklist'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'approval-gate status'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'cleanup receipt'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'residual risk'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'next action'
+require_text docs/policies/credential-lifecycle-and-revocation.md 'does not authorize'
+require_text scripts/validate-credential-lifecycle.sh 'PASS Dokkaebi credential lifecycle validation passed'
 
 require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
 require_text docs/design/carbon-ui-baseline.md 'theme choice'
@@ -941,6 +963,7 @@ PY
 
 bash scripts/validate-readiness-criteria.sh >/dev/null
 bash scripts/validate-carbon-ui-baseline.sh >/dev/null
+bash scripts/validate-credential-lifecycle.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
