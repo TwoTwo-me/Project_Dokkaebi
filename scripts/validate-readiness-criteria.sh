@@ -122,14 +122,25 @@ else:
         for field in [
             "enterpriseStandard",
             "currentEvidence",
-            "gaps",
             "evaluationQuestions",
             "evidenceRequired",
-            "nextIssues",
         ]:
             value = area.get(field)
             if value in (None, "", []):
                 errors.append(f"{area_id} missing {field}")
+
+        gaps = area.get("gaps")
+        if not isinstance(gaps, list):
+            errors.append(f"{area_id} gaps must be a list")
+        elif current < area.get("targetPercent", 100) and not gaps:
+            errors.append(f"{area_id} missing gaps")
+
+        next_issues = area.get("nextIssues")
+        if not isinstance(next_issues, list):
+            errors.append(f"{area_id} nextIssues must be a list")
+        elif current < area.get("targetPercent", 100) and not next_issues:
+            errors.append(f"{area_id} missing nextIssues")
+
         for issue in area.get("nextIssues", []):
             if not issue.get("title"):
                 errors.append(f"{area_id} has issue without title")
