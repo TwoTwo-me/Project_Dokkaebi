@@ -26,6 +26,7 @@ Default local service values:
 | Start wrapper | `$HOME/.local/bin/dokkaebi-fire-sandbox-start` |
 | Logs | `$HOME/.local/state/dokkaebi/fire/sandbox/logs` |
 | Workspaces | `$HOME/.local/state/dokkaebi/fire/sandbox/workspaces` |
+| Worker CLI auth | [`worker-cli-auth.md`](worker-cli-auth.md) |
 
 The sandbox service should only dispatch items that satisfy all admission
 gates:
@@ -37,6 +38,12 @@ gates:
 - Current concurrency is below the configured Fire limit.
 
 Items in `Human Review`, `Blocked`, or `Done` are not active dispatch targets.
+
+Trusted dev/sandbox Hammer workers may use the current environment's
+file-based Codex auth copied under
+[`worker-cli-auth.md`](worker-cli-auth.md). This is limited to Codex CLI
+worker execution and does not grant broader credential, Proxmox, Docker daemon,
+Kubernetes, merge, deploy, or production authority.
 
 ## Register The Service
 
