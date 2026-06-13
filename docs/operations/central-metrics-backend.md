@@ -11,6 +11,8 @@ measurable without relying on private worker memory. A later verification drill
 must prove ingestion, storage, query, dashboard, and alert evaluation with a
 local replay or an approved sandbox target before this capability can be treated
 as operational.
+The current docs-only local replay evidence package is captured in
+[`central-metrics-replay-2026-06-13.md`](central-metrics-replay-2026-06-13.md).
 
 The validation contract for this docs-only baseline explicitly covers metric
 taxonomy, ingestion path, storage backend assumptions, retention, label and
@@ -109,7 +111,7 @@ be cited as compliance or SRE proof.
 
 Allowed labels:
 
-- `project`, `repository`, `environment`, `route_class`, `provider`;
+- `project`, `repository`, `environment`, `route_class`, `provider`, `adapter`;
 - `issue_number` or `pull_request_number` when bounded to active work;
 - `permission_level`, `approval_gate_status`, `validator_name`;
 - `failure_class`, `control_class`, `evidence_package_id`.
@@ -296,6 +298,7 @@ deployment, or GitHub Project control-plane mutation wording.
       "environment",
       "route_class",
       "provider",
+      "adapter",
       "issue_number",
       "pull_request_number",
       "permission_level",
@@ -383,14 +386,13 @@ deployment, or GitHub Project control-plane mutation wording.
     "unauthorized sensitive authority wording fails closed"
   ],
   "remainingOperationalGaps": [
-    "measured local replay is not captured",
-    "approved sandbox collection is not captured",
+    "local replay is captured but approved sandbox collection is not captured",
     "production storage backend is not selected",
-    "dashboard screenshots or parsed dashboard evidence are not captured",
-    "alert-rule evaluation evidence is not captured",
+    "live dashboard screenshots from an approved backend are not captured",
+    "live alert-rule delivery evidence from an approved backend is not captured",
     "retention enforcement is not operational"
   ],
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/57"
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80"
 }
 ```
 <!-- central-metrics-backend:end -->
