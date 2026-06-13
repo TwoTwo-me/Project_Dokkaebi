@@ -373,7 +373,7 @@
     {
       "id": "logging_observability",
       "name": "Logging and observability",
-      "currentPercent": 68,
+      "currentPercent": 70,
       "targetPercent": 100,
       "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
       "currentEvidence": [
@@ -381,11 +381,13 @@
         "symphony-github-project-tracker/elixir/docs/observability.md",
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/http_server.ex",
         "docs/operations/central-metrics-backend.md",
-        "scripts/validate-central-metrics-backend.sh"
+        "scripts/validate-central-metrics-backend.sh",
+        "docs/operations/on-call-paging-alerting.md",
+        "scripts/validate-on-call-paging-alerting.sh"
       ],
       "gaps": [
         "Central metrics backend design exists, but measured ingestion, storage, query, dashboard, alert, and tracing evidence are not captured.",
-        "Operational dashboards and alert rules are designed but not evaluated against replayed or sandbox metrics and are not tied to production paging.",
+        "Operational dashboards and alert rules are designed and mapped to on-call routing, but they are not evaluated against replayed or sandbox metrics and are not tied to an approved production paging backend.",
         "Audit export design exists, but metrics evidence retention and export verification remain unproven."
       ],
       "evaluationQuestions": [
@@ -427,7 +429,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 70,
+      "currentPercent": 72,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -438,10 +440,12 @@
         "docs/operations/central-metrics-backend.md",
         "scripts/validate-central-metrics-backend.sh",
         "docs/operations/release-rollback-capacity-drills.md",
-        "scripts/validate-release-rollback-capacity-drills.sh"
+        "scripts/validate-release-rollback-capacity-drills.sh",
+        "docs/operations/on-call-paging-alerting.md",
+        "scripts/validate-on-call-paging-alerting.sh"
       ],
       "gaps": [
-        "SLO, incident response, on-call boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
+        "SLO, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
         "Capacity, soak, and central metrics thresholds exist, but long-running measured soak or metrics tests are not yet captured from a local or approved-sandbox run.",
         "Release and rollback procedures are documented, but approved drill evidence is still required before production service quality can be claimed."
       ],
@@ -657,16 +661,18 @@
     {
       "id": "incident_response",
       "name": "Incident Response",
-      "currentPercent": 55,
+      "currentPercent": 58,
       "targetPercent": 100,
       "nextIssueTitle": "Create incident response runbook",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/25",
       "acceptanceCriteria": [
-        "Run an incident response tabletop or approved sandbox drill.",
-        "Capture severity, commander, communication, mitigation, postmortem, and follow-up evidence.",
+        "Run an incident response tabletop or approved sandbox drill using the SRE and on-call paging baselines.",
+        "Capture severity, commander, communication, mitigation, postmortem, alert routing decision, and follow-up evidence.",
         "Update docs/enterprise-readiness/criteria.json after drill evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-on-call-paging-alerting.sh",
+        "bash scripts/validate-sre-operating-baseline.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
         "Targeted validation named by the issue implementation"
@@ -683,21 +689,25 @@
     {
       "id": "on_call_paging_alerting",
       "name": "On-call, paging, and alerting",
-      "currentPercent": 42,
+      "currentPercent": 58,
       "targetPercent": 100,
-      "nextIssueTitle": "Create on-call, paging, and alerting baseline",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/26",
+      "nextIssueTitle": "Run on-call paging backend and alert routing drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/63",
       "acceptanceCriteria": [
-        "Approve or implement a paging backend and escalation roster.",
-        "Capture alert routing, quiet-hours behavior, and test evidence.",
-        "Update docs/enterprise-readiness/criteria.json after on-call evidence exists."
+        "Record the approved paging backend, escalation roster, escalation windows, and quiet-hours behavior before any live route is exercised.",
+        "Route representative dispatch-latency, recovery-time, stale-review, worker-capacity, validation-failure, approval-boundary, and compliance-evidence alerts to the selected sinks.",
+        "Capture alert evaluation input, routing decision, quiet-hours decision, delivery or dry-run output, cleanup, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json only from captured drill evidence."
       ],
       "validationRequired": [
+        "bash scripts/validate-on-call-paging-alerting.sh",
+        "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-sre-operating-baseline.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted alert routing drill validation named by the implementation"
       ],
-      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "docs-only or local dry-run validation by default. Live alerting service, infrastructure, credential, worker, remote host, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",
@@ -817,7 +827,7 @@
     {
       "id": "central_metrics_backend",
       "name": "Central metrics backend",
-      "currentPercent": 55,
+      "currentPercent": 58,
       "targetPercent": 100,
       "nextIssueTitle": "Run central metrics backend sandbox verification",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/57",
@@ -828,6 +838,7 @@
       ],
       "validationRequired": [
         "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
         "Targeted central metrics sandbox or local replay validation named by the implementation"

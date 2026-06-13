@@ -78,9 +78,11 @@ Postmortem minimum:
 ## On-Call And Paging
 
 Paging integration is intentionally deferred until a Human owner approves a
-specific paging backend and escalation roster. That owner decision prevents the
-project from pretending it has production paging before a real operator path
-exists.
+specific paging backend and escalation roster. The detailed on-call paging and
+alerting contract now lives in
+[`on-call-paging-alerting.md`](on-call-paging-alerting.md). That owner decision
+prevents the project from pretending it has production paging before a real
+operator path exists.
 
 Current on-call path:
 
@@ -91,6 +93,10 @@ Current on-call path:
   implemented.
 - Paging path: deferred; future implementation must name backend, roster,
   escalation windows, quiet-hours behavior, and test evidence.
+- Alerting baseline: [`on-call-paging-alerting.md`](on-call-paging-alerting.md)
+  defines alert taxonomy, severity mapping, escalation roster shape,
+  notification routing, SLO linkage, metrics linkage, approval boundary, and
+  test evidence shape.
 
 No worker, Docker, Kubernetes, SSH, credential, deployment, production, or
 GitHub Project control-plane mutation is authorized by this document.

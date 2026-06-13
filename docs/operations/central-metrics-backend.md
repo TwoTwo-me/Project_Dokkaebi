@@ -150,7 +150,11 @@ Initial alert rules:
 - missing compliance evidence alert.
 
 Paging remains deferred until the on-call owner approves a backend, roster,
-quiet-hours behavior, and test evidence.
+quiet-hours behavior, and test evidence. The on-call paging and alerting
+baseline in [`on-call-paging-alerting.md`](on-call-paging-alerting.md) defines
+the alert taxonomy, severity mapping, notification routing, SLO linkage, metrics
+linkage, approval boundary, and test evidence shape that future alert
+evaluation drills must satisfy.
 
 ## SLO Linkage
 
