@@ -43,7 +43,7 @@ required_top = {
     "scoringScale",
     "workflow",
     "areas",
-    "zeroPercentCapabilities",
+    "criticalCapabilities",
 }
 missing_top = sorted(required_top - data.keys())
 if missing_top:
@@ -149,8 +149,8 @@ else:
     if missing_area_ids:
         errors.append(f"missing area ids: {', '.join(missing_area_ids)}")
 
-zero_capabilities = data.get("zeroPercentCapabilities", [])
-expected_zero_ids = {
+critical_capabilities = data.get("criticalCapabilities", [])
+expected_capability_ids = {
     "incident_response",
     "on_call_paging_alerting",
     "slo_sla",
@@ -161,17 +161,18 @@ expected_zero_ids = {
     "immutable_audit_export",
     "multi_tenant_rbac",
 }
-seen_zero_ids = {
+seen_capability_ids = {
     item.get("id")
-    for item in zero_capabilities
+    for item in critical_capabilities
     if isinstance(item, dict) and item.get("id")
 }
-missing_zero_ids = sorted(expected_zero_ids - seen_zero_ids)
-if missing_zero_ids:
-    errors.append(f"missing zero-percent capability ids: {', '.join(missing_zero_ids)}")
-for item in zero_capabilities:
-    if item.get("currentPercent") != 0:
-        errors.append(f"{item.get('id', '<missing>')} currentPercent must be 0")
+missing_capability_ids = sorted(expected_capability_ids - seen_capability_ids)
+if missing_capability_ids:
+    errors.append(f"missing critical capability ids: {', '.join(missing_capability_ids)}")
+for item in critical_capabilities:
+    current = item.get("currentPercent")
+    if not isinstance(current, int) or current < 0 or current > 100:
+        errors.append(f"{item.get('id', '<missing>')} currentPercent must be an integer from 0 to 100")
     if item.get("targetPercent") != 100:
         errors.append(f"{item.get('id', '<missing>')} targetPercent must be 100")
     issue_url = item.get("githubIssueUrl", "")
