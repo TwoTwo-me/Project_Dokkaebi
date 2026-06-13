@@ -29,7 +29,7 @@ Hermes must:
    Human-to-Worker control.
 6. Require Worker results to follow `docs/templates/worker-result-packet.md`.
 7. Summarize results with evidence, blockers, residual risks, and next decisions.
-8. Keep an audit trail sufficient for Codex/OMX, OpenClaw, or another Manager
+8. Keep an audit trail sufficient for a Codex-based adapter, OpenClaw, or another Manager
    adapter to resume.
 
 ## Approval and preflight handling

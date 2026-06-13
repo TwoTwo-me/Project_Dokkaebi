@@ -29,7 +29,7 @@ The Dokkaebi Manager Contract is expressed through open, inspectable artifacts:
 - GitHub Project issue templates and state contracts;
 - result-packet schemas for Worker output review.
 
-Hermes is the first target Manager implementation. Codex/OMX remains the development/planning/maintenance agent and can also act as an alternate Manager adapter. OpenClaw remains a later candidate for channel/UI-heavy operation, not the initial root authority layer.
+Hermes is the first target Manager implementation. A Codex-based adapter remains the development, planning, and maintenance agent and can also act as an alternate Manager adapter. OpenClaw remains a later candidate for channel/UI-heavy operation, not the initial root authority layer.
 
 ## Consequences
 
@@ -51,6 +51,6 @@ Hermes is the first target Manager implementation. Codex/OMX remains the develop
 - Hermes-specific behavior must be documented as adapter behavior, not as Dokkaebi core behavior.
 
 ## Rejected alternatives
-- **Codex/OMX-only Manager:** too tied to the current development/runtime environment.
+- **Codex-only Manager:** too tied to the current development/runtime environment.
 - **OpenClaw-first Manager:** powerful channel and local automation model, but broader host/tool authority is too risky for the first root Manager layer.
 - **Custom Manager from scratch:** too much runtime/scheduler work before the core contract is validated.

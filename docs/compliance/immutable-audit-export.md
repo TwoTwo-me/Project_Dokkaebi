@@ -40,6 +40,12 @@ The current repository stores only the design contract. A later verification
 drill must produce or replay a concrete export manifest and record the computed
 hash.
 
+The repository also carries a docs-only signed sandbox verification in
+[`signed-immutable-audit-export-key-management-2026-06-13.md`](signed-immutable-audit-export-key-management-2026-06-13.md).
+That artifact proves signature verification and signing-key management shape
+without enabling immutable object storage, a production signing service, or
+automated retention enforcement.
+
 ## Source Links
 
 Required source link classes are:
@@ -135,7 +141,7 @@ production, infrastructure, or control-plane mutation wording.
     "packageIdFormat": "IAE-YYYYMMDD-<change-id>",
     "schemaVersion": "immutable-audit-export/v1",
     "generatedAt": "recorded outside the canonical signed payload",
-    "storageAssumptions": "Repository fixtures and GitHub issue/PR timelines are current storage; signed immutable object storage remains future work"
+    "storageAssumptions": "Repository fixtures, GitHub issue/PR timelines, and a signed sandbox verification artifact are current storage; signed immutable object storage remains future work"
   },
   "manifestHash": {
     "algorithm": "SHA-256",
@@ -150,7 +156,7 @@ production, infrastructure, or control-plane mutation wording.
       "approval-gate status",
       "residual risk"
     ],
-    "verificationResult": "A later drill must produce or replay a manifest and compare the recomputed hash"
+    "verificationResult": "A later drill must produce or replay a manifest and compare the recomputed hash; issue #72 adds signed sandbox verification without object-storage retention lock"
   },
   "sourceLinks": {
     "issues": "request, approval, and closeout issue links",
@@ -211,13 +217,12 @@ production, infrastructure, or control-plane mutation wording.
     "unauthorized sensitive authority wording fails closed"
   ],
   "remainingOperationalGaps": [
-    "signed export verification drill is not captured",
     "immutable object storage is not implemented",
     "retention enforcement is not operational",
-    "manifest signing key management is not designed",
+    "production signing-key registry is not implemented",
     "automated export generation is not implemented"
   ],
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/55"
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88"
 }
 ```
 <!-- immutable-audit-export:end -->

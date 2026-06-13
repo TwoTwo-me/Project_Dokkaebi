@@ -517,7 +517,7 @@
     {
       "id": "compliance_audit",
       "name": "Compliance and audit",
-      "currentPercent": 90,
+      "currentPercent": 94,
       "targetPercent": 100,
       "enterpriseStandard": "The system can produce control-mapped, retained, tamper-evident evidence for approvals, credentials, code changes, worker execution, and operational incidents.",
       "currentEvidence": [
@@ -525,17 +525,19 @@
         "docs/compliance/control-map-and-evidence-package.md",
         "docs/compliance/immutable-audit-export-verification-2026-06-13.md",
         "docs/compliance/immutable-audit-export.md",
+        "docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md",
         "docs/policies/authority-and-safety.md",
         "docs/policies/git-governance.md",
         "docs/templates/worker-result-packet.md",
         "scripts/validate-compliance-audit-review.sh",
         "scripts/validate-compliance-package.sh",
         "scripts/validate-immutable-audit-export-verification.sh",
-        "scripts/validate-immutable-audit-export.sh"
+        "scripts/validate-immutable-audit-export.sh",
+        "scripts/validate-signed-immutable-audit-export.sh"
       ],
       "gaps": [
-        "Control mapping, package shape, one audit review walkthrough, immutable audit export design, and one local replay verification drill exist, but signed export verification, retention enforcement, and immutable object storage are not operational.",
-        "Retention, redaction, ownership, source-link, and manifest-hash metadata are replayed from sanitized repository evidence, but signing-key management, rotation, revocation, and automated export generation remain incomplete.",
+        "Control mapping, package shape, one audit review walkthrough, immutable audit export design, one local replay verification drill, and one signed sandbox verification with key-management evidence exist, but immutable object storage is not operational.",
+        "Retention, redaction, ownership, source-link, manifest-hash, signature, signing-key ownership, rotation, revocation, and verification cadence metadata are replayed from sanitized repository evidence, but automated export generation and retention service enforcement remain incomplete.",
         "Formal SOC 2, ISO 27001, or external-control mapping remains unapproved and out of scope."
       ],
       "evaluationQuestions": [
@@ -551,27 +553,29 @@
       ],
       "nextIssues": [
         {
-          "title": "Add signed immutable audit export storage and key management",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/72",
+          "title": "Connect signed audit export to immutable storage and retention automation",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
           "acceptanceCriteria": [
-            "Define signed manifest storage, signing-key ownership, rotation, revocation, and verification cadence.",
-            "Capture evidence for one approved signed export verification or a clearly bounded sandbox substitute with no secret leakage.",
-            "Record retention enforcement, redaction review, owner review, cleanup, residual risk, and next action.",
-            "Update docs/enterprise-readiness/criteria.json only from captured evidence."
+            "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
+            "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
+            "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
+            "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-signed-immutable-audit-export.sh",
             "bash scripts/validate-immutable-audit-export.sh",
             "bash scripts/validate-immutable-audit-export-verification.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted signed immutable audit export validation named by the implementation"
+            "Targeted immutable storage and retention validation named by the implementation"
           ],
-          "authorityRequirement": "docs-only design by default. Any credential, production, infrastructure, worker, remote host, Proxmox, Docker, Kubernetes, deployment, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Storage-backed verification evidence",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }
@@ -837,31 +841,33 @@
     {
       "id": "compliance_package",
       "name": "Compliance package",
-      "currentPercent": 92,
+      "currentPercent": 96,
       "targetPercent": 100,
-      "nextIssueTitle": "Add signed immutable audit export storage and key management",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/72",
+      "nextIssueTitle": "Connect signed audit export to immutable storage and retention automation",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
       "acceptanceCriteria": [
-        "Define signed manifest storage, signing-key ownership, rotation, revocation, and verification cadence.",
-        "Capture evidence for one approved signed export verification or a clearly bounded sandbox substitute with no secret leakage.",
-        "Record retention enforcement, redaction review, owner review, cleanup, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json only from captured evidence."
+        "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
+        "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
+        "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
       ],
       "validationRequired": [
         "bash scripts/validate-compliance-package.sh",
         "bash scripts/validate-compliance-audit-review.sh",
+        "bash scripts/validate-signed-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export-verification.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted signed immutable audit export validation named by the implementation"
+        "Targeted immutable storage and retention validation named by the implementation"
       ],
-      "authorityRequirement": "docs-only design by default. Any credential, production, infrastructure, worker, remote host, Proxmox, Docker, Kubernetes, deployment, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
-        "Acceptance-criteria evidence",
+        "Storage-backed verification evidence",
         "Validation command output",
         "Approval-gate status",
+        "Cleanup receipt",
         "Residual risk and next action"
       ]
     },
@@ -929,29 +935,31 @@
     {
       "id": "immutable_audit_export",
       "name": "Immutable audit export",
-      "currentPercent": 72,
+      "currentPercent": 86,
       "targetPercent": 100,
-      "nextIssueTitle": "Add signed immutable audit export storage and key management",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/72",
+      "nextIssueTitle": "Connect signed audit export to immutable storage and retention automation",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
       "acceptanceCriteria": [
-        "Define signed manifest storage, signing-key ownership, rotation, revocation, and verification cadence.",
-        "Capture evidence for one approved signed export verification or a clearly bounded sandbox substitute with no secret leakage.",
-        "Record retention enforcement, redaction review, owner review, cleanup, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json only from captured evidence."
+        "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
+        "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
+        "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
       ],
       "validationRequired": [
+        "bash scripts/validate-signed-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export-verification.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted signed immutable audit export validation named by the implementation"
+        "Targeted immutable storage and retention validation named by the implementation"
       ],
-      "authorityRequirement": "docs-only design by default. Any credential, production, infrastructure, worker, remote host, Proxmox, Docker, Kubernetes, deployment, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
-        "Acceptance-criteria evidence",
+        "Storage-backed verification evidence",
         "Validation command output",
         "Approval-gate status",
+        "Cleanup receipt",
         "Residual risk and next action"
       ]
     },
