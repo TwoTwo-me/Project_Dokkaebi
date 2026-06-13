@@ -82,10 +82,13 @@ GitHub-only route for non-urgent notifications, but this document selects none
 of them for live delivery.
 
 The current approved path is audit-visible GitHub issue or PR evidence for
-alerts and reminders. That path is not production paging. It is a fallback until
-issue [#63](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/63) captures
-approved backend, roster, quiet-hours, delivery, cleanup, and residual-risk
-evidence.
+alerts and reminders. That path is not production paging. Issue
+[#63](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/63) captures the
+local dry-run evidence package for that path, and issue
+[#82](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82) owns approved
+live backend delivery.
+The current local dry-run drill is captured in
+[`on-call-alert-routing-drill-2026-06-13.md`](on-call-alert-routing-drill-2026-06-13.md).
 
 ## Quiet-Hours Behavior
 
@@ -372,13 +375,13 @@ control-plane mutation wording.
     "Fail closed when credential, production, infrastructure, worker, remote host, Docker, Kubernetes, deployment, alerting service, or GitHub Project control-plane mutation lacks explicit Human approval"
   ],
   "remainingOperationalGaps": [
-    "Approved paging backend and notification sinks are not selected",
-    "Approved escalation roster and rotation cadence are not captured",
-    "Quiet-hours behavior is not tested against a live or dry-run notification sink",
-    "Alert routing drill evidence is not captured from replayed metrics or approved sandbox metrics",
-    "Delivery evidence, cleanup receipts, and residual-risk closeout remain follow-up work"
+    "GitHub evidence dry-run sink is selected, but approved live paging backend and notification sinks are not connected",
+    "Representative escalation roster and rotation cadence are captured for dry-run evidence, but approved live roster operation is not connected",
+    "Quiet-hours behavior is tested against a dry-run notification sink, but not against live or approved sandbox delivery",
+    "Alert routing drill evidence is captured from replayed metrics, but approved sandbox metrics routing is not captured",
+    "Live delivery evidence, escalation receipts, and cleanup receipts remain follow-up work"
   ],
-  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/63"
+  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }
 ```
 <!-- on-call-paging-alerting:end -->
@@ -387,6 +390,7 @@ control-plane mutation wording.
 
 This baseline raises the reviewable standard but does not finish on-call
 readiness. Remaining operational gaps are tracked by issue
-[#63](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/63): approved paging
-backend, approved roster, quiet-hours drill, alert routing delivery or dry-run
-output, cleanup receipts, and readiness reassessment from captured evidence.
+[#82](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82): approved live
+paging backend delivery, approved roster operation, live or approved sandbox
+quiet-hours delivery, escalation receipt, cleanup receipt, and readiness
+reassessment from captured evidence.

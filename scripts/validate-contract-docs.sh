@@ -55,6 +55,7 @@ require_file scripts/validate-incident-response-runbook.sh
 require_file scripts/validate-central-metrics-backend.sh
 require_file scripts/validate-central-metrics-replay.sh
 require_file scripts/validate-on-call-paging-alerting.sh
+require_file scripts/validate-on-call-alert-routing-drill.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-release-rollback-drill.sh
@@ -79,6 +80,7 @@ require_file docs/operations/incident-response-runbook-2026-06-13.md
 require_file docs/operations/central-metrics-backend.md
 require_file docs/operations/central-metrics-replay-2026-06-13.md
 require_file docs/operations/on-call-paging-alerting.md
+require_file docs/operations/on-call-alert-routing-drill-2026-06-13.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/release-rollback-drill-2026-06-13.md
 require_file docs/operations/topology-backup-restore-dr.md
@@ -352,6 +354,7 @@ require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
 require_text scripts/validate-central-metrics-replay.sh 'PASS Dokkaebi central metrics replay validation passed'
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
+require_text scripts/validate-on-call-alert-routing-drill.sh 'PASS Dokkaebi on-call alert routing drill validation passed'
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release rollback drill validation passed'
@@ -449,6 +452,13 @@ require_text docs/operations/on-call-paging-alerting.md 'remaining operational g
 require_text docs/operations/on-call-paging-alerting.md 'permission level'
 require_text docs/operations/on-call-paging-alerting.md 'docs-only'
 require_text docs/operations/on-call-paging-alerting.md 'control-plane'
+require_text docs/operations/on-call-paging-alerting.md 'on-call-alert-routing-drill-2026-06-13.md'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md '# On-Call Alert Routing Dry-Run Drill'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md 'selected GitHub evidence dry-run sink'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md 'quiet-hours behavior'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md 'dry-run delivery output'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md 'approval-gate status'
+require_text docs/operations/on-call-alert-routing-drill-2026-06-13.md 'followUpIssueUrl'
 require_text docs/operations/release-rollback-capacity-drills.md '# Release Rollback Capacity And Drill Baseline'
 require_text docs/operations/release-rollback-capacity-drills.md 'staged rollout'
 require_text docs/operations/release-rollback-capacity-drills.md 'rollback trigger'
@@ -884,6 +894,7 @@ bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
 bash scripts/validate-central-metrics-replay.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
+bash scripts/validate-on-call-alert-routing-drill.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-release-rollback-drill.sh >/dev/null
