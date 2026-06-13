@@ -49,6 +49,7 @@ require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
+require_file scripts/validate-topology-backup-restore-dr.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
 require_file docs/reports/company-readiness-assessment.md
@@ -57,6 +58,7 @@ require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/release-rollback-capacity-drills.md
+require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -102,6 +104,7 @@ require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-re
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
+require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
 require_text docs/contracts/manager-contract.md 'A Worker result packet must include:'
@@ -121,6 +124,9 @@ require_text docs/contracts/manager-contract.md 'SRE operating evidence'
 require_text docs/contracts/manager-contract.md 'review-age SLO'
 require_text docs/contracts/manager-contract.md 'Release rollback capacity evidence'
 require_text docs/contracts/manager-contract.md 'staged rollout'
+require_text docs/contracts/manager-contract.md 'Topology backup restore and disaster recovery evidence'
+require_text docs/contracts/manager-contract.md 'environment tier'
+require_text docs/contracts/manager-contract.md 'backup target'
 require_no_text docs/contracts/manager-contract.md 'A Worker result packet should include:'
 require_no_text docs/contracts/manager-contract.md 'result-review link. Missing approval evidence blocks dispatch.'
 
@@ -200,6 +206,7 @@ require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
+require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 
 require_text docs/operations/dispatch-lease-recovery.md '# Dispatch Lease And Restart Recovery'
 require_text docs/operations/dispatch-lease-recovery.md 'lease store'
@@ -235,6 +242,20 @@ require_text docs/operations/release-rollback-capacity-drills.md 'review age'
 require_text docs/operations/release-rollback-capacity-drills.md 'local validation path'
 require_text docs/operations/release-rollback-capacity-drills.md 'drill evidence'
 require_text docs/operations/release-rollback-capacity-drills.md 'does not authorize live mutation'
+require_text docs/operations/topology-backup-restore-dr.md '# Topology Backup Restore And Disaster Recovery Baseline'
+require_text docs/operations/topology-backup-restore-dr.md 'development'
+require_text docs/operations/topology-backup-restore-dr.md 'sandbox'
+require_text docs/operations/topology-backup-restore-dr.md 'staging'
+require_text docs/operations/topology-backup-restore-dr.md 'production'
+require_text docs/operations/topology-backup-restore-dr.md 'HA assumption'
+require_text docs/operations/topology-backup-restore-dr.md 'backup target'
+require_text docs/operations/topology-backup-restore-dr.md 'restore step'
+require_text docs/operations/topology-backup-restore-dr.md 'RPO'
+require_text docs/operations/topology-backup-restore-dr.md 'RTO'
+require_text docs/operations/topology-backup-restore-dr.md 'DR role'
+require_text docs/operations/topology-backup-restore-dr.md 'evidence retention'
+require_text docs/operations/topology-backup-restore-dr.md 'drill evidence'
+require_text docs/operations/topology-backup-restore-dr.md 'does not authorize live mutation'
 
 require_text docs/adapters/hermes.md '# Hermes Manager Adapter'
 require_text docs/adapters/hermes.md '## Approval and preflight handling'
@@ -566,5 +587,6 @@ bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
+bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'

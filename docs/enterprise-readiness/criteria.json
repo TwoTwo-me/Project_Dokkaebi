@@ -151,17 +151,19 @@
     {
       "id": "infrastructure_platform",
       "name": "Infrastructure and platform",
-      "currentPercent": 48,
+      "currentPercent": 64,
       "targetPercent": 100,
       "enterpriseStandard": "Development, sandbox, staging, and production topologies are reproducible, isolated, monitored, backed up, and recoverable with least-privilege worker routes.",
       "currentEvidence": [
         "docs/operations/fire-sandbox-service.md",
         "docs/operations/toolchain-bootstrap.md",
+        "docs/operations/topology-backup-restore-dr.md",
+        "scripts/validate-topology-backup-restore-dr.sh",
         "symphony-github-project-tracker/docker",
         "symphony-github-project-tracker/elixir/config"
       ],
       "gaps": [
-        "Production topology, HA, backup, restore, and DR are not defined.",
+        "Topology, HA, backup, restore, and DR evidence shape is defined, but approved sandbox restore evidence and measured RPO/RTO results are not captured.",
         "Docker and Kubernetes route maturity is uneven.",
         "Remote worker bootstrap is approved only for named development and sandbox targets."
       ],
@@ -178,19 +180,20 @@
       ],
       "nextIssues": [
         {
-          "title": "Define staging and production topology with backup and restore boundaries",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/16",
+          "title": "Run approved sandbox backup restore DR drill",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/50",
           "acceptanceCriteria": [
-            "Topology separates development, sandbox, staging, and production concerns.",
-            "Backup targets and restore drill are documented with RPO and RTO assumptions.",
-            "Infrastructure mutation remains approval-gated."
+            "Run or replay a sandbox restore drill using the documented topology and DR evidence shape.",
+            "Capture backup target, restore point, restore steps, RPO result, RTO result, DR roles, validation output, approval-gate status, cleanup, residual risk, and next action.",
+            "Update docs/enterprise-readiness/criteria.json after evidence exists."
           ],
           "validationRequired": [
+            "bash scripts/validate-topology-backup-restore-dr.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted sandbox drill validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "approved-sandbox-validation only after Human approval records the target, operations, credentials, and rollback path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
@@ -707,22 +710,22 @@
     {
       "id": "backup_restore_dr",
       "name": "Backup, restore, and disaster recovery",
-      "currentPercent": 0,
+      "currentPercent": 42,
       "targetPercent": 100,
-      "nextIssueTitle": "Define backup, restore, and disaster recovery drill",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/28",
+      "nextIssueTitle": "Run approved sandbox backup restore DR drill",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/50",
       "acceptanceCriteria": [
-        "Define the enterprise standard for backup_restore_dr.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
+        "Run or replay a sandbox restore drill using the documented topology and DR evidence shape.",
+        "Capture backup target, restore point, restore steps, RPO result, RTO result, DR roles, validation output, approval-gate status, cleanup, residual risk, and next action.",
         "Update docs/enterprise-readiness/criteria.json after evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-topology-backup-restore-dr.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted sandbox drill validation named by the implementation"
       ],
-      "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "approved-sandbox-validation only after Human approval records the target, operations, credentials, and rollback path. Remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",
