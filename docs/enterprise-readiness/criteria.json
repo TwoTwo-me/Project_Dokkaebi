@@ -368,18 +368,20 @@
     {
       "id": "logging_observability",
       "name": "Logging and observability",
-      "currentPercent": 58,
+      "currentPercent": 68,
       "targetPercent": 100,
       "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
       "currentEvidence": [
         "symphony-github-project-tracker/elixir/docs/logging.md",
         "symphony-github-project-tracker/elixir/docs/observability.md",
-        "symphony-github-project-tracker/elixir/lib/symphony_elixir/http_server.ex"
+        "symphony-github-project-tracker/elixir/lib/symphony_elixir/http_server.ex",
+        "docs/operations/central-metrics-backend.md",
+        "scripts/validate-central-metrics-backend.sh"
       ],
       "gaps": [
-        "Central metrics backend, tracing, alert rules, and long-term retention are absent.",
-        "Operational dashboards are useful but not tied to SLOs or paging.",
-        "Audit export is not immutable or retention-managed."
+        "Central metrics backend design exists, but measured ingestion, storage, query, dashboard, alert, and tracing evidence are not captured.",
+        "Operational dashboards and alert rules are designed but not evaluated against replayed or sandbox metrics and are not tied to production paging.",
+        "Audit export design exists, but metrics evidence retention and export verification remain unproven."
       ],
       "evaluationQuestions": [
         "Can an operator identify stalled dispatch, unhealthy workers, and credential denial within minutes?",
@@ -420,7 +422,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 66,
+      "currentPercent": 70,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -428,12 +430,14 @@
         "docs/operations/toolchain-bootstrap.md",
         "docs/operations/sre-operating-baseline.md",
         "scripts/validate-sre-operating-baseline.sh",
+        "docs/operations/central-metrics-backend.md",
+        "scripts/validate-central-metrics-backend.sh",
         "docs/operations/release-rollback-capacity-drills.md",
         "scripts/validate-release-rollback-capacity-drills.sh"
       ],
       "gaps": [
-        "SLO, incident response, on-call boundaries, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
-        "Capacity and soak thresholds exist, but long-running measured soak tests are not yet captured from a local or approved-sandbox run.",
+        "SLO, incident response, on-call boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented, but paging implementation and routine approved drills are not operational.",
+        "Capacity, soak, and central metrics thresholds exist, but long-running measured soak or metrics tests are not yet captured from a local or approved-sandbox run.",
         "Release and rollback procedures are documented, but approved drill evidence is still required before production service quality can be claimed."
       ],
       "evaluationQuestions": [
@@ -667,7 +671,7 @@
     {
       "id": "on_call_paging_alerting",
       "name": "On-call, paging, and alerting",
-      "currentPercent": 35,
+      "currentPercent": 42,
       "targetPercent": 100,
       "nextIssueTitle": "Create on-call, paging, and alerting baseline",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/26",
@@ -693,7 +697,7 @@
     {
       "id": "slo_sla",
       "name": "SLO and SLA",
-      "currentPercent": 45,
+      "currentPercent": 52,
       "targetPercent": 100,
       "nextIssueTitle": "Define initial service-level objectives",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/27",
@@ -801,20 +805,20 @@
     {
       "id": "central_metrics_backend",
       "name": "Central metrics backend",
-      "currentPercent": 0,
+      "currentPercent": 55,
       "targetPercent": 100,
-      "nextIssueTitle": "Design central metrics backend integration",
-      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/31",
+      "nextIssueTitle": "Run central metrics backend sandbox verification",
+      "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/57",
       "acceptanceCriteria": [
-        "Define the enterprise standard for central_metrics_backend.",
-        "Add implementation, operating documentation, or an explicit approved deferral path.",
-        "Add validation or review evidence that can raise this capability above 0%.",
-        "Update docs/enterprise-readiness/criteria.json after evidence exists."
+        "Produce or replay representative dispatch, recovery, review-age, worker-capacity, approval, validation, and audit-export metrics using docs/operations/central-metrics-backend.md.",
+        "Capture ingestion output, storage/query output, dashboard or parsed view evidence, alert-rule evaluation evidence, retention/cardinality checks, approval-gate status, cleanup, residual risk, and next action.",
+        "Update docs/enterprise-readiness/criteria.json after measured central metrics evidence exists."
       ],
       "validationRequired": [
+        "bash scripts/validate-central-metrics-backend.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted validation named by the issue implementation"
+        "Targeted central metrics sandbox or local replay validation named by the implementation"
       ],
       "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
