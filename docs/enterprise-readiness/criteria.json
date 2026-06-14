@@ -544,7 +544,7 @@
     {
       "id": "productization_ux",
       "name": "Productization and UX",
-      "currentPercent": 78,
+      "currentPercent": 90,
       "targetPercent": 100,
       "enterpriseStandard": "Admins, approvers, operators, auditors, and worker authors can install, configure, monitor, approve, troubleshoot, and learn the product without relying on undocumented operator context.",
       "currentEvidence": [
@@ -558,12 +558,18 @@
         "symphony-github-project-tracker/elixir/lib/symphony_elixir_web/live/onboarding_live.ex",
         "symphony-github-project-tracker/elixir/priv/static/onboarding.css",
         "symphony-github-project-tracker/elixir/test/symphony_elixir/onboarding_live_test.exs",
-        "symphony-github-project-tracker/scripts/validate-guided-onboarding-ui.sh"
+        "symphony-github-project-tracker/scripts/validate-guided-onboarding-ui.sh",
+        "symphony-github-project-tracker/docs/design/onboarding-setup-proof.md",
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/browser-action-log.json",
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/desktop-greenfield.png",
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/desktop-brownfield.png",
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-greenfield.png",
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-brownfield.png"
       ],
       "gaps": [
-        "Guided onboarding UI exists for five roles, but multi-project field discovery and dry-run setup are not yet embedded.",
-        "Role-based screenshots and browser QA were captured for the first UI pass, but CI-retained product UI regression artifacts are not yet available.",
-        "Operator journeys for triage, approval, result review, and troubleshooting are partially embedded in UI but still require deeper product workflow integration."
+        "Guided onboarding UI now includes multi-project Greenfield and Brownfield dry-run setup, field discovery, required fields, admission mapping, repository setup checks, rollback notes, and retained browser proof; live GitHub Project setup mutation remains approval-gated.",
+        "Role-based screenshots and browser action logs are retained and validated as repository evidence, but CI does not yet regenerate a cross-browser product UI visual matrix on every relevant change.",
+        "Operator journeys for triage, approval, result review, and troubleshooting are partially embedded in UI but still require deeper product workflow integration across live issue, PR, and result-packet states."
       ],
       "evaluationQuestions": [
         "Can a new admin install and configure a sandbox without maintainer help?",
@@ -580,27 +586,28 @@
       ],
       "nextIssues": [
         {
-          "title": "Connect onboarding wizard to multi-project setup workflow",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/84",
+          "title": "Regenerate onboarding product UI visual matrix in CI",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/109",
           "acceptanceCriteria": [
-            "Add a multi-project setup workflow to the onboarding UI or a directly linked first-party UI surface.",
-            "Cover Greenfield and Brownfield project setup choices without renaming existing project statuses by default.",
-            "Surface field discovery, required fields, admission mapping, repository setup checks, and rollback notes.",
-            "Capture visual or browser QA evidence for the setup workflow.",
-            "Update docs/enterprise-readiness/criteria.json after implemented multi-project setup evidence exists."
+            "Add or extend a CI-safe visual/browser QA lane for the onboarding product UI.",
+            "Regenerate desktop and mobile artifacts for Greenfield and Brownfield setup modes during CI or a documented required check.",
+            "Verify scroll width, selected setup state, setup section visibility, contrast-sensitive selected-button styling, and required workflow sections.",
+            "Retain reviewable artifact paths or CI summaries without private machine paths, secrets, tokens, or local-only state.",
+            "Update docs/enterprise-readiness/criteria.json only after implemented CI visual evidence exists."
           ],
           "validationRequired": [
             "bash scripts/validate-onboarding-troubleshooting.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted UI and browser QA validation named by the implementation"
+            "Targeted CI visual/browser QA validation named by the implementation"
           ],
           "authorityRequirement": "Local UI validation and docs updates by default. Any credential, infrastructure, worker, deployment, production, remote host, Docker, Kubernetes, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "CI-generated or check-generated visual/browser evidence",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }

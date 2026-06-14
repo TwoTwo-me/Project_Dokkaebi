@@ -38,6 +38,10 @@ for term in \
   "PR failure troubleshooting" \
   "result-packet failure troubleshooting" \
   "clear next actions" \
+  "multi-project setup workflow" \
+  "browser action log" \
+  "desktop Greenfield" \
+  "mobile Brownfield" \
   "approval boundary" \
   "permission level" \
   "docs-only"; do
@@ -67,6 +71,7 @@ REQUIRED_TOP_LEVEL = [
     "approvalReviewActions",
     "resultPacketCloseoutActions",
     "troubleshooting",
+    "completedProductizationEvidence",
     "remainingProductizationGaps",
 ]
 REQUIRED_ROLES = {
@@ -183,6 +188,8 @@ def contains_all(text: str, required: set[str], label: str) -> None:
 
 def validate_payload(payload: dict[str, Any]) -> None:
     for field in REQUIRED_TOP_LEVEL:
+        if field == "remainingProductizationGaps":
+            continue
         require_nonempty(payload.get(field), field)
 
     permission = str(payload.get("permissionLevel", "")).lower()
@@ -272,8 +279,27 @@ def validate_payload(payload: dict[str, Any]) -> None:
         if "capture" not in actions and "record" not in actions and "block" not in actions and "request" not in actions:
             reject(f"{name} clear next actions missing action verb")
 
-    gaps = " ".join(str(item).lower() for item in require_list(payload.get("remainingProductizationGaps"), "remaining productization gaps", 3))
-    contains_all(gaps, {"guided onboarding ui", "screenshots", "multi-project", "product ui"}, "remaining productization gaps")
+    completed = " ".join(str(item).lower() for item in require_list(payload.get("completedProductizationEvidence"), "completed productization evidence", 5))
+    contains_all(
+        completed,
+        {
+            "guided onboarding ui",
+            "multi-project setup workflow",
+            "greenfield",
+            "brownfield",
+            "browser action log",
+            "desktop",
+            "mobile",
+            "product ui",
+            "issue #84",
+        },
+        "completed productization evidence",
+    )
+
+    gaps_value = payload.get("remainingProductizationGaps", [])
+    if gaps_value:
+        gaps = " ".join(str(item).lower() for item in require_list(gaps_value, "remaining productization gaps", 3))
+        contains_all(gaps, {"guided onboarding ui", "screenshots", "multi-project", "product ui"}, "remaining productization gaps")
 
 
 doc_text = Path(sys.argv[1]).read_text(encoding="utf-8")
@@ -299,6 +325,8 @@ expect_reject(
 )
 
 for field in REQUIRED_TOP_LEVEL:
+    if field == "remainingProductizationGaps":
+        continue
     mutated = copy.deepcopy(baseline)
     mutated[field] = [] if isinstance(mutated.get(field), list) else ""
     expect_reject(f"missing {field}", mutated)
