@@ -65,6 +65,7 @@ Required local artifacts:
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/security-threat-model-and-prompt-injection-controls.md`](../policies/security-threat-model-and-prompt-injection-controls.md)
 - [`docs/policies/project-governance-and-closeout-reconciliation.md`](../policies/project-governance-and-closeout-reconciliation.md)
+- [`docs/policies/governance-settings-export-reconciliation-2026-06-14.md`](../policies/governance-settings-export-reconciliation-2026-06-14.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
@@ -199,11 +200,16 @@ residual risk, or next action as a security-authority readiness gap.
 
 GitHub Project governance and closeout reconciliation packages must follow
 [`docs/policies/project-governance-and-closeout-reconciliation.md`](../policies/project-governance-and-closeout-reconciliation.md).
+Read-only governance settings export and closeout reconciliation evidence must follow
+[`docs/policies/governance-settings-export-reconciliation-2026-06-14.md`](../policies/governance-settings-export-reconciliation-2026-06-14.md)
+or a later dated package.
 The Manager must treat missing project owner, approver, Fire operator, Hammer
 operator, security reviewer, auditor, stale Human Review handling, issue status,
 pull request review/check/merge state, result packet, workpad comment,
 GitHub Project Status, mismatch handling, fail-closed behavior, residual risk,
-or next action as a management-governance readiness gap.
+next action, branch protection export, repository rulesets export, required
+checks export, PR review rule export, GitHub Project field/settings export, or
+closeout reconciliation report as a management-governance readiness gap.
 
 Human-facing UI surfaces must follow
 [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).

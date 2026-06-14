@@ -46,9 +46,12 @@ PASS Dokkaebi project governance reconciliation validation passed
 ## Residual Risk And Next Action
 
 This baseline documents the operating policy and deterministic validation.
-Reproducible branch protection, repository ruleset, required-check, PR review,
-GitHub Project settings export, and automated closeout reconciliation output
-remain pending. Next action: complete issue #97.
+The dated settings export and closeout reconciliation evidence package in
+[`governance-settings-export-reconciliation-2026-06-14.md`](governance-settings-export-reconciliation-2026-06-14.md)
+captures read-only branch protection, repository ruleset, required-check, PR
+review, issue, and closeout reconciliation evidence. Live branch protection,
+ruleset, and GitHub Project settings enforcement remain pending. Next action:
+complete issue #100.
 
 <!-- project-governance-reconciliation:begin -->
 ```json
@@ -203,12 +206,12 @@ remain pending. Next action: complete issue #97.
     "PASS Dokkaebi contract docs are present, linked, and structurally aligned"
   ],
   "residualRisk": [
-    "branch protection and repository ruleset export is not captured",
-    "GitHub Project field/settings export is not captured",
-    "automated closeout reconciliation report output is not captured"
+    "branch protection read returned HTTP 404",
+    "repository rulesets export returned an empty array",
+    "GitHub Project field/settings export is not captured"
   ],
-  "nextAction": "Complete issue #97 for reproducible governance settings export and automated closeout reconciliation evidence.",
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/97"
+  "nextAction": "Complete issue #100 for approved GitHub ruleset and Project settings export evidence.",
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/100"
 }
 ```
 <!-- project-governance-reconciliation:end -->
