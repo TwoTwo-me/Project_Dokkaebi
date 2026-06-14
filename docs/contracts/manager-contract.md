@@ -72,6 +72,7 @@ Required local artifacts:
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md)
+- [`docs/operations/central-metrics-sandbox-backend-2026-06-14.md`](../operations/central-metrics-sandbox-backend-2026-06-14.md)
 - [`docs/operations/observability-metrics-alert-rules.md`](../operations/observability-metrics-alert-rules.md)
 - [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
@@ -328,6 +329,13 @@ assumptions, retention, label and cardinality controls, dashboard and alert
 integration, SLO linkage, ownership, security boundary, rollout phases,
 validation steps, failure handling, remaining operational gaps, or permission
 level as an observability readiness gap.
+Central metrics sandbox backend evidence must follow
+[`docs/operations/central-metrics-sandbox-backend-2026-06-14.md`](../operations/central-metrics-sandbox-backend-2026-06-14.md)
+or a later dated package. The Manager must treat missing approved local sandbox
+backend selection, ingestion output, storage/query output, dashboard rows,
+alert-rule evaluation, retention/cardinality checks, approval-gate status,
+cleanup receipt, validation output, residual risk, or next action as an
+observability readiness gap.
 
 Observability metrics catalogs and alert-rule baselines must follow
 [`docs/operations/observability-metrics-alert-rules.md`](../operations/observability-metrics-alert-rules.md).

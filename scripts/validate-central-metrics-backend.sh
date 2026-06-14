@@ -227,6 +227,19 @@ def validate_payload(payload: dict[str, Any]) -> None:
     for term in ["taxonomy", "ingestion", "retention", "cardinality", "dashboard", "security boundary"]:
         if term not in verification:
             reject(f"verification steps missing {term}")
+    sandbox = payload.get("approvedSandboxEvidence")
+    if not isinstance(sandbox, dict):
+        reject("missing approved sandbox evidence")
+    for field in ["path", "runner", "validator", "status"]:
+        require_nonempty(sandbox.get(field), f"approved sandbox evidence {field}")
+    if sandbox["path"] != "docs/operations/central-metrics-sandbox-backend-2026-06-14.md":
+        reject("approved sandbox evidence path mismatch")
+    if sandbox["runner"] != "scripts/run-central-metrics-sandbox-backend.sh":
+        reject("approved sandbox evidence runner mismatch")
+    if sandbox["validator"] != "scripts/validate-central-metrics-sandbox-backend.sh":
+        reject("approved sandbox evidence validator mismatch")
+    if "approved local sandbox backend evidence" not in str(sandbox["status"]).lower():
+        reject("approved sandbox evidence status missing captured state")
     failure = " ".join(str(item).lower() for item in require_list(payload.get("failureHandling"), "failure handling", 6))
     for term in ["labels", "cardinality", "retention", "slo", "alert", "dashboard"]:
         if term not in failure:
@@ -268,6 +281,7 @@ for field in [
     "securityBoundary",
     "rolloutPhases",
     "verificationSteps",
+    "approvedSandboxEvidence",
     "failureHandling",
     "remainingOperationalGaps",
     "permissionLevel",

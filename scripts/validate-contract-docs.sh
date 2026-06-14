@@ -61,6 +61,8 @@ require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-incident-response-runbook.sh
 require_file scripts/validate-incident-response-drill-postmortem.sh
 require_file scripts/validate-central-metrics-backend.sh
+require_file scripts/run-central-metrics-sandbox-backend.sh
+require_file scripts/validate-central-metrics-sandbox-backend.sh
 require_file scripts/validate-observability-metrics-alerts.sh
 require_file scripts/validate-central-metrics-replay.sh
 require_file scripts/validate-on-call-paging-alerting.sh
@@ -105,6 +107,7 @@ require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/incident-response-runbook-2026-06-13.md
 require_file docs/operations/incident-response-drill-postmortem-2026-06-14.md
 require_file docs/operations/central-metrics-backend.md
+require_file docs/operations/central-metrics-sandbox-backend-2026-06-14.md
 require_file docs/operations/observability-metrics-alert-rules.md
 require_file docs/operations/central-metrics-replay-2026-06-13.md
 require_file docs/operations/on-call-paging-alerting.md
@@ -178,6 +181,7 @@ require_text docs/contracts/manager-contract.md '../operations/sandbox-issue-pro
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
 require_text docs/contracts/manager-contract.md '../operations/incident-response-drill-postmortem-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/central-metrics-backend.md'
+require_text docs/contracts/manager-contract.md '../operations/central-metrics-sandbox-backend-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
@@ -219,6 +223,10 @@ require_text docs/contracts/manager-contract.md 'external SLA approval boundary'
 require_text docs/contracts/manager-contract.md 'Central metrics backend designs'
 require_text docs/contracts/manager-contract.md 'metric taxonomy'
 require_text docs/contracts/manager-contract.md 'label and cardinality controls'
+require_text docs/contracts/manager-contract.md 'Central metrics sandbox backend evidence'
+require_text docs/contracts/manager-contract.md 'storage/query output'
+require_text docs/contracts/manager-contract.md 'dashboard rows'
+require_text docs/contracts/manager-contract.md 'alert-rule evaluation'
 require_text docs/contracts/manager-contract.md 'Observability metrics catalogs and alert-rule baselines'
 require_text docs/contracts/manager-contract.md 'dispatch latency'
 require_text docs/contracts/manager-contract.md 'queue depth'
@@ -534,6 +542,7 @@ require_text scripts/validate-incident-response-runbook.sh 'PASS Dokkaebi incide
 require_text scripts/validate-incident-response-drill-postmortem.sh 'PASS Dokkaebi incident response drill postmortem validation passed'
 require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service-level objectives validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
+require_text scripts/validate-central-metrics-sandbox-backend.sh 'PASS Dokkaebi central metrics sandbox backend validation passed'
 require_text scripts/validate-central-metrics-replay.sh 'PASS Dokkaebi central metrics replay validation passed'
 require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call paging alerting validation passed'
 require_text scripts/validate-on-call-alert-routing-drill.sh 'PASS Dokkaebi on-call alert routing drill validation passed'
@@ -628,6 +637,16 @@ require_text docs/operations/central-metrics-backend.md 'permission level'
 require_text docs/operations/central-metrics-backend.md 'docs-only'
 require_text docs/operations/central-metrics-backend.md 'control-plane'
 require_text docs/operations/central-metrics-backend.md 'central-metrics-replay-2026-06-13.md'
+require_text docs/operations/central-metrics-backend.md 'central-metrics-sandbox-backend-2026-06-14.md'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md '# Central Metrics Sandbox Backend Evidence'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'ephemeral SQLite'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'ingestion output'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'storage/query output'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'dashboard rows'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'alert-rule evaluation'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'retention/cardinality checks'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'cleanup receipt'
+require_text docs/operations/central-metrics-sandbox-backend-2026-06-14.md 'does not authorize'
 require_text docs/operations/central-metrics-replay-2026-06-13.md '# Central Metrics Local Replay'
 require_text docs/operations/central-metrics-replay-2026-06-13.md 'representative metrics'
 require_text docs/operations/central-metrics-replay-2026-06-13.md 'ingestion output'
@@ -1167,6 +1186,7 @@ bash scripts/validate-incident-response-runbook.sh >/dev/null
 bash scripts/validate-incident-response-drill-postmortem.sh >/dev/null
 bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
+bash scripts/validate-central-metrics-sandbox-backend.sh >/dev/null
 bash scripts/validate-observability-metrics-alerts.sh >/dev/null
 bash scripts/validate-central-metrics-replay.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null

@@ -336,7 +336,7 @@
     {
       "id": "logging_observability",
       "name": "Logging and observability",
-      "currentPercent": 88,
+      "currentPercent": 94,
       "targetPercent": 100,
       "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
       "currentEvidence": [
@@ -351,13 +351,16 @@
         "scripts/validate-on-call-paging-alerting.sh",
         "docs/operations/central-metrics-replay-2026-06-13.md",
         "scripts/validate-central-metrics-replay.sh",
+        "docs/operations/central-metrics-sandbox-backend-2026-06-14.md",
+        "scripts/run-central-metrics-sandbox-backend.sh",
+        "scripts/validate-central-metrics-sandbox-backend.sh",
         "docs/operations/on-call-alert-routing-drill-2026-06-13.md",
         "scripts/validate-on-call-alert-routing-drill.sh"
       ],
       "gaps": [
-        "Central metrics backend design, metrics catalog, alert-rule baseline, and local replay evidence now cover ingestion, storage/query, parsed dashboard, alert evaluation, redaction, retention, cardinality, trace correlation requirements, and audit-export evidence, but approved sandbox or explicitly Human-approved live backend telemetry is not captured.",
-        "Operational dashboards and alert rules are specified and evaluated in local replay and routed through a GitHub evidence dry-run drill, but they are not connected to an approved metrics backend or production paging backend.",
-        "Live trace collection, live paging delivery, and real backend retention/export verification remain unproven."
+        "Central metrics backend design, metrics catalog, alert-rule baseline, local replay evidence, and approved local sandbox backend evidence now cover ingestion, storage/query, dashboard rows, alert evaluation, redaction, retention, cardinality, trace correlation requirements, SLO linkage, and audit-export evidence.",
+        "Operational dashboards and alert rules are evaluated in local replay, approved local sandbox metrics evidence, and routed through a GitHub evidence dry-run drill, but production paging backend delivery is not connected.",
+        "Live trace collection, live paging delivery, and externally managed retention/export verification remain unproven."
       ],
       "evaluationQuestions": [
         "Can an operator identify stalled dispatch, unhealthy workers, and credential denial within minutes?",
@@ -372,27 +375,28 @@
       ],
       "nextIssues": [
         {
-          "title": "Connect approved central metrics sandbox backend",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
+          "title": "Connect approved live paging backend and delivery route",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82",
           "acceptanceCriteria": [
-            "Connect the central metrics design to an approved sandbox backend or explicitly Human-approved live backend and capture representative telemetry for dispatch latency, queue depth, worker health, retries, failures, credential denials, review age, trace correlation, alert evaluation, dashboard view, and audit export.",
-            "Capture storage/query output, dashboard evidence, alert-rule evaluation evidence, retention/cardinality checks, approval-gate status, cleanup, residual risk, and next action from approved sandbox or explicitly Human-approved live backend evidence.",
-            "Update docs/enterprise-readiness/criteria.json only after approved sandbox or explicitly Human-approved live backend observability evidence exists."
+            "Record explicit Human approval for backend, roster, notification sinks, quiet-hours behavior, delivery test plan, cleanup, and residual-risk handling.",
+            "Exercise representative SEV1 and SEV2 alert delivery against the approved backend or an explicitly approved sandbox substitute.",
+            "Capture alert input, routing decision, quiet-hours decision, delivery receipt, escalation receipt, cleanup receipt, residual risk, and next action.",
+            "Update docs/enterprise-readiness/criteria.json only from captured approved backend or approved sandbox delivery evidence."
           ],
           "validationRequired": [
-            "bash scripts/validate-observability-metrics-alerts.sh",
-            "bash scripts/validate-central-metrics-backend.sh",
-            "bash scripts/validate-central-metrics-replay.sh",
+            "bash scripts/validate-on-call-paging-alerting.sh",
+            "bash scripts/validate-on-call-alert-routing-drill.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted approved sandbox metrics backend validation named by the implementation"
+            "Targeted live or approved sandbox delivery validation named by the implementation"
           ],
-          "authorityRequirement": "Docs-only and local replay work by default. Sandbox backend, credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, paging service, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only or local dry-run validation by default. Live alerting service, paging service, metrics service, infrastructure, credential, worker, remote host, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Approved sandbox or explicitly Human-approved backend observability evidence",
+            "Approval record",
+            "Approved backend or approved sandbox delivery evidence",
+            "Quiet-hours evidence",
             "Validation command output",
-            "Approval-gate status",
             "Cleanup receipt",
             "Residual risk and next action"
           ]
@@ -700,9 +704,9 @@
     {
       "id": "slo_sla",
       "name": "SLO and SLA",
-      "currentPercent": 80,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Connect approved central metrics sandbox backend",
+      "nextIssueTitle": "Completed approved central metrics sandbox backend",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
       "acceptanceCriteria": [
         "Capture approved sandbox or explicitly Human-approved live-backend dispatch-latency, recovery-time, review-age, and availability posture evidence using docs/operations/service-level-objectives.md and docs/operations/central-metrics-backend.md.",
@@ -713,12 +717,13 @@
         "bash scripts/validate-service-level-objectives.sh",
         "bash scripts/validate-central-metrics-replay.sh",
         "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-central-metrics-sandbox-backend.sh",
         "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
         "Targeted approved sandbox metrics backend validation named by the implementation"
       ],
-      "authorityRequirement": "Docs-only and local replay work by default. Sandbox backend, credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox metrics backend evidence. Credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, production, or GitHub Project control-plane mutation remains explicitly not authorized without Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Approved sandbox SLO evidence",
@@ -824,9 +829,9 @@
     {
       "id": "central_metrics_backend",
       "name": "Central metrics backend",
-      "currentPercent": 76,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Connect approved central metrics sandbox backend",
+      "nextIssueTitle": "Completed approved central metrics sandbox backend",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
       "acceptanceCriteria": [
         "Connect the central metrics design to an approved sandbox backend or explicitly Human-approved live backend and capture ingestion for representative dispatch, recovery, review-age, worker-capacity, approval, validation, compliance, runtime-health, and audit-export metrics.",
@@ -836,13 +841,14 @@
       "validationRequired": [
         "bash scripts/validate-central-metrics-replay.sh",
         "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-central-metrics-sandbox-backend.sh",
         "bash scripts/validate-service-level-objectives.sh",
         "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
         "Targeted approved sandbox metrics backend validation named by the implementation"
       ],
-      "authorityRequirement": "Docs-only and local replay work by default. Sandbox backend, credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox metrics backend evidence. Credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, production, or GitHub Project control-plane mutation remains explicitly not authorized without Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Approved sandbox metrics evidence",
