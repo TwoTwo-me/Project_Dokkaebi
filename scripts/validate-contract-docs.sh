@@ -55,6 +55,7 @@ require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
 require_file scripts/validate-orchestration-recovery-gate.sh
+require_file scripts/validate-sandbox-issue-processing-transcript.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-incident-response-runbook.sh
 require_file scripts/validate-central-metrics-backend.sh
@@ -90,6 +91,7 @@ require_file docs/policies/governance-settings-export-reconciliation-2026-06-14.
 require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
+require_file docs/operations/sandbox-issue-processing-transcript-2026-06-14.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/incident-response-runbook-2026-06-13.md
 require_file docs/operations/central-metrics-backend.md
@@ -158,6 +160,7 @@ require_text docs/contracts/manager-contract.md '../policies/governance-settings
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
+require_text docs/contracts/manager-contract.md '../operations/sandbox-issue-processing-transcript-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
 require_text docs/contracts/manager-contract.md '../operations/central-metrics-backend.md'
 require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
@@ -185,6 +188,8 @@ require_text docs/contracts/manager-contract.md 'durable lease and restart recov
 require_text docs/contracts/manager-contract.md 'no duplicate dispatch after restart'
 require_text docs/contracts/manager-contract.md 'Fault-injected orchestration recovery evidence'
 require_text docs/contracts/manager-contract.md 'retry loss after restart'
+require_text docs/contracts/manager-contract.md 'Sandbox issue processing transcript evidence'
+require_text docs/contracts/manager-contract.md 'private-memory exclusion'
 require_text docs/contracts/manager-contract.md 'SRE operating evidence'
 require_text docs/contracts/manager-contract.md 'review-age SLO'
 require_text docs/contracts/manager-contract.md 'Service-level objective evidence'
@@ -477,6 +482,7 @@ require_text scripts/validate-carbon-ui-baseline.sh 'PASS Dokkaebi Carbon UI bas
 require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant RBAC validation passed'
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
+require_text scripts/validate-sandbox-issue-processing-transcript.sh 'PASS Dokkaebi sandbox issue processing transcript validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
 require_text scripts/validate-incident-response-runbook.sh 'PASS Dokkaebi incident response runbook validation passed'
 require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service-level objectives validation passed'
@@ -1060,6 +1066,7 @@ bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
+bash scripts/validate-sandbox-issue-processing-transcript.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-incident-response-runbook.sh >/dev/null
 bash scripts/validate-service-level-objectives.sh >/dev/null

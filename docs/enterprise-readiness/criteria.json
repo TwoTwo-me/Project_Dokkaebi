@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-06-13",
+  "updated": "2026-06-14",
   "purpose": "Single source of truth for Project Dokkaebi enterprise-readiness evaluation, issue generation, worktree execution, pull request review, merge, and re-evaluation.",
   "sourceReports": [
     "docs/reports/company-readiness-assessment.md"
@@ -98,7 +98,7 @@
     {
       "id": "core_orchestration",
       "name": "Core orchestration",
-      "currentPercent": 98,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "Fire reliably discovers, admits, dispatches, monitors, retries, and closes work without duplicate execution, stale state, or silent loss across restarts.",
       "currentEvidence": [
@@ -109,11 +109,11 @@
         "docs/operations/dispatch-lease-recovery.md",
         "scripts/validate-dispatch-lease-recovery.sh",
         "docs/operations/orchestration-recovery-gate.md",
-        "scripts/validate-orchestration-recovery-gate.sh"
+        "scripts/validate-orchestration-recovery-gate.sh",
+        "docs/operations/sandbox-issue-processing-transcript-2026-06-14.md",
+        "scripts/validate-sandbox-issue-processing-transcript.sh"
       ],
-      "gaps": [
-        "Sandbox issue processing transcript is not yet captured as auditable closeout evidence."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can Fire restart without duplicate dispatch or lost retry intent?",
         "Can worker route selection explain why each target was selected or skipped?",
@@ -124,30 +124,7 @@
         "Restart recovery evidence",
         "Sandbox issue processing transcript"
       ],
-      "nextIssues": [
-        {
-          "title": "Add sandbox issue processing transcript gate",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/44",
-          "acceptanceCriteria": [
-            "A sandbox transcript shows one issue moving through discovery, admission, dispatch readiness, worker result evidence, Manager review, and closeout.",
-            "The transcript records approval-gate status and authority boundaries for every live or sandbox operation.",
-            "The transcript is referenced by readiness criteria and can be replayed or audited without private memory."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted sandbox transcript validation named by the implementation"
-          ],
-          "authorityRequirement": "docs-and-approved-sandbox-validation only after the sandbox target and allowed operations are explicitly approved. Live worker, Docker, Kubernetes, remote host, credential, production, deployment, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
-            "Validation command output",
-            "Approval-gate status",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "infrastructure_platform",

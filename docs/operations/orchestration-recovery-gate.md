@@ -67,5 +67,11 @@ Live worker, Docker, Kubernetes, SSH, remote host, credential, production,
 deployment, and GitHub Project control-plane mutation remain approval-gated under
 [`../policies/authority-and-safety.md`](../policies/authority-and-safety.md).
 
-The next core orchestration evidence step is a sandbox issue processing
-transcript that can be audited without private memory.
+Repository-local sandbox issue processing evidence is captured in
+[`sandbox-issue-processing-transcript-2026-06-14.md`](sandbox-issue-processing-transcript-2026-06-14.md).
+That transcript proves discovery, admission, dispatch readiness, Worker result
+evidence, Manager review, and closeout through public issue, pull request, and
+validator evidence rather than private memory. Live Worker, Docker, Kubernetes,
+remote host, credential, production, deployment, and GitHub Project
+control-plane mutation still require a later explicitly approved target and
+operation list.

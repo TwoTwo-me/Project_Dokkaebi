@@ -103,11 +103,12 @@ sandbox evidence.
       "evidenceArtifacts": [
         "docs/operations/dispatch-lease-recovery.md",
         "docs/operations/orchestration-recovery-gate.md",
+        "docs/operations/sandbox-issue-processing-transcript-2026-06-14.md",
         "docs/examples/replays/accepted-manager-fire-hammer.md"
       ],
       "acceptedRisk": [
-        "live multi-worker failure injection is not a routine merge gate",
-        "runtime issue-processing transcript remains tracked by issue #44"
+        "repository-local sandbox issue processing transcript is captured",
+        "live multi-worker failure injection is not a routine merge gate"
       ],
       "nextAction": "Add routine runtime failure-injection and soak quality gates in issue #90"
     },
@@ -170,9 +171,9 @@ sandbox evidence.
       ],
       "acceptedRisk": [
         "live GitHub API failure injection is not a routine merge gate",
-        "sandbox issue processing transcript remains tracked by issue #44"
+        "repository-local sandbox issue processing transcript is captured; live GitHub Project control-plane mutation remains approval-gated"
       ],
-      "nextAction": "Add sandbox issue processing transcript gate in issue #44"
+      "nextAction": "Add routine runtime failure-injection and soak quality gates in issue #90"
     },
     {
       "id": "worker_provider",
