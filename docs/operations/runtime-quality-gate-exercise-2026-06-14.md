@@ -213,7 +213,7 @@ cleanup, private paths, secret-like evidence, and unsafe mutation claims.
     "Production release, rollback, and soak operation remains approval-gated and tracked by issue #76.",
     "Live central metrics backend evidence remains tracked by issue #80.",
     "Live paging delivery remains tracked by issue #82.",
-    "Runtime RBAC enforcement remains tracked by issue #74."
+    "Live identity-provider, credential backend, and worker fleet rollout remain approval-gated after runtime RBAC local proof."
   ],
   "nextAction": "Use this package as the routine development-quality merge gate and continue the remaining operations, metrics, paging, and security readiness issues."
 }

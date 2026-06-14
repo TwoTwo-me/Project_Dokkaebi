@@ -9,9 +9,9 @@ or write production data.
 The goal is to make tenant isolation, role separation, admission decisions,
 authorization decisions, credential boundaries, worker route boundaries, access
 review, and audit evidence reviewable before runtime enforcement work starts.
-A later enforcement and access-review drill must prove the model with local
-replay, approved sandbox validation, or runtime policy tests before this
-capability can be treated as operational.
+The current runtime enforcement and generated access-review evidence is captured
+in
+[`runtime-multi-tenant-rbac-2026-06-14.md`](runtime-multi-tenant-rbac-2026-06-14.md).
 The current local replay package is
 [`multi-tenant-rbac-drill-2026-06-13.md`](multi-tenant-rbac-drill-2026-06-13.md).
 
@@ -264,6 +264,7 @@ Run:
 
 ```bash
 bash scripts/validate-multi-tenant-rbac.sh
+bash scripts/validate-runtime-multi-tenant-rbac.sh
 ```
 
 The validator rejects empty design content, malformed RBAC data, missing tenant
