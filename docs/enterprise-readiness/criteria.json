@@ -567,8 +567,7 @@
         "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-brownfield.png"
       ],
       "gaps": [
-        "Guided onboarding UI now includes multi-project Greenfield and Brownfield dry-run setup, field discovery, required fields, admission mapping, repository setup checks, rollback notes, and retained browser proof; live GitHub Project setup mutation remains approval-gated.",
-        "Role-based screenshots and browser action logs are retained and validated as repository evidence, but CI does not yet regenerate a cross-browser product UI visual matrix on every relevant change.",
+        "Guided onboarding UI screenshots and browser action logs are retained and validated as repository evidence, but CI does not yet regenerate a cross-browser product UI visual matrix on every relevant change.",
         "Operator journeys for triage, approval, result review, and troubleshooting are partially embedded in UI but still require deeper product workflow integration across live issue, PR, and result-packet states."
       ],
       "evaluationQuestions": [

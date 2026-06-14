@@ -204,15 +204,18 @@ or GitHub Project control-plane mutation requires explicit Human approval under
 | PR failure troubleshooting | Template sections are missing, checks fail, branch is stale, or merge authority is unclear. | Refresh branch state, fill the template, rerun checks, cite the linked issue, and wait for the required Human review when applicable. |
 | Result-packet failure troubleshooting | Acceptance evidence, validation evidence, scope control, approval-gate status, cleanup, or residual risk is missing. | Request a corrected packet; do not close the issue until the packet reconciles with the PR and project state. |
 
-## Remaining Productization Gaps
+## Completed Productization Evidence
 
 - The guided onboarding UI includes a multi-project setup workflow for
   Greenfield and Brownfield dry-run setup with field discovery, required fields,
   admission mapping, repository setup checks, rollback notes, and retained
-  browser proof, but live GitHub Project setup mutation remains approval-gated.
+  browser proof. Live GitHub Project setup mutation remains approval-gated.
 - The browser action log records desktop Greenfield, desktop Brownfield, mobile
   Greenfield, and mobile Brownfield setup states with retained screenshots for
   review.
+
+## Remaining Productization Gaps
+
 - Role-specific screenshots and browser action logs are retained and validated
   as repository evidence, but CI does not yet regenerate a cross-browser product
   UI visual matrix on every relevant change.
@@ -407,8 +410,7 @@ or GitHub Project control-plane mutation requires explicit Human approval under
     "product UI proof remains local validation only and keeps live GitHub Project control-plane mutation approval-gated"
   ],
   "remainingProductizationGaps": [
-    "guided onboarding UI has multi-project setup workflow proof, but live setup remains approval-gated and not a product UI mutation path",
-    "screenshots and browser action logs are retained by repository validation, but CI does not regenerate cross-browser product UI evidence",
+    "guided onboarding UI screenshots and browser action logs are retained by repository validation, but CI does not regenerate cross-browser product UI evidence",
     "multi-project operator troubleshooting still needs deeper product UI workflow integration across issue, PR, and result-packet state",
     "troubleshooting is not fully embedded in product UI"
   ]
