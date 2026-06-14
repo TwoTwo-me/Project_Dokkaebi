@@ -20,11 +20,11 @@ result-packet closeout, and Human Review surfaces that are already described in
 the Manager contract, SRE baseline, central metrics design, and on-call alerting
 baseline.
 
-The SLOs are partially exercised by the local central metrics replay. They move
-to operational evidence only after issue #80 captures approved sandbox or
-explicitly Human-approved live backend ingestion, storage, query, dashboard, and
-alert evaluation evidence. Until then, they are reviewable through fallback
-GitHub issue, pull request, workflow, local replay, and result-packet evidence.
+The SLOs are exercised by the local central metrics replay and the approved
+local sandbox backend evidence captured under issue #80. They remain internal
+operating SLOs, not an external SLA. They are reviewable through fallback
+GitHub issue, pull request, workflow, local replay, sandbox backend, and
+result-packet evidence.
 
 ## Initial SLOs
 
@@ -40,8 +40,8 @@ The internal availability posture is a development-stage operating target, not
 an external SLA. During supported operating windows, Fire control-loop health
 should remain observable and recoverable. The initial review target is 99
 percent observable Fire control-loop availability during approved operating
-windows, measured by future central metrics health samples and backed by
-fallback workflow or local replay evidence while the backend is being proven.
+windows, measured by central metrics health samples and backed by fallback
+workflow, local replay, or sandbox backend evidence.
 
 Availability does not include external GitHub outages, unapproved worker
 targets, credential provider outages, or production customer commitments unless
@@ -112,11 +112,11 @@ over-authorized wording, and malformed control data.
 
 ## Residual Risk And Next Action
 
-Residual risk remains because approved sandbox or explicitly Human-approved
-live backend central metrics ingestion, query, dashboard, alert evaluation, and
-retention evidence are still pending. The next action is issue #80, which must
-connect an approved central metrics backend and capture backend evidence before
-the SLO/SLA capability can approach completion.
+Issue #80 captured approved local sandbox backend ingestion, query, dashboard
+rows, alert evaluation, approval-gate status, cleanup, and retention/cardinality
+evidence. Residual risk remains for external SLA approval, live paging delivery,
+and long-term retention enforcement outside the sandbox. The next action is
+issue #82 for approved live paging backend delivery evidence.
 
 <!-- service-level-objectives:begin -->
 ```json
@@ -169,8 +169,8 @@ the SLO/SLA capability can approach completion.
   ],
   "availabilityPosture": {
     "internalTarget": "99 percent observable Fire control-loop availability during approved operating windows",
-    "measurementSource": "central metrics health sample, local replay evidence, and future approved sandbox backend evidence",
-    "fallbackEvidence": "workflow status, issue timeline, or local replay transcript while metrics backend is pending",
+    "measurementSource": "central metrics health sample, local replay evidence, and approved sandbox backend evidence",
+    "fallbackEvidence": "workflow status, issue timeline, local replay transcript, or sandbox backend evidence",
     "noExternalCommitment": "no customer-facing SLA, uptime warranty, or production availability commitment is approved"
   },
   "errorBudgetPolicy": {
@@ -202,13 +202,20 @@ the SLO/SLA capability can approach completion.
       "contractual availability commitment"
     ]
   },
-  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
+  "backendEvidence": {
+    "issue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
+    "path": "docs/operations/central-metrics-sandbox-backend-2026-06-14.md",
+    "runner": "scripts/run-central-metrics-sandbox-backend.sh",
+    "validator": "scripts/validate-central-metrics-sandbox-backend.sh",
+    "status": "approved local sandbox backend evidence captured"
+  },
+  "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82",
   "residualRisk": [
-    "Approved sandbox or explicitly Human-approved live backend ingestion is not yet measured",
-    "Approved backend dashboard and alert evaluation evidence is not yet captured",
-    "External SLA approval is not recorded"
+    "External SLA approval is not recorded",
+    "Live paging delivery remains covered by issue #82",
+    "Long-term retention enforcement outside the sandbox remains unproven"
   ],
-  "nextAction": "Connect approved central metrics sandbox backend under issue #80",
+  "nextAction": "Connect approved live paging backend and delivery route under issue #82",
   "requiredEvidence": [
     "changed artifacts and rationale",
     "acceptance-criteria evidence",

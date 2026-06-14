@@ -13,6 +13,8 @@ local replay or an approved sandbox target before this capability can be treated
 as operational.
 The current docs-only local replay evidence package is captured in
 [`central-metrics-replay-2026-06-13.md`](central-metrics-replay-2026-06-13.md).
+The approved local sandbox backend evidence package is captured in
+[`central-metrics-sandbox-backend-2026-06-14.md`](central-metrics-sandbox-backend-2026-06-14.md).
 The concrete operator-facing metric names, alert severities, redaction rules,
 retention expectations, and trace correlation requirements are defined in
 [`observability-metrics-alert-rules.md`](observability-metrics-alert-rules.md).
@@ -363,7 +365,7 @@ deployment, or GitHub Project control-plane mutation wording.
   "rolloutPhases": [
     "docs-only design and deterministic validation",
     "local replay with representative metrics and sample queries",
-    "approved sandbox collection from non-production Fire route",
+    "approved local sandbox backend collection through ephemeral SQLite",
     "dashboard and alert-rule review",
     "retention and export verification",
     "production proposal with access, backup, rollback, and owner approval"
@@ -378,6 +380,12 @@ deployment, or GitHub Project control-plane mutation wording.
     "validate rollout phases and remaining operational gaps",
     "reject sensitive mutation without approval"
   ],
+  "approvedSandboxEvidence": {
+    "path": "docs/operations/central-metrics-sandbox-backend-2026-06-14.md",
+    "runner": "scripts/run-central-metrics-sandbox-backend.sh",
+    "validator": "scripts/validate-central-metrics-sandbox-backend.sh",
+    "status": "approved local sandbox backend evidence captured for issue #80"
+  },
   "failureHandling": [
     "missing required labels fail closed",
     "disallowed labels fail closed",
@@ -389,13 +397,12 @@ deployment, or GitHub Project control-plane mutation wording.
     "unauthorized sensitive authority wording fails closed"
   ],
   "remainingOperationalGaps": [
-    "local replay is captured but approved sandbox collection is not captured",
-    "production storage backend is not selected",
-    "live dashboard screenshots from an approved backend are not captured",
-    "live alert-rule delivery evidence from an approved backend is not captured",
-    "retention enforcement is not operational"
+    "externally managed production storage backend is not selected",
+    "live dashboard screenshots from a production backend are not captured",
+    "live alert-rule delivery evidence from an approved paging backend is not captured",
+    "retention enforcement outside the ephemeral sandbox is not operational"
   ],
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80"
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }
 ```
 <!-- central-metrics-backend:end -->

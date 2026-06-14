@@ -51,6 +51,7 @@ REQUIRED_TOP = {
     "reviewCadence",
     "ownerActions",
     "externalSlaBoundary",
+    "backendEvidence",
     "followUpIssue",
     "residualRisk",
     "nextAction",
@@ -220,8 +221,23 @@ def validate_payload(payload: JsonObject) -> None:
         reject("external SLA boundary must be not_approved")
     require_terms(boundary.get("approvalRequired"), ["human owner", "customer-facing", "legal"], "external SLA approval")
     require_list(boundary.get("forbiddenClaims"), "external SLA forbidden claims", 3)
-    if payload.get("followUpIssue") != "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80":
-        reject("followUpIssue must point to issue #80")
+
+    backend = require_object(payload.get("backendEvidence"), "backend evidence")
+    for field in ["issue", "path", "runner", "validator", "status"]:
+        require_nonempty(backend.get(field), f"backend evidence {field}")
+    if backend["issue"] != "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80":
+        reject("backend evidence must point to issue #80")
+    if backend["path"] != "docs/operations/central-metrics-sandbox-backend-2026-06-14.md":
+        reject("backend evidence path mismatch")
+    if backend["runner"] != "scripts/run-central-metrics-sandbox-backend.sh":
+        reject("backend evidence runner mismatch")
+    if backend["validator"] != "scripts/validate-central-metrics-sandbox-backend.sh":
+        reject("backend evidence validator mismatch")
+    if "approved local sandbox backend evidence" not in str(backend["status"]).lower():
+        reject("backend evidence status missing captured sandbox state")
+
+    if payload.get("followUpIssue") != "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82":
+        reject("followUpIssue must point to issue #82")
     require_list(payload.get("residualRisk"), "residual risk", 3)
     require_nonempty(payload.get("nextAction"), "next action")
     require_list(payload.get("requiredEvidence"), "required evidence", 5)
@@ -272,6 +288,8 @@ mutation_cases: list[tuple[str, JsonPath, JsonValue]] = [
     ("invalid percentile", ("slos", "0", "percentile"), 101),
     ("external SLA approved", ("externalSlaBoundary", "status"), "approved"),
     ("unauthorized production claim", ("externalSlaBoundary", "approvalRequired"), "external SLA approved"),
+    ("bad backend evidence issue", ("backendEvidence", "issue"), "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"),
+    ("bad follow-up issue", ("followUpIssue",), "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80"),
 ]
 for name, path, value in mutation_cases:
     mutated = copy.deepcopy(baseline)
