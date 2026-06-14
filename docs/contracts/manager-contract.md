@@ -77,6 +77,8 @@ Required local artifacts:
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/operations/sandbox-restore-drill-2026-06-13.md`](../operations/sandbox-restore-drill-2026-06-13.md)
+- [`docs/operations/worker-route-health-bootstrap-2026-06-14.md`](../operations/worker-route-health-bootstrap-2026-06-14.md)
+- [`docs/operations/durable-backup-restore-verification-2026-06-14.md`](../operations/durable-backup-restore-verification-2026-06-14.md)
 - [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md)
 - [`docs/compliance/audit-review-2026-06-13.md`](../compliance/audit-review-2026-06-13.md)
 - [`docs/compliance/immutable-audit-export.md`](../compliance/immutable-audit-export.md)
@@ -369,6 +371,12 @@ executable restore verification, source/restored hash comparison, measured
 RPO/RTO, retention policy checks, redaction checks, approval-gate status,
 cleanup receipt, residual risk, or next action as an infrastructure readiness
 gap.
+Worker route health and bootstrap rebuild evidence must follow
+[`docs/operations/worker-route-health-bootstrap-2026-06-14.md`](../operations/worker-route-health-bootstrap-2026-06-14.md)
+or a later dated route-health package. The Manager must treat missing local,
+SSH, Docker, or Kubernetes route capability detection, dispatch eligibility,
+skip reasons, cleanup rules, approval-gate status, validation output, or named
+bootstrap rebuild proof as an infrastructure readiness gap.
 
 Compliance evidence packages must follow
 [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md).
