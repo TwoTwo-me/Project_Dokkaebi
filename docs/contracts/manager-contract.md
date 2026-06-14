@@ -357,6 +357,16 @@ roster shape, paging backend decision, quiet-hours behavior, notification routin
 test evidence shape, SLO linkage, metrics linkage, ownership, failure handling,
 approval boundary, remaining operational gaps, or permission level as an
 operations readiness gap.
+Approved local on-call delivery sandbox evidence must follow
+[`docs/operations/on-call-delivery-sandbox-2026-06-14.md`](../operations/on-call-delivery-sandbox-2026-06-14.md)
+or a later dated delivery package. The Manager must treat missing approved
+sandbox backend substitute, escalation roster, notification sinks, SEV1 alert input,
+SEV2 alert input, routing decision, quiet-hours decision, delivery receipt,
+escalation receipt, approval-gate status, cleanup receipt, residual risk, or
+next action as an operations and observability readiness gap. This
+sandbox gate does not authorize live alerting service, live paging service,
+metrics service, credentials, infrastructure, workers, remote hosts, Docker,
+Kubernetes, deployment, production, or GitHub Project control-plane mutation.
 
 Release rollback capacity evidence must follow
 [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md).

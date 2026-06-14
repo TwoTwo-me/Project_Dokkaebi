@@ -23,10 +23,11 @@ representative alert class.
 The selected sink is `github_evidence_dry_run`. It means the route produces an
 auditable issue or PR evidence packet and does not send a live page. The roster
 and quiet-hours policy are representative operating data, not a production
-rotation. Live delivery remains blocked until issue
-[#82](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82) records explicit
-Human approval for the backend, roster, notification sinks, quiet-hours
-behavior, delivery test plan, cleanup, and residual-risk handling.
+rotation. Live delivery remains blocked until a Human owner separately approves
+the backend, roster, notification sinks, quiet-hours behavior, delivery test
+plan, cleanup, and residual-risk handling. Issue
+[#82](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82) captures the
+approved local sandbox substitute for readiness evidence.
 
 ## Validation
 
@@ -248,11 +249,11 @@ secret-like material.
     "receipt": "Dry-run used checked-in sanitized evidence only; no backend, alerting service, paging service, metric service, container, cluster, credential, worker, remote host, production system, or GitHub Project setting was touched."
   },
   "residualRisk": [
-    "Live paging backend delivery is not implemented.",
-    "Approved live roster and notification sinks are not connected.",
-    "Escalation receipt from an approved live or approved sandbox backend is not captured."
+    "Approved local sandbox delivery evidence is captured by issue #82, while live paging backend delivery remains separately approval-gated.",
+    "Approved live roster and production notification sinks are not connected.",
+    "Live escalation receipt is not captured because the approved delivery gate is sandbox-only."
   ],
-  "nextAction": "Connect approved live paging backend and delivery route in issue #82.",
+  "nextAction": "Use issue #82 approved local sandbox delivery evidence for readiness; require separate Human approval before any live paging backend route.",
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }
 ```
@@ -262,5 +263,5 @@ secret-like material.
 
 The dry-run proves routing decisions and evidence shape, but it is not live
 paging. Issue [#82](https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82)
-must connect an explicitly approved backend or approved sandbox substitute
-before on-call paging and alerting can approach completion.
+now carries approved local sandbox delivery evidence for readiness; any live
+paging backend route still requires a separate Human approval record.

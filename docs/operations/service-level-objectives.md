@@ -114,9 +114,9 @@ over-authorized wording, and malformed control data.
 
 Issue #80 captured approved local sandbox backend ingestion, query, dashboard
 rows, alert evaluation, approval-gate status, cleanup, and retention/cardinality
-evidence. Residual risk remains for external SLA approval, live paging delivery,
-and long-term retention enforcement outside the sandbox. The next action is
-issue #82 for approved live paging backend delivery evidence.
+evidence. Issue #82 captures approved local sandbox on-call delivery evidence.
+Residual risk remains for external SLA approval, live paging delivery, and
+long-term retention enforcement outside approved sandbox evidence.
 
 <!-- service-level-objectives:begin -->
 ```json
@@ -212,10 +212,10 @@ issue #82 for approved live paging backend delivery evidence.
   "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82",
   "residualRisk": [
     "External SLA approval is not recorded",
-    "Live paging delivery remains covered by issue #82",
-    "Long-term retention enforcement outside the sandbox remains unproven"
+    "Approved local sandbox on-call delivery evidence is captured in issue #82 while live paging delivery remains separately approval-gated",
+    "Long-term retention enforcement outside approved sandboxes remains separately approval-gated"
   ],
-  "nextAction": "Connect approved live paging backend and delivery route under issue #82",
+  "nextAction": "Use the approved local sandbox delivery evidence from issue #82 for readiness; require separate Human approval before any live paging backend route",
   "requiredEvidence": [
     "changed artifacts and rationale",
     "acceptance-criteria evidence",
