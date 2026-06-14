@@ -71,6 +71,7 @@ Required local artifacts:
 - [`docs/operations/orchestration-recovery-gate.md`](../operations/orchestration-recovery-gate.md)
 - [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md)
 - [`docs/operations/central-metrics-backend.md`](../operations/central-metrics-backend.md)
+- [`docs/operations/observability-metrics-alert-rules.md`](../operations/observability-metrics-alert-rules.md)
 - [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
@@ -299,6 +300,14 @@ assumptions, retention, label and cardinality controls, dashboard and alert
 integration, SLO linkage, ownership, security boundary, rollout phases,
 validation steps, failure handling, remaining operational gaps, or permission
 level as an observability readiness gap.
+
+Observability metrics catalogs and alert-rule baselines must follow
+[`docs/operations/observability-metrics-alert-rules.md`](../operations/observability-metrics-alert-rules.md).
+The Manager must treat missing dispatch latency, queue depth, worker health,
+retry, failure, credential denial, review age, audit export metric, alert
+severity, operator action, trace correlation, redaction, retention, dashboard
+panel, remaining operational gap, or permission level as an observability
+readiness gap.
 
 On-call paging and alerting baselines must follow
 [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md).

@@ -414,7 +414,7 @@
     {
       "id": "logging_observability",
       "name": "Logging and observability",
-      "currentPercent": 80,
+      "currentPercent": 88,
       "targetPercent": 100,
       "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
       "currentEvidence": [
@@ -423,6 +423,8 @@
         "symphony-github-project-tracker/elixir/lib/symphony_elixir/http_server.ex",
         "docs/operations/central-metrics-backend.md",
         "scripts/validate-central-metrics-backend.sh",
+        "docs/operations/observability-metrics-alert-rules.md",
+        "scripts/validate-observability-metrics-alerts.sh",
         "docs/operations/on-call-paging-alerting.md",
         "scripts/validate-on-call-paging-alerting.sh",
         "docs/operations/central-metrics-replay-2026-06-13.md",
@@ -431,9 +433,9 @@
         "scripts/validate-on-call-alert-routing-drill.sh"
       ],
       "gaps": [
-        "Central metrics backend design and local replay evidence now cover ingestion, storage/query, parsed dashboard, alert evaluation, retention, cardinality, and audit-export evidence, but approved sandbox or explicitly Human-approved live backend telemetry is not captured.",
-        "Operational dashboards and alert rules are evaluated in local replay and routed through a GitHub evidence dry-run drill, but they are not connected to an approved metrics backend or production paging backend.",
-        "Trace correlation, live paging delivery, and real backend retention/export verification remain unproven."
+        "Central metrics backend design, metrics catalog, alert-rule baseline, and local replay evidence now cover ingestion, storage/query, parsed dashboard, alert evaluation, redaction, retention, cardinality, trace correlation requirements, and audit-export evidence, but approved sandbox or explicitly Human-approved live backend telemetry is not captured.",
+        "Operational dashboards and alert rules are specified and evaluated in local replay and routed through a GitHub evidence dry-run drill, but they are not connected to an approved metrics backend or production paging backend.",
+        "Live trace collection, live paging delivery, and real backend retention/export verification remain unproven."
       ],
       "evaluationQuestions": [
         "Can an operator identify stalled dispatch, unhealthy workers, and credential denial within minutes?",
@@ -448,24 +450,28 @@
       ],
       "nextIssues": [
         {
-          "title": "Define observability metrics catalog and alert rules",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/20",
+          "title": "Connect approved central metrics sandbox backend",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80",
           "acceptanceCriteria": [
-            "Metrics catalog covers dispatch latency, queue depth, worker health, retries, failures, credential denials, and review age.",
-            "Alert rules map to operator actions and severity.",
-            "Docs define redaction and retention expectations."
+            "Connect the central metrics design to an approved sandbox backend or explicitly Human-approved live backend and capture representative telemetry for dispatch latency, queue depth, worker health, retries, failures, credential denials, review age, trace correlation, alert evaluation, dashboard view, and audit export.",
+            "Capture storage/query output, dashboard evidence, alert-rule evaluation evidence, retention/cardinality checks, approval-gate status, cleanup, residual risk, and next action from approved sandbox or explicitly Human-approved live backend evidence.",
+            "Update docs/enterprise-readiness/criteria.json only after approved sandbox or explicitly Human-approved live backend observability evidence exists."
           ],
           "validationRequired": [
+            "bash scripts/validate-observability-metrics-alerts.sh",
+            "bash scripts/validate-central-metrics-backend.sh",
+            "bash scripts/validate-central-metrics-replay.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted approved sandbox metrics backend validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only and local replay work by default. Sandbox backend, credential, infrastructure, worker, remote host, Docker, Kubernetes, deployment, metrics service, alerting service, paging service, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Approved sandbox or explicitly Human-approved backend observability evidence",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }

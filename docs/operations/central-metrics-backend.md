@@ -13,6 +13,9 @@ local replay or an approved sandbox target before this capability can be treated
 as operational.
 The current docs-only local replay evidence package is captured in
 [`central-metrics-replay-2026-06-13.md`](central-metrics-replay-2026-06-13.md).
+The concrete operator-facing metric names, alert severities, redaction rules,
+retention expectations, and trace correlation requirements are defined in
+[`observability-metrics-alert-rules.md`](observability-metrics-alert-rules.md).
 
 The validation contract for this docs-only baseline explicitly covers metric
 taxonomy, ingestion path, storage backend assumptions, retention, label and

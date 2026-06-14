@@ -57,6 +57,7 @@ require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-incident-response-runbook.sh
 require_file scripts/validate-central-metrics-backend.sh
+require_file scripts/validate-observability-metrics-alerts.sh
 require_file scripts/validate-central-metrics-replay.sh
 require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-on-call-alert-routing-drill.sh
@@ -90,6 +91,7 @@ require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/incident-response-runbook-2026-06-13.md
 require_file docs/operations/central-metrics-backend.md
+require_file docs/operations/observability-metrics-alert-rules.md
 require_file docs/operations/central-metrics-replay-2026-06-13.md
 require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/on-call-alert-routing-drill-2026-06-13.md
@@ -155,6 +157,7 @@ require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-re
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
 require_text docs/contracts/manager-contract.md '../operations/central-metrics-backend.md'
+require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
@@ -186,6 +189,11 @@ require_text docs/contracts/manager-contract.md 'external SLA approval boundary'
 require_text docs/contracts/manager-contract.md 'Central metrics backend designs'
 require_text docs/contracts/manager-contract.md 'metric taxonomy'
 require_text docs/contracts/manager-contract.md 'label and cardinality controls'
+require_text docs/contracts/manager-contract.md 'Observability metrics catalogs and alert-rule baselines'
+require_text docs/contracts/manager-contract.md 'dispatch latency'
+require_text docs/contracts/manager-contract.md 'queue depth'
+require_text docs/contracts/manager-contract.md 'operator action'
+require_text docs/contracts/manager-contract.md 'trace correlation'
 require_text docs/contracts/manager-contract.md 'On-call paging and alerting baselines'
 require_text docs/contracts/manager-contract.md 'alert taxonomy'
 require_text docs/contracts/manager-contract.md 'severity mapping'
@@ -1048,6 +1056,7 @@ bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-incident-response-runbook.sh >/dev/null
 bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
+bash scripts/validate-observability-metrics-alerts.sh >/dev/null
 bash scripts/validate-central-metrics-replay.sh >/dev/null
 bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-on-call-alert-routing-drill.sh >/dev/null
