@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-06-13T17:00:23.340801Z",
+  "captures": {
+    "desktop": "docs/design/evidence/dashboard-carbon-proof/desktop.png",
+    "mobile": "docs/design/evidence/dashboard-carbon-proof/mobile.png"
+  },
+  "checks": [
+    {
+      "name": "text-primary-on-background",
+      "surface": "smallText",
+      "foreground": "#161616",
+      "background": "#f4f4f4",
+      "ratio": 17.34,
+      "threshold": 4.5
+    },
+    {
+      "name": "text-secondary-on-layer",
+      "surface": "smallText",
+      "foreground": "#525252",
+      "background": "#ffffff",
+      "ratio": 7.61,
+      "threshold": 4.5
+    },
+    {
+      "name": "focus-on-layer",
+      "surface": "focusIndicator",
+      "foreground": "#0f62fe",
+      "background": "#ffffff",
+      "ratio": 4.88,
+      "threshold": 3.0
+    },
+    {
+      "name": "button-primary-text",
+      "surface": "smallText",
+      "foreground": "#ffffff",
+      "background": "#0f62fe",
+      "ratio": 5.0,
+      "threshold": 4.5
+    },
+    {
+      "name": "approval-gated-status",
+      "surface": "statusIndicator",
+      "foreground": "#161616",
+      "background": "#fcf4d6",
+      "ratio": 16.29,
+      "threshold": 3.0
+    },
+    {
+      "name": "disabled-control-text",
+      "surface": "smallText",
+      "foreground": "#525252",
+      "background": "#f4f4f4",
+      "ratio": 7.07,
+      "threshold": 4.5
+    },
+    {
+      "name": "success-status-border",
+      "surface": "statusIndicator",
+      "foreground": "#24a148",
+      "background": "#defbe6",
+      "ratio": 3.46,
+      "threshold": 3.0
+    },
+    {
+      "name": "warning-status-text",
+      "surface": "statusIndicator",
+      "foreground": "#161616",
+      "background": "#fcf4d6",
+      "ratio": 16.29,
+      "threshold": 3.0
+    },
+    {
+      "name": "approval-gated-text",
+      "surface": "smallText",
+      "foreground": "#161616",
+      "background": "#fcf4d6",
+      "ratio": 16.29,
+      "threshold": 4.5
+    },
+    {
+      "name": "error-status-text",
+      "surface": "statusIndicator",
+      "foreground": "#da1e28",
+      "background": "#fff1f1",
+      "ratio": 4.53,
+      "threshold": 3.0
+    },
+    {
+      "name": "token-meter-fill",
+      "surface": "dataVisualization",
+      "foreground": "#0f62fe",
+      "background": "#e0e0e0",
+      "ratio": 3.77,
+      "threshold": 3.0
+    },
+    {
+      "name": "table-border",
+      "surface": "graphicalElement",
+      "foreground": "#8d8d8d",
+      "background": "#ffffff",
+      "ratio": 3.26,
+      "threshold": 3.0
+    },
+    {
+      "name": "mobile-card-border",
+      "surface": "graphicalElement",
+      "foreground": "#8d8d8d",
+      "background": "#ffffff",
+      "ratio": 3.26,
+      "threshold": 3.0
+    }
+  ],
+  "browser": "Playwright Chromium",
+  "approvalGate": "local UI validation only; no credential, production, deployment, remote host, Docker, Kubernetes, or GitHub Project control-plane mutation"
+}

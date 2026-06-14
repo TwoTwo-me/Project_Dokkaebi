@@ -20,7 +20,7 @@ approval under [`../policies/authority-and-safety.md`](../policies/authority-and
 | Credential | authority policy, credential broker boundary, RBAC design and replay, compliance evidence checks | live broker denial and revocation drills are not routine |
 | GitHub adapter | Project lifecycle contract, git governance, PR checks, source-link audit evidence | live GitHub API failure injection is not routine |
 | Worker provider | worker ticket/result packet, route metadata, sandbox restore evidence, closeout review checks | multi-provider route failure and capacity soak are not routine |
-| UI | Carbon baseline, onboarding troubleshooting, alert routing, focus/contrast/state evidence | cross-browser visual regression and CI artifacts are not routine |
+| UI | Carbon baseline, component visual regression gate, onboarding troubleshooting, alert routing, focus/contrast/state evidence | Firefox/WebKit visual regression lanes are not routine |
 
 ## Required Merge Evidence
 
@@ -220,25 +220,31 @@ sandbox evidence.
       ],
       "requiredTests": [
         "bash scripts/validate-carbon-ui-baseline.sh",
+        "bash scripts/validate-carbon-component-library-visual-regression.sh",
         "bash scripts/validate-onboarding-troubleshooting.sh",
         "bash scripts/validate-on-call-alert-routing-drill.sh",
         "bash scripts/validate-readiness-criteria.sh"
       ],
       "mergeGateCommands": [
         "bash scripts/validate-carbon-ui-baseline.sh",
+        "bash scripts/validate-carbon-component-library-visual-regression.sh",
         "bash scripts/validate-onboarding-troubleshooting.sh",
         "bash scripts/validate-readiness-criteria.sh"
       ],
       "evidenceArtifacts": [
         "docs/design/carbon-ui-baseline.md",
+        "docs/design/carbon-component-library-visual-regression.md",
+        "docs/design/evidence/carbon-component-library/desktop.png",
+        "docs/design/evidence/carbon-component-library/mobile.png",
+        "docs/design/evidence/carbon-component-library/contrast-report.json",
         "docs/product/onboarding-troubleshooting.md",
         "docs/operations/on-call-alert-routing-drill-2026-06-13.md"
       ],
       "acceptedRisk": [
-        "cross-browser visual regression and CI artifacts are not routine merge gates",
-        "component library and CI visual regression evidence remain tracked by issue #67"
+        "Firefox and WebKit visual regression lanes are not routine merge gates",
+        "future non-dashboard first-party UI surfaces must add their own visual artifacts before launch"
       ],
-      "nextAction": "Add component library and CI visual regression gate in issue #67"
+      "nextAction": "Continue productization UI setup workflow work in issue #84 and add per-surface visual QA when new UI surfaces ship"
     }
   ],
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/90"

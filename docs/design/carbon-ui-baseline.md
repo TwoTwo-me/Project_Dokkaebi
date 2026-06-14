@@ -192,9 +192,10 @@ Every future UI PR must capture visual QA evidence for:
 ## Validation
 
 The baseline is intentionally docs-only. It raises readiness by creating a
-reviewable design contract and validation gate, not by claiming visual QA proof
-for a UI that does not yet exist. Issue #61 tracks the first-party UI proof and
-desktop/mobile visual QA captures needed to raise design readiness further.
+reviewable design contract and validation gate, while
+[`carbon-component-library-visual-regression.md`](carbon-component-library-visual-regression.md)
+records the first checked-in desktop/mobile visual QA captures, contrast report,
+component inventory, and CI visual regression gate for issue #67.
 
 <!-- carbon-ui-baseline:begin -->
 ```json
@@ -365,13 +366,13 @@ desktop/mobile visual QA captures needed to raise design readiness further.
     "document token roles in UI PRs"
   ],
   "remainingOperationalGaps": [
-    "first-party UI implementation is not present",
-    "desktop visual QA capture is not present",
-    "mobile visual QA capture is not present",
-    "automated contrast report is not present",
-    "component library token proof is not present"
+    "full cross-browser visual regression matrix is not complete",
+    "Firefox visual regression lane is not automated",
+    "WebKit visual regression lane is not automated",
+    "non-dashboard first-party UI surfaces must add their own visual QA before launch",
+    "live UI deployment is not present"
   ],
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/61"
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/84"
 }
 ```
 <!-- carbon-ui-baseline:end -->
