@@ -83,6 +83,7 @@ require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
 require_file scripts/validate-immutable-audit-export-verification.sh
 require_file scripts/validate-signed-immutable-audit-export.sh
+require_file scripts/validate-immutable-audit-storage-sandbox.sh
 require_file scripts/validate-runtime-quality-gates.sh
 require_file docs/enterprise-readiness/criteria.json
 require_file docs/enterprise-readiness/development-loop.md
@@ -128,6 +129,7 @@ require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
 require_file docs/compliance/immutable-audit-export-verification-2026-06-13.md
 require_file docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md
+require_file docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md
 require_file docs/examples/result-packets/accepted.md
 require_file docs/examples/result-packets/rejected-missing-acceptance-evidence.md
 require_file docs/examples/result-packets/rejected-missing-validation-evidence.md
@@ -198,6 +200,7 @@ require_text docs/contracts/manager-contract.md '../compliance/control-map-and-e
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
 require_text docs/contracts/manager-contract.md '../compliance/signed-immutable-audit-export-key-management-2026-06-13.md'
+require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-storage-sandbox-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../enterprise-readiness/runtime-quality-gate-matrix.md'
 require_text docs/contracts/manager-contract.md '../adapters/hermes.md'
 require_text docs/contracts/manager-contract.md 'hammer-worker-contract.md'
@@ -276,6 +279,11 @@ require_text docs/contracts/manager-contract.md 'Signed immutable audit export k
 require_text docs/contracts/manager-contract.md 'signed manifest storage'
 require_text docs/contracts/manager-contract.md 'signing-key ownership'
 require_text docs/contracts/manager-contract.md 'verification cadence'
+require_text docs/contracts/manager-contract.md 'Approved local immutable audit storage sandbox evidence'
+require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-storage-sandbox-2026-06-14.md'
+require_text docs/contracts/manager-contract.md 'object-lock-equivalent retention semantics'
+require_text docs/contracts/manager-contract.md 'retained public-key metadata'
+require_text docs/contracts/manager-contract.md 'storage-target verification output'
 require_text docs/contracts/manager-contract.md 'Runtime quality gates'
 require_text docs/contracts/manager-contract.md 'required tests'
 require_text docs/contracts/manager-contract.md 'accepted risk'
@@ -577,6 +585,7 @@ require_text scripts/validate-worker-route-health-bootstrap.sh 'PASS Dokkaebi wo
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
 require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 require_text scripts/validate-immutable-audit-export.sh 'PASS Dokkaebi immutable audit export validation passed'
+require_text scripts/validate-immutable-audit-storage-sandbox.sh 'PASS Dokkaebi immutable audit storage sandbox validation passed'
 
 require_text docs/operations/dispatch-lease-recovery.md '# Dispatch Lease And Restart Recovery'
 require_text docs/operations/dispatch-lease-recovery.md 'lease store'
@@ -861,6 +870,22 @@ require_text docs/compliance/signed-immutable-audit-export-key-management-2026-0
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'residual risk'
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'next action'
 require_text docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md 'does not authorize'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md '# Immutable Audit Storage Sandbox Gate'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'immutable audit storage sandbox gate'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'signed manifest storage'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'retained public-key metadata'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'object-lock-equivalent'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'retention enforcement'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'legal-hold state'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'deletion or extension decision'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'owner review'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'redaction review'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'validation output'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'approval-gate status'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'cleanup receipt'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'residual risk'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'next action'
+require_text docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md 'does not authorize'
 require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md '# Runtime Quality Gate Matrix'
 require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'orchestration'
 require_text docs/enterprise-readiness/runtime-quality-gate-matrix.md 'credential'
@@ -1239,6 +1264,7 @@ bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null
 bash scripts/validate-immutable-audit-export-verification.sh >/dev/null
 bash scripts/validate-signed-immutable-audit-export.sh >/dev/null
+bash scripts/validate-immutable-audit-storage-sandbox.sh >/dev/null
 bash scripts/validate-runtime-quality-gates.sh >/dev/null
 
 printf 'PASS Dokkaebi contract docs are present, linked, and structurally aligned\n'

@@ -427,7 +427,7 @@
     {
       "id": "compliance_audit",
       "name": "Compliance and audit",
-      "currentPercent": 94,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "The system can produce control-mapped, retained, tamper-evident evidence for approvals, credentials, code changes, worker execution, and operational incidents.",
       "currentEvidence": [
@@ -436,6 +436,7 @@
         "docs/compliance/immutable-audit-export-verification-2026-06-13.md",
         "docs/compliance/immutable-audit-export.md",
         "docs/compliance/signed-immutable-audit-export-key-management-2026-06-13.md",
+        "docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md",
         "docs/policies/authority-and-safety.md",
         "docs/policies/git-governance.md",
         "docs/templates/worker-result-packet.md",
@@ -443,13 +444,11 @@
         "scripts/validate-compliance-package.sh",
         "scripts/validate-immutable-audit-export-verification.sh",
         "scripts/validate-immutable-audit-export.sh",
-        "scripts/validate-signed-immutable-audit-export.sh"
+        "scripts/validate-signed-immutable-audit-export.sh",
+        "scripts/run-immutable-audit-storage-sandbox.sh",
+        "scripts/validate-immutable-audit-storage-sandbox.sh"
       ],
-      "gaps": [
-        "Control mapping, package shape, one audit review walkthrough, immutable audit export design, one local replay verification drill, and one signed sandbox verification with key-management evidence exist, but immutable object storage is not operational.",
-        "Retention, redaction, ownership, source-link, manifest-hash, signature, signing-key ownership, rotation, revocation, and verification cadence metadata are replayed from sanitized repository evidence, but automated export generation and retention service enforcement remain incomplete.",
-        "Formal SOC 2, ISO 27001, or external-control mapping remains unapproved and out of scope."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can an auditor reconstruct who approved a worker action and why?",
         "Can evidence be exported with redaction and integrity proof?",
@@ -459,37 +458,13 @@
         "Control mapping",
         "Retention policy",
         "Immutable export sample",
-        "Evidence chain walkthrough"
+        "Evidence chain walkthrough",
+        "Approved immutable storage sandbox gate",
+        "Approved immutable audit storage sandbox gate",
+        "Storage-backed signed manifest verification",
+        "Object-lock-equivalent retention enforcement evidence"
       ],
-      "nextIssues": [
-        {
-          "title": "Connect signed audit export to immutable storage and retention automation",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
-          "acceptanceCriteria": [
-            "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
-            "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
-            "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
-            "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-signed-immutable-audit-export.sh",
-            "bash scripts/validate-immutable-audit-export.sh",
-            "bash scripts/validate-immutable-audit-export-verification.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted immutable storage and retention validation named by the implementation"
-          ],
-          "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Storage-backed verification evidence",
-            "Validation command output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "productization_ux",
@@ -712,34 +687,35 @@
     {
       "id": "compliance_package",
       "name": "Compliance package",
-      "currentPercent": 96,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Connect signed audit export to immutable storage and retention automation",
+      "nextIssueTitle": "Completed approved immutable audit storage sandbox gate",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
       "acceptanceCriteria": [
-        "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
-        "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
-        "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
+        "Approved local sandbox substitute stores the signed audit export manifest with object-lock-equivalent retention semantics.",
+        "Stored signed manifest is verified from retained public-key metadata and recorded manifest hash evidence.",
+        "Retention enforcement, legal-hold state, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action are captured.",
+        "Live immutable storage, production retention service, production signing service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated."
       ],
       "validationRequired": [
-        "bash scripts/validate-compliance-package.sh",
-        "bash scripts/validate-compliance-audit-review.sh",
+        "bash scripts/run-immutable-audit-storage-sandbox.sh",
+        "bash scripts/validate-immutable-audit-storage-sandbox.sh",
         "bash scripts/validate-signed-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export-verification.sh",
+        "bash scripts/validate-compliance-package.sh",
+        "bash scripts/validate-compliance-audit-review.sh",
         "bash scripts/validate-readiness-criteria.sh",
-        "bash scripts/validate-contract-docs.sh",
-        "Targeted immutable storage and retention validation named by the implementation"
+        "bash scripts/validate-contract-docs.sh"
       ],
-      "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox immutable audit storage evidence only. Live immutable storage, production retention service, production signing service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
-        "Changed artifacts and rationale",
-        "Storage-backed verification evidence",
-        "Validation command output",
-        "Approval-gate status",
-        "Cleanup receipt",
-        "Residual risk and next action"
+        "docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md",
+        "scripts/run-immutable-audit-storage-sandbox.sh",
+        "scripts/validate-immutable-audit-storage-sandbox.sh",
+        "Storage-backed signed manifest verification evidence",
+        "Object-lock-equivalent retention enforcement evidence",
+        "Owner review, redaction review, cleanup receipt, residual risk, and next action"
       ]
     },
     {
@@ -811,32 +787,34 @@
     {
       "id": "immutable_audit_export",
       "name": "Immutable audit export",
-      "currentPercent": 86,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Connect signed audit export to immutable storage and retention automation",
+      "nextIssueTitle": "Completed approved immutable audit storage sandbox gate",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88",
       "acceptanceCriteria": [
-        "Use an explicitly approved immutable storage target or approved sandbox substitute with object-lock or equivalent retention semantics.",
-        "Store a signed export manifest and verify it from the storage target using retained public key metadata.",
-        "Enforce retention, legal-hold, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json only from captured storage and verification evidence."
+        "Approved local sandbox substitute stores the signed audit export manifest with object-lock-equivalent retention semantics.",
+        "Stored signed manifest is verified from retained public-key metadata and recorded manifest hash evidence.",
+        "Retention enforcement, legal-hold state, deletion or extension decision, owner review, redaction review, cleanup, residual risk, and next action are captured.",
+        "Live immutable storage, production retention service, production signing service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated."
       ],
       "validationRequired": [
+        "bash scripts/run-immutable-audit-storage-sandbox.sh",
+        "bash scripts/validate-immutable-audit-storage-sandbox.sh",
         "bash scripts/validate-signed-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export.sh",
         "bash scripts/validate-immutable-audit-export-verification.sh",
+        "bash scripts/validate-compliance-package.sh",
+        "bash scripts/validate-compliance-audit-review.sh",
         "bash scripts/validate-readiness-criteria.sh",
-        "bash scripts/validate-contract-docs.sh",
-        "Targeted immutable storage and retention validation named by the implementation"
+        "bash scripts/validate-contract-docs.sh"
       ],
-      "authorityRequirement": "Docs-only planning by default. Immutable storage, retention service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox immutable audit storage evidence only. Live immutable storage, production retention service, production signing service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
-        "Changed artifacts and rationale",
-        "Storage-backed verification evidence",
-        "Validation command output",
-        "Approval-gate status",
-        "Cleanup receipt",
-        "Residual risk and next action"
+        "docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md",
+        "scripts/run-immutable-audit-storage-sandbox.sh",
+        "scripts/validate-immutable-audit-storage-sandbox.sh",
+        "Stored signed manifest hash and retained public-key metadata verification output",
+        "Retention enforcement, legal-hold state, deletion or extension decision, owner review, redaction review, cleanup receipt, residual risk, and next action"
       ]
     },
     {

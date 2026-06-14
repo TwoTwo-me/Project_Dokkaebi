@@ -36,15 +36,20 @@ payload, and includes source link IDs, commit SHAs, check run IDs, redaction
 entries, retention metadata, ownership, approval-gate status, and residual
 risk.
 
-The current repository stores only the design contract. A later verification
-drill must produce or replay a concrete export manifest and record the computed
-hash.
+The current repository stores the design contract, one replay verification
+drill, one signed sandbox verification, and one approved local immutable audit
+storage sandbox gate. Those artifacts produce or replay concrete manifests and
+record the computed hashes without authorizing a live immutable storage service.
 
 The repository also carries a docs-only signed sandbox verification in
 [`signed-immutable-audit-export-key-management-2026-06-13.md`](signed-immutable-audit-export-key-management-2026-06-13.md).
-That artifact proves signature verification and signing-key management shape
-without enabling immutable object storage, a production signing service, or
-automated retention enforcement.
+That artifact proves signature verification and signing-key management shape.
+[`immutable-audit-storage-sandbox-2026-06-14.md`](immutable-audit-storage-sandbox-2026-06-14.md)
+adds the approved local sandbox storage substitute with object-lock-equivalent
+retention enforcement, retained public-key metadata, owner review, redaction
+review, cleanup, residual risk, and next action. Live immutable object storage,
+production signing services, and production retention services remain separately
+approval-gated.
 
 ## Source Links
 
@@ -71,8 +76,10 @@ redaction was verified.
 
 Retention metadata must include retention duration, retention owner, storage
 surface, deletion or extension decision, legal-hold state, and next review date.
-Until retention enforcement exists, the export must mark enforcement as a
-remaining operational gap.
+The approved local immutable audit storage sandbox gate provides
+object-lock-equivalent retention enforcement evidence for repository-local
+readiness. Live retention-service enforcement remains a separate approved
+operations rollout.
 
 ## Ownership
 
@@ -141,7 +148,7 @@ production, infrastructure, or control-plane mutation wording.
     "packageIdFormat": "IAE-YYYYMMDD-<change-id>",
     "schemaVersion": "immutable-audit-export/v1",
     "generatedAt": "recorded outside the canonical signed payload",
-    "storageAssumptions": "Repository fixtures, GitHub issue/PR timelines, and a signed sandbox verification artifact are current storage; signed immutable object storage remains future work"
+    "storageAssumptions": "Repository fixtures, GitHub issue/PR timelines, a signed sandbox verification artifact, and the approved local immutable audit storage sandbox gate are current storage evidence; live signed immutable object storage remains separate approval-gated work"
   },
   "manifestHash": {
     "algorithm": "SHA-256",
@@ -156,7 +163,7 @@ production, infrastructure, or control-plane mutation wording.
       "approval-gate status",
       "residual risk"
     ],
-    "verificationResult": "A later drill must produce or replay a manifest and compare the recomputed hash; issue #72 adds signed sandbox verification without object-storage retention lock"
+    "verificationResult": "Issue #72 adds signed sandbox verification, and issue #88 adds approved local storage-backed verification that reads the stored signed manifest from retained public-key metadata and compares the recorded hash without authorizing live object-storage mutation"
   },
   "sourceLinks": {
     "issues": "request, approval, and closeout issue links",
@@ -217,9 +224,9 @@ production, infrastructure, or control-plane mutation wording.
     "unauthorized sensitive authority wording fails closed"
   ],
   "remainingOperationalGaps": [
-    "immutable object storage is not implemented",
-    "retention enforcement is not operational",
-    "production signing-key registry is not implemented",
+    "live immutable object storage remains separately approval-gated",
+    "production retention service remains separately approval-gated",
+    "production signing-key registry remains separately approval-gated",
     "automated export generation is not implemented"
   ],
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/88"

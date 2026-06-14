@@ -35,10 +35,11 @@ The export design is evidence-oriented and intentionally conservative.
 | Redaction | Evidence must exclude secrets, auth files, cookies, tokens, private machine state, and secret-bearing evidence. |
 | Integrity | Each package records source links, commit SHAs, check run URLs, a replayable manifest hash, and signed export status. |
 | Ownership | Each package names the Manager reviewer, control owner, and evidence package owner. |
-| Storage | GitHub issue/PR timelines and repository fixtures are current storage; signed immutable object storage remains future work. |
+| Storage | GitHub issue/PR timelines, repository fixtures, signed sandbox verification, and the approved local immutable audit storage sandbox gate are current storage evidence; live signed immutable object storage remains separately approval-gated. |
 
-Until signed immutable storage exists, the package records an explicit
-`immutableExportGap` rather than pretending to be tamper-proof.
+Where live signed immutable storage is absent, the package records an explicit
+`immutableExportGap` and the approved sandbox substitute instead of pretending
+to authorize live tamper-proof storage or a production retention service.
 
 ## Package Contents
 
@@ -116,6 +117,12 @@ boundary, or secret-bearing evidence wording.
   records one docs-only local replay verification drill with a recomputed
   manifest hash, redaction manifest, retention metadata, owner review,
   approval-gate status, cleanup, residual risk, and next action.
+- [`immutable-audit-storage-sandbox-2026-06-14.md`](immutable-audit-storage-sandbox-2026-06-14.md)
+  records an approved local sandbox immutable storage gate with signed manifest
+  storage, retained public-key metadata, object-lock-equivalent retention
+  enforcement, legal-hold state, deletion or extension decision, owner review,
+  redaction review, validation output, approval-gate status, cleanup receipt,
+  residual risk, and next action.
 
 <!-- compliance-package:begin -->
 ```json
@@ -166,8 +173,8 @@ boundary, or secret-bearing evidence wording.
     "redaction": "Evidence excludes secrets, auth files, cookies, tokens, private machine state, and secret-bearing evidence",
     "integrity": "Package records source links, commit SHAs, check run URLs, a replayable manifest hash, and signed export status",
     "ownership": "Package names Manager reviewer, control owner, and evidence package owner",
-    "storageSurface": "GitHub issue/PR timelines and repository fixtures are current storage; signed immutable object storage remains future work",
-    "immutableExportGap": "Local replay verification exists; signed export storage, key management, and retention enforcement remain future work and must stay visible in readiness criteria"
+    "storageSurface": "GitHub issue/PR timelines, repository fixtures, signed sandbox verification, and approved local immutable audit storage sandbox gate evidence are current storage; live signed immutable object storage remains separately approval-gated",
+    "immutableExportGap": "Approved local sandbox storage, key-management, and object-lock-equivalent retention enforcement evidence exists; live immutable storage, production retention service, production signing service, and external-control mapping remain separately scoped"
   },
   "packageContents": [
     "package ID and date",
@@ -205,7 +212,8 @@ boundary, or secret-bearing evidence wording.
 
 ## Remaining Gaps
 
-This package skeleton does not finish compliance readiness. Remaining work
-includes measured retention enforcement, signed export manifests, key
-management, access-review drills, and external-control mapping if a Human
-owner chooses a formal framework.
+This package skeleton now has approved local signed export storage and
+object-lock-equivalent retention enforcement evidence. Remaining work includes
+live immutable object storage, production retention service rollout, production
+signing service rollout, access-review drill expansion, and external-control
+mapping if a Human owner chooses a formal framework.

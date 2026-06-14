@@ -32,6 +32,14 @@ artifact plus the related issue and pull request timelines. Immutable object
 storage with retention lock is not enabled by this drill and remains future
 work requiring explicit infrastructure approval.
 
+The later approved local immutable audit storage sandbox gate in
+[`immutable-audit-storage-sandbox-2026-06-14.md`](immutable-audit-storage-sandbox-2026-06-14.md)
+uses this signed manifest as its source artifact, stores it in a deterministic
+local sandbox substitute, verifies it with retained public-key metadata, and
+captures object-lock-equivalent retention enforcement. Live immutable object
+storage and production retention/signing services remain separately
+approval-gated.
+
 The stored package contains:
 
 - canonical JSON payload with sorted object keys and compact separators;
@@ -90,12 +98,15 @@ manifest hash, signature, and sanitized review metadata.
 
 ## Residual Risk And Next Action
 
-Residual risk remains for immutable object storage with retention lock,
+Residual risk remains for live immutable object storage with retention lock,
 production signing-key registry and automated revocation, automated export
-generation, and production-service scheduling of the verification cadence.
+generation, and production-service scheduling of the verification cadence. The
+approved local sandbox storage substitute is captured in
+[`immutable-audit-storage-sandbox-2026-06-14.md`](immutable-audit-storage-sandbox-2026-06-14.md).
 
-Next action: connect signed export verification to approved immutable object
-storage and automated retention service under issue #88.
+Next action: use the approved local storage sandbox gate as routine compliance
+export evidence; require separate Human approval before live immutable object
+storage, production retention service, or production signing service rollout.
 
 <!-- signed-immutable-audit-export:begin -->
 ```json
