@@ -35,7 +35,7 @@ START = "<!-- incident-response:begin -->"
 END = "<!-- incident-response:end -->"
 REQ = ["version", "runbookId", "date", "permissionLevel", "sourceBaselines", "scenario", "severityModel", "incidentCommander", "detection", "communicationSurface", "mitigationSequence", "rollbackOrRecoveryDecision", "alertRoutingDecision", "postmortemTemplate", "evidenceRetention", "validationOutput", "approvalGateStatus", "cleanup", "residualRisk", "nextAction", "followUpIssueUrl"]
 SEVS = {"SEV0", "SEV1", "SEV2", "SEV3"}
-CMDS = ["validate-incident-response-runbook.sh", "validate-sre-operating-baseline.sh", "validate-on-call-paging-alerting.sh", "validate-readiness-criteria.sh", "validate-contract-docs.sh"]
+CMDS = ["validate-incident-response-runbook.sh", "validate-incident-response-drill-postmortem.sh", "validate-sre-operating-baseline.sh", "validate-on-call-paging-alerting.sh", "validate-readiness-criteria.sh", "validate-contract-docs.sh"]
 BASELINES = ["docs/operations/sre-operating-baseline.md", "docs/operations/on-call-paging-alerting.md"]
 COMMUNICATION_TERMS = {"timeline", "severity", "commander", "mitigation", "validation", "postmortem", "closeout"}
 POSTMORTEM_FIELDS = ["timeline", "impact", "root cause", "contributing factors", "mitigation and recovery", "validation commands", "evidence links", "follow-up owner", "residual risk"]
@@ -139,8 +139,8 @@ def validate(payload):
         reject("date must be ISO yyyy-mm-dd")
     if payload["permissionLevel"] != "docs-only-tabletop":
         reject("permissionLevel must remain docs-only-tabletop")
-    if payload["followUpIssueUrl"] != "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/78":
-        reject("follow-up issue URL must point to issue 78")
+    if payload["followUpIssueUrl"] != "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82":
+        reject("follow-up issue URL must point to issue 82")
     if text_list(payload["sourceBaselines"], "source baselines", 2) != BASELINES:
         reject("source baselines must include SRE and on-call baselines")
     scenario = fields(payload["scenario"], "scenario", ["severity", "trigger", "scope", "customerImpact"])

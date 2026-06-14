@@ -58,6 +58,7 @@ require_file scripts/validate-orchestration-recovery-gate.sh
 require_file scripts/validate-sandbox-issue-processing-transcript.sh
 require_file scripts/validate-sre-operating-baseline.sh
 require_file scripts/validate-incident-response-runbook.sh
+require_file scripts/validate-incident-response-drill-postmortem.sh
 require_file scripts/validate-central-metrics-backend.sh
 require_file scripts/validate-observability-metrics-alerts.sh
 require_file scripts/validate-central-metrics-replay.sh
@@ -95,6 +96,7 @@ require_file docs/operations/orchestration-recovery-gate.md
 require_file docs/operations/sandbox-issue-processing-transcript-2026-06-14.md
 require_file docs/operations/sre-operating-baseline.md
 require_file docs/operations/incident-response-runbook-2026-06-13.md
+require_file docs/operations/incident-response-drill-postmortem-2026-06-14.md
 require_file docs/operations/central-metrics-backend.md
 require_file docs/operations/observability-metrics-alert-rules.md
 require_file docs/operations/central-metrics-replay-2026-06-13.md
@@ -164,6 +166,7 @@ require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-re
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
 require_text docs/contracts/manager-contract.md '../operations/sandbox-issue-processing-transcript-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/sre-operating-baseline.md'
+require_text docs/contracts/manager-contract.md '../operations/incident-response-drill-postmortem-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/central-metrics-backend.md'
 require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
@@ -195,6 +198,10 @@ require_text docs/contracts/manager-contract.md 'Sandbox issue processing transc
 require_text docs/contracts/manager-contract.md 'private-memory exclusion'
 require_text docs/contracts/manager-contract.md 'SRE operating evidence'
 require_text docs/contracts/manager-contract.md 'review-age SLO'
+require_text docs/contracts/manager-contract.md 'Approved incident response drill and postmortem evidence'
+require_text docs/contracts/manager-contract.md 'detection input'
+require_text docs/contracts/manager-contract.md 'severity declaration'
+require_text docs/contracts/manager-contract.md 'commander assignment'
 require_text docs/contracts/manager-contract.md 'Service-level objective evidence'
 require_text docs/contracts/manager-contract.md 'external SLA approval boundary'
 require_text docs/contracts/manager-contract.md 'Central metrics backend designs'
@@ -491,6 +498,7 @@ require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orch
 require_text scripts/validate-sandbox-issue-processing-transcript.sh 'PASS Dokkaebi sandbox issue processing transcript validation passed'
 require_text scripts/validate-sre-operating-baseline.sh 'PASS Dokkaebi SRE operating baseline validation passed'
 require_text scripts/validate-incident-response-runbook.sh 'PASS Dokkaebi incident response runbook validation passed'
+require_text scripts/validate-incident-response-drill-postmortem.sh 'PASS Dokkaebi incident response drill postmortem validation passed'
 require_text scripts/validate-service-level-objectives.sh 'PASS Dokkaebi service-level objectives validation passed'
 require_text scripts/validate-central-metrics-backend.sh 'PASS Dokkaebi central metrics backend validation passed'
 require_text scripts/validate-central-metrics-replay.sh 'PASS Dokkaebi central metrics replay validation passed'
@@ -534,6 +542,7 @@ require_text docs/operations/sre-operating-baseline.md 'intentionally deferred'
 require_text docs/operations/sre-operating-baseline.md 'central-metrics-backend.md'
 require_text docs/operations/sre-operating-baseline.md 'service-level-objectives.md'
 require_text docs/operations/sre-operating-baseline.md 'incident-response-runbook-2026-06-13.md'
+require_text docs/operations/sre-operating-baseline.md 'incident-response-drill-postmortem-2026-06-14.md'
 require_text docs/operations/incident-response-runbook-2026-06-13.md '# Incident Response Runbook And Tabletop'
 require_text docs/operations/incident-response-runbook-2026-06-13.md 'severity model'
 require_text docs/operations/incident-response-runbook-2026-06-13.md 'incident commander'
@@ -543,6 +552,20 @@ require_text docs/operations/incident-response-runbook-2026-06-13.md 'rollback o
 require_text docs/operations/incident-response-runbook-2026-06-13.md 'alert routing decision'
 require_text docs/operations/incident-response-runbook-2026-06-13.md 'postmortem template'
 require_text docs/operations/incident-response-runbook-2026-06-13.md 'evidence retention'
+require_text docs/operations/incident-response-runbook-2026-06-13.md 'incident-response-drill-postmortem-2026-06-14.md'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md '# Incident Response Drill And Postmortem Exercise'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'issue #78'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'detection input'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'severity declaration'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'commander assignment'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'communication timeline'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'mitigation decision'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'rollback or recovery decision'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'alert routing decision'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'validation output'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'approval-gate status'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'cleanup receipt'
+require_text docs/operations/incident-response-drill-postmortem-2026-06-14.md 'postmortem evidence'
 require_text docs/operations/service-level-objectives.md '# Service-Level Objectives And SLA Boundary'
 require_text docs/operations/service-level-objectives.md 'dispatch latency'
 require_text docs/operations/service-level-objectives.md 'recovery time'
@@ -1083,6 +1106,7 @@ bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sandbox-issue-processing-transcript.sh >/dev/null
 bash scripts/validate-sre-operating-baseline.sh >/dev/null
 bash scripts/validate-incident-response-runbook.sh >/dev/null
+bash scripts/validate-incident-response-drill-postmortem.sh >/dev/null
 bash scripts/validate-service-level-objectives.sh >/dev/null
 bash scripts/validate-central-metrics-backend.sh >/dev/null
 bash scripts/validate-observability-metrics-alerts.sh >/dev/null

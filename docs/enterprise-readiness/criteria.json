@@ -460,7 +460,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 90,
+      "currentPercent": 94,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -480,15 +480,17 @@
         "scripts/validate-on-call-paging-alerting.sh",
         "docs/operations/incident-response-runbook-2026-06-13.md",
         "scripts/validate-incident-response-runbook.sh",
+        "docs/operations/incident-response-drill-postmortem-2026-06-14.md",
+        "scripts/validate-incident-response-drill-postmortem.sh",
         "docs/operations/central-metrics-replay-2026-06-13.md",
         "scripts/validate-central-metrics-replay.sh",
         "docs/operations/on-call-alert-routing-drill-2026-06-13.md",
         "scripts/validate-on-call-alert-routing-drill.sh"
       ],
       "gaps": [
-        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented; local release rollback, incident response tabletop, central metrics replay, and on-call alert routing dry-run evidence exist, but live paging and routine approved drills are not operational.",
+        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented; local release rollback, approved local incident response drill and postmortem evidence, central metrics replay, and on-call alert routing dry-run evidence exist, but live paging and routine production operations drills are not operational.",
         "Capacity, soak, and central metrics thresholds exist with local replay evidence, but long-running measured soak or approved-sandbox metrics tests are not yet captured.",
-        "Automated runtime gates, approved sandbox incident and rollback evidence, live paging delivery, approved sandbox or explicitly Human-approved live metrics backend delivery, and postmortem automation are still required before production service quality can be claimed."
+        "Automated runtime gates, approved sandbox rollback evidence, live paging delivery, approved sandbox or explicitly Human-approved live metrics backend delivery, and postmortem automation are still required before production service quality can be claimed."
       ],
       "evaluationQuestions": [
         "What happens when Fire is down, GitHub API is rate-limited, or all workers are unhealthy?",
@@ -732,9 +734,9 @@
     {
       "id": "incident_response",
       "name": "Incident Response",
-      "currentPercent": 74,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Run approved incident response drill and postmortem exercise",
+      "nextIssueTitle": "Completed incident response drill and postmortem exercise",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/78",
       "acceptanceCriteria": [
         "Run an approved incident response drill or sandbox exercise using the dedicated runbook, SRE baseline, and on-call paging baseline.",
@@ -744,13 +746,13 @@
       ],
       "validationRequired": [
         "bash scripts/validate-incident-response-runbook.sh",
+        "bash scripts/validate-incident-response-drill-postmortem.sh",
         "bash scripts/validate-sre-operating-baseline.sh",
         "bash scripts/validate-on-call-paging-alerting.sh",
         "bash scripts/validate-readiness-criteria.sh",
-        "bash scripts/validate-contract-docs.sh",
-        "Targeted approved drill or sandbox validation named by the implementation"
+        "bash scripts/validate-contract-docs.sh"
       ],
-      "authorityRequirement": "Docs-only planning by default. Sandbox, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved docs-only local drill evidence. Sandbox, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation remains explicitly not authorized without Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
         "Acceptance-criteria evidence",

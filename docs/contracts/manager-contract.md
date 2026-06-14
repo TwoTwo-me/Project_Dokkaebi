@@ -298,6 +298,13 @@ SRE operating evidence must follow
 The Manager must treat missing dispatch SLO, recovery SLO, review-age SLO,
 incident commander, communication, mitigation, postmortem, or resolved on-call
 decision as an operations readiness gap.
+Approved incident response drill and postmortem evidence must follow
+[`docs/operations/incident-response-drill-postmortem-2026-06-14.md`](../operations/incident-response-drill-postmortem-2026-06-14.md)
+or a later dated drill package. The Manager must treat missing detection input,
+severity declaration, commander assignment, communication timeline, mitigation
+decision, rollback or recovery decision, alert routing decision, validation
+output, approval-gate status, cleanup receipt, postmortem evidence, residual
+risk, or next action as an incident-response readiness gap.
 
 Service-level objective evidence must follow
 [`docs/operations/service-level-objectives.md`](../operations/service-level-objectives.md).

@@ -6,6 +6,9 @@ for [`sre-operating-baseline.md`](sre-operating-baseline.md) and
 authorize credentials, production writes, infrastructure mutation, worker
 dispatch, remote host operations, Docker, Kubernetes, deployment, or GitHub
 Project control-plane mutation.
+The approved docs-only local drill and postmortem evidence package is recorded
+in
+[`incident-response-drill-postmortem-2026-06-14.md`](incident-response-drill-postmortem-2026-06-14.md).
 
 The runbook captures severity model, incident commander, detection,
 communication surface, mitigation sequence, rollback or recovery decision,
@@ -24,7 +27,10 @@ The tabletop simulates a SEV1 dispatch failure where Fire cannot dispatch
 approved work and closeout evidence is potentially stale. The commander freezes
 new dispatch for the affected route class, records the communication surface,
 routes the alert to the current non-paging path, validates no live mutation was
-authorized, and closes with a postmortem template plus follow-up work.
+authorized, and closes with a postmortem template plus follow-up work. The
+2026-06-14 local drill package exercises that path and leaves live paging,
+runtime postmortem automation, and production incident response as separate
+approval-gated work.
 
 ## Validation
 
@@ -144,6 +150,7 @@ wording, private local paths, and secret-bearing wording.
   },
   "validationOutput": [
     "bash scripts/validate-incident-response-runbook.sh: PASS",
+    "bash scripts/validate-incident-response-drill-postmortem.sh: PASS",
     "bash scripts/validate-sre-operating-baseline.sh: PASS",
     "bash scripts/validate-on-call-paging-alerting.sh: PASS",
     "bash scripts/validate-readiness-criteria.sh: PASS",
@@ -155,13 +162,12 @@ wording, private local paths, and secret-bearing wording.
     "receipt": "No incident command touched a live system, and worker, remote host, container, cluster, production, credential, and GitHub Project configuration surfaces remained untouched."
   },
   "residualRisk": [
-    "Approved sandbox incident drill evidence is not captured.",
-    "Live paging backend delivery is not implemented.",
-    "Automated postmortem generation and reminder evidence are not implemented.",
+    "Live paging backend delivery remains tracked by issue #82.",
+    "Runtime postmortem automation and measured soak evidence remain tracked by issue #76.",
     "Production incident response remains unclaimed and approval-gated."
   ],
-  "nextAction": "Run approved incident response drill and postmortem exercise in issue #78.",
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/78"
+  "nextAction": "Continue live paging backend delivery in issue #82 and runtime postmortem automation plus measured soak work in issue #76.",
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }
 ```
 <!-- incident-response:end -->
