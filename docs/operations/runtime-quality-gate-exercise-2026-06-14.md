@@ -28,6 +28,7 @@ Run:
 ```bash
 bash scripts/validate-runtime-quality-gate-exercise.sh
 bash scripts/validate-runtime-quality-gates.sh
+bash scripts/validate-release-rollback-sandbox-gate.sh
 bash scripts/validate-readiness-criteria.sh
 bash scripts/validate-contract-docs.sh
 ```
@@ -166,6 +167,7 @@ cleanup, private paths, secret-like evidence, and unsafe mutation claims.
       "bash scripts/validate-orchestration-recovery-gate.sh",
       "bash scripts/validate-release-rollback-drill.sh",
       "bash scripts/validate-release-rollback-capacity-drills.sh",
+      "bash scripts/validate-release-rollback-sandbox-gate.sh",
       "bash scripts/validate-sandbox-issue-processing-transcript.sh",
       "bash scripts/validate-readiness-criteria.sh",
       "bash scripts/validate-contract-docs.sh",
@@ -189,6 +191,7 @@ cleanup, private paths, secret-like evidence, and unsafe mutation claims.
     "bash scripts/validate-orchestration-recovery-gate.sh: PASS",
     "bash scripts/validate-release-rollback-drill.sh: PASS",
     "bash scripts/validate-release-rollback-capacity-drills.sh: PASS",
+    "bash scripts/validate-release-rollback-sandbox-gate.sh: PASS",
     "bash scripts/validate-sandbox-issue-processing-transcript.sh: PASS",
     "bash scripts/validate-carbon-component-library-visual-regression.sh: PASS",
     "bash scripts/validate-multi-tenant-rbac-drill.sh: PASS",
@@ -210,7 +213,7 @@ cleanup, private paths, secret-like evidence, and unsafe mutation claims.
     "receipt": "targeted validation used repository files, deterministic fixtures, and existing approved sandbox evidence only; no live workers, ports, containers, Kubernetes Jobs, remote writes, credentials, deployments, production targets, infrastructure settings, or GitHub Project settings were created or changed"
   },
   "residualRisk": [
-    "Production release, rollback, and soak operation remains approval-gated and tracked by issue #76.",
+    "Approved local release, rollback, and soak gate evidence is captured in release-rollback-sandbox-gate-2026-06-14.md; live production operation remains separately approval-gated.",
     "Live central metrics backend evidence remains tracked by issue #80.",
     "Live paging delivery remains tracked by issue #82.",
     "Live identity-provider, credential backend, and worker fleet rollout remain approval-gated after runtime RBAC local proof."

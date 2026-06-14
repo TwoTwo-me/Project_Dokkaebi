@@ -69,6 +69,8 @@ require_file scripts/validate-on-call-paging-alerting.sh
 require_file scripts/validate-on-call-alert-routing-drill.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
+require_file scripts/run-release-rollback-sandbox-gate.sh
+require_file scripts/validate-release-rollback-sandbox-gate.sh
 require_file scripts/validate-release-rollback-drill.sh
 require_file scripts/validate-runtime-quality-gate-exercise.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
@@ -113,6 +115,7 @@ require_file docs/operations/central-metrics-replay-2026-06-13.md
 require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/on-call-alert-routing-drill-2026-06-13.md
 require_file docs/operations/release-rollback-capacity-drills.md
+require_file docs/operations/release-rollback-sandbox-gate-2026-06-14.md
 require_file docs/operations/release-rollback-drill-2026-06-13.md
 require_file docs/operations/runtime-quality-gate-exercise-2026-06-14.md
 require_file docs/operations/topology-backup-restore-dr.md
@@ -185,6 +188,7 @@ require_text docs/contracts/manager-contract.md '../operations/central-metrics-s
 require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
+require_text docs/contracts/manager-contract.md '../operations/release-rollback-sandbox-gate-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/runtime-quality-gate-exercise-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-drill-2026-06-13.md'
@@ -240,7 +244,13 @@ require_text docs/contracts/manager-contract.md 'notification routing'
 require_text docs/contracts/manager-contract.md 'test evidence shape'
 require_text docs/contracts/manager-contract.md 'metrics linkage'
 require_text docs/contracts/manager-contract.md 'Release rollback capacity evidence'
+require_text docs/contracts/manager-contract.md 'Approved local release rollback sandbox gate evidence'
+require_text docs/contracts/manager-contract.md '../operations/release-rollback-sandbox-gate-2026-06-14.md'
 require_text docs/contracts/manager-contract.md 'staged rollout'
+require_text docs/contracts/manager-contract.md 'release gate decision'
+require_text docs/contracts/manager-contract.md 'gate output'
+require_text docs/contracts/manager-contract.md 'measured soak queue depth'
+require_text docs/contracts/manager-contract.md 'review-age sample'
 require_text docs/contracts/manager-contract.md 'Topology backup restore and disaster recovery evidence'
 require_text docs/contracts/manager-contract.md 'environment tier'
 require_text docs/contracts/manager-contract.md 'backup target'
@@ -556,6 +566,7 @@ require_text scripts/validate-on-call-paging-alerting.sh 'PASS Dokkaebi on-call 
 require_text scripts/validate-on-call-alert-routing-drill.sh 'PASS Dokkaebi on-call alert routing drill validation passed'
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
+require_text scripts/validate-release-rollback-sandbox-gate.sh 'PASS Dokkaebi release rollback sandbox gate validation passed'
 require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release rollback drill validation passed'
 require_text scripts/validate-runtime-quality-gate-exercise.sh 'PASS Dokkaebi runtime quality gate exercise validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
@@ -706,6 +717,19 @@ require_text docs/operations/release-rollback-drill-2026-06-13.md 'recovery path
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'command output'
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'validation output'
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'staged rollout decision'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md '# Release Rollback Sandbox Gate'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'release gate'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'rollback decision'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'recovery path'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'measured soak'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'queue depth'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'route health'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'retry count'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'review-age'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'approval-gate status'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'cleanup receipt'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'does not authorize'
+require_text docs/operations/release-rollback-sandbox-gate-2026-06-14.md 'run-release-rollback-sandbox-gate.sh'
 require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md '# Runtime Quality Gate Exercise'
 require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'failure-injection'
 require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'duplicate dispatch'
@@ -1202,6 +1226,7 @@ bash scripts/validate-on-call-paging-alerting.sh >/dev/null
 bash scripts/validate-on-call-alert-routing-drill.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
+bash scripts/validate-release-rollback-sandbox-gate.sh >/dev/null
 bash scripts/validate-release-rollback-drill.sh >/dev/null
 bash scripts/validate-runtime-quality-gate-exercise.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null

@@ -59,6 +59,7 @@ tracked by their dedicated readiness issues.
   "globalGates": {
     "defaultCommands": [
       "bash scripts/validate-runtime-quality-gate-exercise.sh",
+      "bash scripts/validate-release-rollback-sandbox-gate.sh",
       "bash scripts/validate-readiness-criteria.sh",
       "bash scripts/validate-contract-docs.sh",
       "bash scripts/validate-git-governance.sh"
@@ -95,11 +96,13 @@ tracked by their dedicated readiness issues.
         "bash scripts/validate-dispatch-lease-recovery.sh",
         "bash scripts/validate-orchestration-recovery-gate.sh",
         "bash scripts/validate-release-rollback-drill.sh",
-        "bash scripts/validate-release-rollback-capacity-drills.sh"
+        "bash scripts/validate-release-rollback-capacity-drills.sh",
+        "bash scripts/validate-release-rollback-sandbox-gate.sh"
       ],
       "mergeGateCommands": [
         "bash scripts/validate-dispatch-lease-recovery.sh",
         "bash scripts/validate-orchestration-recovery-gate.sh",
+        "bash scripts/validate-release-rollback-sandbox-gate.sh",
         "bash scripts/validate-contract-docs.sh"
       ],
       "evidenceArtifacts": [
@@ -107,13 +110,15 @@ tracked by their dedicated readiness issues.
         "docs/operations/orchestration-recovery-gate.md",
         "docs/operations/sandbox-issue-processing-transcript-2026-06-14.md",
         "docs/operations/runtime-quality-gate-exercise-2026-06-14.md",
+        "docs/operations/release-rollback-sandbox-gate-2026-06-14.md",
         "docs/examples/replays/accepted-manager-fire-hammer.md"
       ],
       "acceptedRisk": [
         "repository-local sandbox issue processing transcript and routine failure-injection exercise are captured",
-        "production multi-worker failure injection remains approval-gated and tracked by issue #76"
+        "approved local release rollback sandbox gate evidence is routine merge evidence",
+        "live production multi-worker failure injection remains separately approval-gated"
       ],
-      "nextAction": "Continue production release rollback and soak hardening in issue #76"
+      "nextAction": "Use release-rollback-sandbox-gate-2026-06-14.md as routine local release rollback evidence and require separate approval for live production drills"
     },
     {
       "id": "credential",
@@ -197,10 +202,12 @@ tracked by their dedicated readiness issues.
         "bash scripts/validate-sandbox-restore-drill.sh",
         "bash scripts/validate-backup-restore-drill.sh",
         "bash scripts/validate-topology-backup-restore-dr.sh",
+        "bash scripts/validate-release-rollback-sandbox-gate.sh",
         "bash scripts/validate-contract-docs.sh"
       ],
       "mergeGateCommands": [
         "bash scripts/validate-sandbox-restore-drill.sh",
+        "bash scripts/validate-release-rollback-sandbox-gate.sh",
         "bash scripts/validate-contract-docs.sh"
       ],
       "evidenceArtifacts": [
@@ -208,13 +215,15 @@ tracked by their dedicated readiness issues.
         "docs/templates/worker-result-packet.md",
         "docs/operations/sandbox-restore-drill-2026-06-13.md",
         "docs/operations/worker-route-health-bootstrap-2026-06-14.md",
+        "docs/operations/release-rollback-sandbox-gate-2026-06-14.md",
         "docs/operations/runtime-quality-gate-exercise-2026-06-14.md"
       ],
       "acceptedRisk": [
         "multi-provider route health and repository-local route failure evidence are routine merge evidence",
-        "production capacity soak remains approval-gated and tracked by issue #76"
+        "approved local release rollback soak samples are routine merge evidence",
+        "live production capacity soak remains separately approval-gated"
       ],
-      "nextAction": "Continue production capacity and soak hardening in issue #76"
+      "nextAction": "Use release-rollback-sandbox-gate-2026-06-14.md for local capacity-soak evidence and require separate approval for live production soak"
     },
     {
       "id": "ui",

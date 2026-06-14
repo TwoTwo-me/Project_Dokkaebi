@@ -11,6 +11,10 @@ rollback decision, recovery path, operator, communication surface, command
 output, validation output, staged rollout decision, approval-gate status,
 cleanup, residual risk, and next action.
 
+Approved local sandbox gate evidence that supersedes the sandbox and measured
+soak residual risk from this historical drill is captured in
+[`release-rollback-sandbox-gate-2026-06-14.md`](release-rollback-sandbox-gate-2026-06-14.md).
+
 Required exact terms: local release and rollback drill; release candidate;
 staged rollout step; rollback trigger; rollback decision; recovery path;
 operator; communication surface; command output; validation output; staged
@@ -135,12 +139,12 @@ Kubernetes, deployment, or GitHub Project control-plane mutation wording.
     "receipt": "No release artifact was deployed, no rollback command touched a live system, and worker, remote host, container, cluster, production, credential, and GitHub Project configuration surfaces remained untouched."
   },
   "residualRisk": [
-    "Runtime release gates are not automated.",
-    "Approved sandbox rollback evidence is not captured.",
-    "Measured soak evidence is not captured from a long-running environment.",
-    "Production rollback remains unclaimed and approval-gated."
+    "Runtime release gates are automated for approved local sandbox evidence in release-rollback-sandbox-gate-2026-06-14.md.",
+    "Approved sandbox rollback evidence is captured in release-rollback-sandbox-gate-2026-06-14.md.",
+    "Measured soak evidence is captured from the approved local sandbox gate package.",
+    "Live production rollback remains separately approval-gated."
   ],
-  "nextAction": "Automate release rollback gates and measured soak evidence in issue #76.",
+  "nextAction": "Use release-rollback-sandbox-gate-2026-06-14.md as routine local sandbox evidence; live production rollback remains separately approval-gated.",
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/76"
 }
 ```

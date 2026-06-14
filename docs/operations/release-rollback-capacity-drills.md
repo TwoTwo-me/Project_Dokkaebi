@@ -12,6 +12,8 @@ validation path with an approved sandbox or production drill, but the evidence
 shape and approval boundary here must remain intact.
 The current local release and rollback drill package is
 [`release-rollback-drill-2026-06-13.md`](release-rollback-drill-2026-06-13.md).
+The current approved local release rollback sandbox gate package is
+[`release-rollback-sandbox-gate-2026-06-14.md`](release-rollback-sandbox-gate-2026-06-14.md).
 
 ## Release Runbook
 
@@ -65,8 +67,8 @@ queue depth, route health, retry count, review-age samples, validation output,
 and cleanup evidence. Long-running production soak tests remain future work.
 For search and review consistency, this threshold is also named review age in
 operator-facing evidence.
-The local validation path uses fixtures and command output until an approved
-sandbox drill exists.
+The local validation path uses fixtures, command output, and the approved local
+sandbox gate package until a separately approved live production drill exists.
 
 ## Drill Evidence
 
@@ -103,6 +105,7 @@ Run:
 
 ```bash
 bash scripts/validate-release-rollback-capacity-drills.sh
+bash scripts/validate-release-rollback-sandbox-gate.sh
 ```
 
 The validator checks the human-readable runbook and the structured control
@@ -185,10 +188,10 @@ mutation wording.
 
 ## Remaining Gaps
 
-This baseline does not finish operations readiness. A local release and rollback
-drill is captured in
+This baseline is complete for repository-local and approved local sandbox
+release rollback evidence. A local release and rollback drill is captured in
 [`release-rollback-drill-2026-06-13.md`](release-rollback-drill-2026-06-13.md),
-but automated runtime release gates, approved sandbox rollback evidence,
-measured capacity and soak evidence, production paging implementation, central
-metrics, approved sandbox restore evidence, multi-provider route-health proof,
-and routine operations exercises remain.
+and executable approved sandbox gate evidence is captured in
+[`release-rollback-sandbox-gate-2026-06-14.md`](release-rollback-sandbox-gate-2026-06-14.md).
+Live production release, live worker fleet soak, production paging delivery,
+and external operations exercises remain separately approval-gated.
