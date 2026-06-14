@@ -48,6 +48,7 @@ require_file scripts/validate-readiness-criteria.sh
 require_file scripts/validate-carbon-ui-baseline.sh
 require_file scripts/validate-credential-lifecycle.sh
 require_file scripts/validate-credential-revocation-drill.sh
+require_file scripts/validate-security-threat-model.sh
 require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
@@ -80,6 +81,7 @@ require_file docs/operations/worker-cli-auth.md
 require_file docs/policies/credential-lifecycle-and-revocation.md
 require_file docs/policies/credential-revocation-access-review-drill-2026-06-13.md
 require_file docs/policies/multi-tenant-rbac.md
+require_file docs/policies/security-threat-model-and-prompt-injection-controls.md
 require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
@@ -144,6 +146,7 @@ require_text docs/contracts/manager-contract.md '../policies/authority-and-safet
 require_text docs/contracts/manager-contract.md '../policies/credential-lifecycle-and-revocation.md'
 require_text docs/contracts/manager-contract.md '../policies/credential-revocation-access-review-drill-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
+require_text docs/contracts/manager-contract.md '../policies/security-threat-model-and-prompt-injection-controls.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
@@ -220,6 +223,11 @@ require_text docs/contracts/manager-contract.md 'access-review output'
 require_text docs/contracts/manager-contract.md 'Multi-tenant RBAC designs'
 require_text docs/contracts/manager-contract.md 'tenant boundaries'
 require_text docs/contracts/manager-contract.md 'permission matrix'
+require_text docs/contracts/manager-contract.md 'Security threat models and prompt-injection controls'
+require_text docs/contracts/manager-contract.md 'threat actors'
+require_text docs/contracts/manager-contract.md 'prompt-injection paths'
+require_text docs/contracts/manager-contract.md 'credential-broker misuse'
+require_text docs/contracts/manager-contract.md 'GitHub Project control-plane risks'
 require_text docs/contracts/manager-contract.md 'Human-facing UI surfaces'
 require_text docs/contracts/manager-contract.md 'role-based token mapping'
 require_text docs/contracts/manager-contract.md 'visual QA checklist'
@@ -320,6 +328,25 @@ require_text docs/policies/credential-revocation-access-review-drill-2026-06-13.
 require_text docs/policies/credential-revocation-access-review-drill-2026-06-13.md 'next action'
 require_text docs/policies/credential-revocation-access-review-drill-2026-06-13.md 'does not authorize'
 require_text scripts/validate-credential-revocation-drill.sh 'PASS Dokkaebi credential revocation drill validation passed'
+
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md '# Security Threat Model And Prompt-Injection Controls'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'threat actors'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'trust boundaries'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'assets'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'abuse cases'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'prompt-injection paths'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'data exfiltration paths'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'credential-broker misuse paths'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'worker-route escalation paths'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'GitHub Project control-plane risks'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'mitigations'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'detection evidence'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'fail-closed behavior'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'owner review cadence'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'residual risk'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'next action'
+require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'does not authorize'
+require_text scripts/validate-security-threat-model.sh 'PASS Dokkaebi security threat model validation passed'
 
 require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
 require_text docs/design/carbon-ui-baseline.md 'theme choice'
@@ -986,6 +1013,7 @@ bash scripts/validate-readiness-criteria.sh >/dev/null
 bash scripts/validate-carbon-ui-baseline.sh >/dev/null
 bash scripts/validate-credential-lifecycle.sh >/dev/null
 bash scripts/validate-credential-revocation-drill.sh >/dev/null
+bash scripts/validate-security-threat-model.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
