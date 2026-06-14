@@ -349,6 +349,14 @@ The Manager must treat missing environment tier, HA assumption, backup target,
 restore step, RPO, RTO, measured RPO/RTO, DR role, evidence retention, drill
 evidence shape, sandbox target, cleanup receipt, or approval boundary as an
 infrastructure readiness gap.
+Durable backup restore verification evidence must follow
+[`docs/operations/durable-backup-restore-verification-2026-06-14.md`](../operations/durable-backup-restore-verification-2026-06-14.md)
+or a later dated verification package. The Manager must treat missing project
+exports, lease/retry state, route-result summaries, evidence packages,
+executable restore verification, source/restored hash comparison, measured
+RPO/RTO, retention policy checks, redaction checks, approval-gate status,
+cleanup receipt, residual risk, or next action as an infrastructure readiness
+gap.
 
 Compliance evidence packages must follow
 [`docs/compliance/control-map-and-evidence-package.md`](../compliance/control-map-and-evidence-package.md).
