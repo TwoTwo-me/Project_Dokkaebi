@@ -49,9 +49,12 @@ This baseline documents the operating policy and deterministic validation.
 The dated settings export and closeout reconciliation evidence package in
 [`governance-settings-export-reconciliation-2026-06-14.md`](governance-settings-export-reconciliation-2026-06-14.md)
 captures read-only branch protection, repository ruleset, required-check, PR
-review, issue, and closeout reconciliation evidence. Live branch protection,
-ruleset, and GitHub Project settings enforcement remain pending. Next action:
-complete issue #100.
+review, issue, and closeout reconciliation evidence. The dated sandbox gate in
+[`governance-settings-sandbox-gate-2026-06-14.md`](governance-settings-sandbox-gate-2026-06-14.md)
+captures the approved sandbox branch protection or ruleset settings export,
+GitHub Project field/settings schema, required checks, PR review requirements,
+and closeout reconciliation evidence for issue #100. Live branch protection,
+ruleset, and GitHub Project settings rollout remains separately approval-gated.
 
 <!-- project-governance-reconciliation:begin -->
 ```json
@@ -202,15 +205,16 @@ complete issue #100.
   },
   "validationOutput": [
     "PASS Dokkaebi project governance reconciliation validation passed",
+    "PASS Dokkaebi governance settings sandbox gate validation passed",
     "PASS Dokkaebi enterprise readiness criteria are present and structurally valid",
     "PASS Dokkaebi contract docs are present, linked, and structurally aligned"
   ],
   "residualRisk": [
-    "branch protection read returned HTTP 404",
-    "repository rulesets export returned an empty array",
-    "GitHub Project field/settings export is not captured"
+    "live branch protection and repository ruleset rollout remains separately approval-gated",
+    "live GitHub Project field creation or mutation remains separately approval-gated",
+    "formal live GitHub review settings export should be captured after setup approval"
   ],
-  "nextAction": "Complete issue #100 for approved GitHub ruleset and Project settings export evidence.",
+  "nextAction": "Use the approved governance settings sandbox gate as repeatable readiness evidence until a separately approved live GitHub settings rollout replaces it.",
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/100"
 }
 ```

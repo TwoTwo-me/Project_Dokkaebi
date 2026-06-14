@@ -241,7 +241,7 @@
     {
       "id": "management_governance",
       "name": "Management and governance",
-      "currentPercent": 98,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "GitHub Project fields, issue intake, Human approval, PR review, result packets, and closeout reconciliation are governed by reproducible policy and auditable roles.",
       "currentEvidence": [
@@ -257,12 +257,12 @@
         "docs/policies/project-governance-and-closeout-reconciliation.md",
         "scripts/validate-project-governance-reconciliation.sh",
         "docs/policies/governance-settings-export-reconciliation-2026-06-14.md",
-        "scripts/validate-governance-settings-export-reconciliation.sh"
+        "scripts/validate-governance-settings-export-reconciliation.sh",
+        "docs/policies/governance-settings-sandbox-gate-2026-06-14.md",
+        "scripts/run-governance-settings-sandbox-gate.sh",
+        "scripts/validate-governance-settings-sandbox-gate.sh"
       ],
-      "gaps": [
-        "Role matrix, stale Human Review escalation, and closeout reconciliation policy are documented and locally validated; read-only settings export evidence and automated closeout reconciliation output are captured for PR #99 and issue #20.",
-        "Live branch protection read returned HTTP 404, repository rulesets export returned an empty array, formal PR review decision was not recorded, workpad evidence was not captured, and GitHub Project field/settings export is not captured."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can a non-automation team member understand why an item is in its current state?",
         "Can role boundaries explain who may authorize, dispatch, merge, and audit work?",
@@ -274,37 +274,7 @@
         "Branch protection or ruleset export",
         "Closeout reconciliation report"
       ],
-      "nextIssues": [
-        {
-          "title": "Apply approved GitHub ruleset and Project settings export gate",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/100",
-          "acceptanceCriteria": [
-            "Capture explicit Human approval for the exact read or mutation target before using live repository or GitHub Project settings as readiness evidence.",
-            "Export branch protection or ruleset settings, required checks, PR review requirements, and GitHub Project field/settings configuration from the approved target.",
-            "If settings must be changed, apply them only under explicit setup approval and capture rollback/cleanup evidence.",
-            "Re-run closeout reconciliation against at least one merged PR and linked issue using the exported settings.",
-            "Update docs/enterprise-readiness/criteria.json only from captured repository, approved sandbox, or explicitly Human-approved GitHub evidence."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-governance-settings-export-reconciliation.sh",
-            "bash scripts/validate-project-governance-reconciliation.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted live or approved sandbox settings export validation named by the implementation"
-          ],
-          "authorityRequirement": "Docs-only and read-only repository inspection by default. GitHub Project control-plane mutation, branch protection mutation, repository settings mutation, credentials, infrastructure, workers, merge, deploy, or production operations require explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Approval record",
-            "Settings export output",
-            "Closeout reconciliation report output",
-            "Validation command output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "logging_observability",

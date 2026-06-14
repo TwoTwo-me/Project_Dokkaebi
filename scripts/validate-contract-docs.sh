@@ -52,6 +52,8 @@ require_file scripts/validate-credential-revocation-drill.sh
 require_file scripts/validate-security-threat-model.sh
 require_file scripts/validate-project-governance-reconciliation.sh
 require_file scripts/validate-governance-settings-export-reconciliation.sh
+require_file scripts/run-governance-settings-sandbox-gate.sh
+require_file scripts/validate-governance-settings-sandbox-gate.sh
 require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
@@ -104,6 +106,7 @@ require_file docs/policies/multi-tenant-rbac.md
 require_file docs/policies/security-threat-model-and-prompt-injection-controls.md
 require_file docs/policies/project-governance-and-closeout-reconciliation.md
 require_file docs/policies/governance-settings-export-reconciliation-2026-06-14.md
+require_file docs/policies/governance-settings-sandbox-gate-2026-06-14.md
 require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
@@ -182,6 +185,7 @@ require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.m
 require_text docs/contracts/manager-contract.md '../policies/security-threat-model-and-prompt-injection-controls.md'
 require_text docs/contracts/manager-contract.md '../policies/project-governance-and-closeout-reconciliation.md'
 require_text docs/contracts/manager-contract.md '../policies/governance-settings-export-reconciliation-2026-06-14.md'
+require_text docs/contracts/manager-contract.md '../policies/governance-settings-sandbox-gate-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
@@ -319,6 +323,10 @@ require_text docs/contracts/manager-contract.md 'management-governance readiness
 require_text docs/contracts/manager-contract.md 'branch protection export'
 require_text docs/contracts/manager-contract.md 'repository rulesets export'
 require_text docs/contracts/manager-contract.md 'closeout reconciliation report'
+require_text docs/contracts/manager-contract.md 'Approved local governance settings sandbox gate evidence'
+require_text docs/contracts/manager-contract.md 'settings export output'
+require_text docs/contracts/manager-contract.md 'approval-gate status'
+require_text docs/contracts/manager-contract.md 'cleanup receipt'
 require_text docs/contracts/manager-contract.md 'Human-facing UI surfaces'
 require_text docs/contracts/manager-contract.md 'role-based token mapping'
 require_text docs/contracts/manager-contract.md 'visual QA checklist'
@@ -461,7 +469,13 @@ require_text docs/policies/project-governance-and-closeout-reconciliation.md 're
 require_text docs/policies/project-governance-and-closeout-reconciliation.md 'workpad comment'
 require_text docs/policies/project-governance-and-closeout-reconciliation.md 'GitHub Project Status'
 require_text docs/policies/project-governance-and-closeout-reconciliation.md 'does not authorize'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'governance-settings-sandbox-gate-2026-06-14.md'
 require_text scripts/validate-project-governance-reconciliation.sh 'PASS Dokkaebi project governance reconciliation validation passed'
+require_text docs/policies/governance-settings-sandbox-gate-2026-06-14.md '# Governance Settings Sandbox Gate 2026-06-14'
+require_text docs/policies/governance-settings-sandbox-gate-2026-06-14.md 'GitHub Project field/settings'
+require_text docs/policies/governance-settings-sandbox-gate-2026-06-14.md 'workpad substitute'
+require_text docs/policies/governance-settings-sandbox-gate-2026-06-14.md 'does not authorize'
+require_text scripts/validate-governance-settings-sandbox-gate.sh 'PASS Dokkaebi governance settings sandbox gate validation passed'
 
 require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
 require_text docs/design/carbon-ui-baseline.md 'theme choice'
@@ -1253,6 +1267,8 @@ bash scripts/validate-credential-revocation-drill.sh >/dev/null
 bash scripts/validate-security-threat-model.sh >/dev/null
 bash scripts/validate-project-governance-reconciliation.sh >/dev/null
 bash scripts/validate-governance-settings-export-reconciliation.sh >/dev/null
+bash scripts/run-governance-settings-sandbox-gate.sh >/dev/null
+bash scripts/validate-governance-settings-sandbox-gate.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-runtime-multi-tenant-rbac.sh >/dev/null
