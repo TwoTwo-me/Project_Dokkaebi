@@ -64,6 +64,7 @@ Required local artifacts:
 - [`docs/policies/credential-revocation-access-review-drill-2026-06-13.md`](../policies/credential-revocation-access-review-drill-2026-06-13.md)
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
 - [`docs/policies/security-threat-model-and-prompt-injection-controls.md`](../policies/security-threat-model-and-prompt-injection-controls.md)
+- [`docs/policies/project-governance-and-closeout-reconciliation.md`](../policies/project-governance-and-closeout-reconciliation.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
@@ -194,6 +195,14 @@ cases, prompt-injection paths, data exfiltration paths, credential-broker misuse
 paths, worker-route escalation paths, GitHub Project control-plane risks,
 mitigations, detection evidence, fail-closed behavior, owner review cadence,
 residual risk, or next action as a security-authority readiness gap.
+
+GitHub Project governance and closeout reconciliation packages must follow
+[`docs/policies/project-governance-and-closeout-reconciliation.md`](../policies/project-governance-and-closeout-reconciliation.md).
+The Manager must treat missing project owner, approver, Fire operator, Hammer
+operator, security reviewer, auditor, stale Human Review handling, issue status,
+pull request review/check/merge state, result packet, workpad comment,
+GitHub Project Status, mismatch handling, fail-closed behavior, residual risk,
+or next action as a management-governance readiness gap.
 
 Human-facing UI surfaces must follow
 [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).
