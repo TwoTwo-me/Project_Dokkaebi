@@ -49,6 +49,7 @@ require_file scripts/validate-carbon-ui-baseline.sh
 require_file scripts/validate-credential-lifecycle.sh
 require_file scripts/validate-credential-revocation-drill.sh
 require_file scripts/validate-security-threat-model.sh
+require_file scripts/validate-project-governance-reconciliation.sh
 require_file scripts/validate-multi-tenant-rbac.sh
 require_file scripts/validate-multi-tenant-rbac-drill.sh
 require_file scripts/validate-dispatch-lease-recovery.sh
@@ -82,6 +83,7 @@ require_file docs/policies/credential-lifecycle-and-revocation.md
 require_file docs/policies/credential-revocation-access-review-drill-2026-06-13.md
 require_file docs/policies/multi-tenant-rbac.md
 require_file docs/policies/security-threat-model-and-prompt-injection-controls.md
+require_file docs/policies/project-governance-and-closeout-reconciliation.md
 require_file docs/policies/multi-tenant-rbac-drill-2026-06-13.md
 require_file docs/operations/dispatch-lease-recovery.md
 require_file docs/operations/orchestration-recovery-gate.md
@@ -147,6 +149,7 @@ require_text docs/contracts/manager-contract.md '../policies/credential-lifecycl
 require_text docs/contracts/manager-contract.md '../policies/credential-revocation-access-review-drill-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../policies/multi-tenant-rbac.md'
 require_text docs/contracts/manager-contract.md '../policies/security-threat-model-and-prompt-injection-controls.md'
+require_text docs/contracts/manager-contract.md '../policies/project-governance-and-closeout-reconciliation.md'
 require_text docs/contracts/manager-contract.md '../policies/git-governance.md'
 require_text docs/contracts/manager-contract.md '../operations/dispatch-lease-recovery.md'
 require_text docs/contracts/manager-contract.md '../operations/orchestration-recovery-gate.md'
@@ -228,6 +231,11 @@ require_text docs/contracts/manager-contract.md 'threat actors'
 require_text docs/contracts/manager-contract.md 'prompt-injection paths'
 require_text docs/contracts/manager-contract.md 'credential-broker misuse'
 require_text docs/contracts/manager-contract.md 'GitHub Project control-plane risks'
+require_text docs/contracts/manager-contract.md 'GitHub Project governance and closeout reconciliation packages'
+require_text docs/contracts/manager-contract.md 'project owner'
+require_text docs/contracts/manager-contract.md 'stale Human Review handling'
+require_text docs/contracts/manager-contract.md 'workpad comment'
+require_text docs/contracts/manager-contract.md 'management-governance readiness gap'
 require_text docs/contracts/manager-contract.md 'Human-facing UI surfaces'
 require_text docs/contracts/manager-contract.md 'role-based token mapping'
 require_text docs/contracts/manager-contract.md 'visual QA checklist'
@@ -347,6 +355,23 @@ require_text docs/policies/security-threat-model-and-prompt-injection-controls.m
 require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'next action'
 require_text docs/policies/security-threat-model-and-prompt-injection-controls.md 'does not authorize'
 require_text scripts/validate-security-threat-model.sh 'PASS Dokkaebi security threat model validation passed'
+
+require_text docs/policies/project-governance-and-closeout-reconciliation.md '# Project Governance And Closeout Reconciliation'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'project owner'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'approver'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'Fire operator'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'Hammer operator'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'security reviewer'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'auditor'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'stale Human Review'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'mismatch handling'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'issue status'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'pull request'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'result packet'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'workpad comment'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'GitHub Project Status'
+require_text docs/policies/project-governance-and-closeout-reconciliation.md 'does not authorize'
+require_text scripts/validate-project-governance-reconciliation.sh 'PASS Dokkaebi project governance reconciliation validation passed'
 
 require_text docs/design/carbon-ui-baseline.md '# Carbon UI Token And Accessibility Baseline'
 require_text docs/design/carbon-ui-baseline.md 'theme choice'
@@ -1014,6 +1039,7 @@ bash scripts/validate-carbon-ui-baseline.sh >/dev/null
 bash scripts/validate-credential-lifecycle.sh >/dev/null
 bash scripts/validate-credential-revocation-drill.sh >/dev/null
 bash scripts/validate-security-threat-model.sh >/dev/null
+bash scripts/validate-project-governance-reconciliation.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null

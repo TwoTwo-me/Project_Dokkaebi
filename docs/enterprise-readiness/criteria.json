@@ -351,7 +351,7 @@
     {
       "id": "management_governance",
       "name": "Management and governance",
-      "currentPercent": 86,
+      "currentPercent": 94,
       "targetPercent": 100,
       "enterpriseStandard": "GitHub Project fields, issue intake, Human approval, PR review, result packets, and closeout reconciliation are governed by reproducible policy and auditable roles.",
       "currentEvidence": [
@@ -363,12 +363,13 @@
         "scripts/validate-multi-tenant-rbac-drill.sh",
         "docs/templates/worker-ticket.md",
         "docs/templates/worker-result-packet.md",
-        ".github/pull_request_template.md"
+        ".github/pull_request_template.md",
+        "docs/policies/project-governance-and-closeout-reconciliation.md",
+        "scripts/validate-project-governance-reconciliation.sh"
       ],
       "gaps": [
-        "GitHub branch protection and project rules are documented but not fully codified as reproducible settings.",
-        "Role matrix and local replay evidence are documented, but stale Human Review escalation needs stronger operating policy.",
-        "Closeout reconciliation between issue, PR, result packet, and project state is not automated."
+        "GitHub branch protection and project rules are documented, but reproducible settings export evidence is not captured.",
+        "Role matrix, stale Human Review escalation, and closeout reconciliation policy are documented and locally validated, but automated closeout reconciliation output is not captured."
       ],
       "evaluationQuestions": [
         "Can a non-automation team member understand why an item is in its current state?",
@@ -383,24 +384,28 @@
       ],
       "nextIssues": [
         {
-          "title": "Add GitHub Project governance matrix and closeout reconciliation plan",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/19",
+          "title": "Export governance settings and automate closeout reconciliation",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/97",
           "acceptanceCriteria": [
-            "Role matrix names project owner, approver, Fire operator, Hammer operator, security reviewer, and auditor.",
-            "Plan defines stale Human Review and mismatch handling.",
-            "Validation checks that required roles and reconciliation surfaces are present."
+            "Export or generate reproducible evidence for branch protection, rulesets, required checks, PR review rules, and GitHub Project field/settings configuration.",
+            "Produce a closeout reconciliation report comparing issue state, PR review/check/merge state, result-packet evidence, workpad comments, and GitHub Project status.",
+            "Report mismatches, stale Human Review items, missing approval evidence, and missing result-packet evidence with fail-closed next actions.",
+            "Update docs/enterprise-readiness/criteria.json only from captured repository, approved sandbox, or explicitly Human-approved GitHub evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-project-governance-reconciliation.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted validation named by the issue implementation"
+            "Targeted settings export or reconciliation validation named by the implementation"
           ],
-          "authorityRequirement": "No additional authority by default for docs-only or local validation work. If implementation touches credentials, infrastructure, workers, merge, deploy, or production operations, explicit Human approval is required under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only planning by default. Live GitHub settings export is read-only but must record the exact source and approval boundary before being used as readiness evidence. GitHub Project control-plane mutation, branch protection mutation, credentials, infrastructure, workers, merge, deploy, or production operations require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
+            "Settings export or approved substitute evidence",
+            "Closeout reconciliation report output",
             "Validation command output",
             "Approval-gate status",
+            "Cleanup receipt",
             "Residual risk and next action"
           ]
         }
