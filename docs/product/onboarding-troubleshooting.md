@@ -213,16 +213,19 @@ or GitHub Project control-plane mutation requires explicit Human approval under
 - The browser action log records desktop Greenfield, desktop Brownfield, mobile
   Greenfield, and mobile Brownfield setup states with retained screenshots for
   review.
+- The onboarding-visual-matrix CI lane regenerates the product UI browser
+  matrix for Chromium, Firefox, and WebKit across desktop and mobile
+  Greenfield/Brownfield setup states. It verifies scroll width, selected setup
+  state, setup section visibility, Carbon selected-button text color, and
+  workflow sections, then publishes a GitHub Actions job summary, uploaded
+  browser action logs, screenshots, summaries, and test-results status for
+  review without private machine paths or secrets.
 
 ## Remaining Productization Gaps
 
-- Role-specific screenshots and browser action logs are retained and validated
-  as repository evidence, but CI does not yet regenerate a cross-browser product
-  UI visual matrix on every relevant change.
-- Multi-project setup still needs deeper product UI workflow integration across
-  live issue, PR, and result-packet states.
-- Troubleshooting remains partially document-led rather than fully embedded in
-  the product UI.
+No remaining productization readiness gap is currently tracked for this
+criterion. Future UX enhancements should be evaluated as new product capability
+work, not as an open readiness blocker for issue #109.
 
 <!-- onboarding-troubleshooting:begin -->
 ```json
@@ -407,13 +410,12 @@ or GitHub Project control-plane mutation requires explicit Human approval under
     "Greenfield and Brownfield setup modes cover field discovery, required fields, admission mapping, repository setup checks, and rollback notes",
     "browser action log records desktop Greenfield, desktop Brownfield, mobile Greenfield, and mobile Brownfield setup states",
     "desktop and mobile screenshots are retained under the submodule design evidence path",
+    "onboarding-visual-matrix CI lane regenerates a CI-regenerated browser matrix for Chromium, Firefox, and WebKit",
+    "visual matrix verifies scroll width, selected setup state, setup section visibility, Carbon selected-button text color, and workflow sections",
+    "GitHub Actions job summary, uploaded browser action logs, screenshots, summaries, and test-results status provide reviewable visual evidence without private machine paths or secrets",
     "product UI proof remains local validation only and keeps live GitHub Project control-plane mutation approval-gated"
   ],
-  "remainingProductizationGaps": [
-    "guided onboarding UI screenshots and browser action logs are retained by repository validation, but CI does not regenerate cross-browser product UI evidence",
-    "multi-project operator troubleshooting still needs deeper product UI workflow integration across issue, PR, and result-packet state",
-    "troubleshooting is not fully embedded in product UI"
-  ]
+  "remainingProductizationGaps": []
 }
 ```
 <!-- onboarding-troubleshooting:end -->

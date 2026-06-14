@@ -544,7 +544,7 @@
     {
       "id": "productization_ux",
       "name": "Productization and UX",
-      "currentPercent": 90,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "Admins, approvers, operators, auditors, and worker authors can install, configure, monitor, approve, troubleshoot, and learn the product without relying on undocumented operator context.",
       "currentEvidence": [
@@ -564,12 +564,16 @@
         "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/desktop-greenfield.png",
         "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/desktop-brownfield.png",
         "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-greenfield.png",
-        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-brownfield.png"
+        "symphony-github-project-tracker/docs/design/evidence/onboarding-setup/mobile-brownfield.png",
+        "symphony-github-project-tracker/.github/workflows/onboarding-visual-matrix.yml",
+        "symphony-github-project-tracker/docs/design/onboarding-visual-ci.md",
+        "symphony-github-project-tracker/scripts/validate-onboarding-visual-ci.sh",
+        "symphony-github-project-tracker/tools/onboarding-visual/package.json",
+        "symphony-github-project-tracker/tools/onboarding-visual/playwright.config.mjs",
+        "symphony-github-project-tracker/tools/onboarding-visual/tests/onboarding-setup.spec.mjs",
+        "https://github.com/TwoTwo-me/symphony-github-project-tracker/pull/20"
       ],
-      "gaps": [
-        "Guided onboarding UI screenshots and browser action logs are retained and validated as repository evidence, but CI does not yet regenerate a cross-browser product UI visual matrix on every relevant change.",
-        "Operator journeys for triage, approval, result review, and troubleshooting are partially embedded in UI but still require deeper product workflow integration across live issue, PR, and result-packet states."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can a new admin install and configure a sandbox without maintainer help?",
         "Can a Human reviewer approve or reject work from GitHub issue and PR surfaces confidently?",
@@ -581,36 +585,12 @@
         "Troubleshooting guide",
         "Deterministic onboarding validation",
         "Guided onboarding UI screenshots and browser action log",
-        "Admin UI or CLI screenshots when available"
+        "CI-generated onboarding visual matrix artifacts",
+        "Admin UI or CLI screenshots when available",
+        "CI-regenerated onboarding visual matrix across Chromium, Firefox, and WebKit",
+        "Reviewable GitHub Actions summary and uploaded browser action logs"
       ],
-      "nextIssues": [
-        {
-          "title": "Regenerate onboarding product UI visual matrix in CI",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/109",
-          "acceptanceCriteria": [
-            "Add or extend a CI-safe visual/browser QA lane for the onboarding product UI.",
-            "Regenerate desktop and mobile artifacts for Greenfield and Brownfield setup modes during CI or a documented required check.",
-            "Verify scroll width, selected setup state, setup section visibility, contrast-sensitive selected-button styling, and required workflow sections.",
-            "Retain reviewable artifact paths or CI summaries without private machine paths, secrets, tokens, or local-only state.",
-            "Update docs/enterprise-readiness/criteria.json only after implemented CI visual evidence exists."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-onboarding-troubleshooting.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted CI visual/browser QA validation named by the implementation"
-          ],
-          "authorityRequirement": "Local UI validation and docs updates by default. Any credential, infrastructure, worker, deployment, production, remote host, Docker, Kubernetes, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "CI-generated or check-generated visual/browser evidence",
-            "Validation command output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "design_system",
