@@ -279,7 +279,7 @@
     {
       "id": "security_authority",
       "name": "Security and authority",
-      "currentPercent": 90,
+      "currentPercent": 96,
       "targetPercent": 100,
       "enterpriseStandard": "All credentials, approvals, worker capabilities, high-risk operations, audit events, and emergency paths are least-privilege, revocable, observable, and fail-closed.",
       "currentEvidence": [
@@ -293,12 +293,13 @@
         "docs/policies/credential-lifecycle-and-revocation.md",
         "scripts/validate-credential-lifecycle.sh",
         "docs/policies/credential-revocation-access-review-drill-2026-06-13.md",
-        "scripts/validate-credential-revocation-drill.sh"
+        "scripts/validate-credential-revocation-drill.sh",
+        "docs/policies/security-threat-model-and-prompt-injection-controls.md",
+        "scripts/validate-security-threat-model.sh"
       ],
       "gaps": [
-        "Credential lifecycle, rotation, revocation dry-run, approved local sandbox denial/revocation output, and access-review evidence shape are documented and locally validated, but live broker enforcement and worker-route credential gate runtime output are not captured.",
-        "Threat modeling and prompt-injection controls need a documented enterprise baseline.",
-        "Multi-tenant RBAC design and local replay drill evidence are captured, but runtime enforcement, generated access-review output, and live credential/worker-route gates are not complete."
+        "Credential lifecycle, rotation, revocation dry-run, approved local sandbox denial/revocation output, access-review evidence shape, threat model, and prompt-injection controls are documented and locally validated, but live broker enforcement and worker-route credential gate runtime output are not captured.",
+        "Multi-tenant RBAC design and local replay drill evidence are captured, but runtime enforcement, generated runtime access-review output, and live credential/worker-route gates are not complete."
       ],
       "evaluationQuestions": [
         "Can each credential grant be traced to an approval boundary and revoked?",
@@ -314,23 +315,31 @@
       ],
       "nextIssues": [
         {
-          "title": "Add enterprise threat model and prompt-injection controls",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/94",
+          "title": "Implement runtime multi-tenant RBAC enforcement gates",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/74",
           "acceptanceCriteria": [
-            "Document threat actors, trust boundaries, assets, abuse cases, prompt-injection paths, data exfiltration paths, credential-broker misuse paths, worker-route escalation paths, and GitHub Project control-plane risks.",
-            "Define mitigations, detection evidence, fail-closed behavior, owner review cadence, residual risk, and next action for each high-risk path.",
-            "Add deterministic validation that rejects missing threat classes, missing prompt-injection controls, missing credential/worker boundaries, unsafe authority wording, private local paths, and secret-bearing evidence.",
-            "Update docs/enterprise-readiness/criteria.json only from captured repository, runtime, or explicitly approved sandbox evidence."
+            "Runtime admission rejects missing tenant, out-of-scope repository or project, unapproved cross-tenant work, and missing approval-gate evidence.",
+            "Runtime authorization rejects role or permission mismatches and wildcard or overly broad grants.",
+            "Credential grant and worker route checks are enforced before dispatch and emit audit evidence without secrets.",
+            "Access-review output is generated from runtime state or exported evidence.",
+            "Update docs/enterprise-readiness/criteria.json only from captured runtime or explicitly approved sandbox evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-security-threat-model.sh",
+            "bash scripts/validate-credential-revocation-drill.sh",
+            "bash scripts/validate-credential-lifecycle.sh",
+            "bash scripts/validate-multi-tenant-rbac.sh",
+            "bash scripts/validate-multi-tenant-rbac-drill.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted threat model validation named by the implementation"
+            "Targeted runtime or approved sandbox RBAC enforcement validation named by the implementation"
           ],
-          "authorityRequirement": "Docs-only planning by default. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Runtime or approved sandbox enforcement work requires explicit Human approval for the exact target and permitted operations. Worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation remains approval-gated under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Threat model and prompt-injection control evidence",
+            "Runtime or approved sandbox RBAC enforcement output",
+            "Credential grant and worker route gate output",
+            "Access-review output",
             "Validation command output",
             "Approval-gate status",
             "Cleanup receipt",

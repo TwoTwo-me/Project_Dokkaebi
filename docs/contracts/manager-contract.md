@@ -63,6 +63,7 @@ Required local artifacts:
 - [`docs/policies/credential-lifecycle-and-revocation.md`](../policies/credential-lifecycle-and-revocation.md)
 - [`docs/policies/credential-revocation-access-review-drill-2026-06-13.md`](../policies/credential-revocation-access-review-drill-2026-06-13.md)
 - [`docs/policies/multi-tenant-rbac.md`](../policies/multi-tenant-rbac.md)
+- [`docs/policies/security-threat-model-and-prompt-injection-controls.md`](../policies/security-threat-model-and-prompt-injection-controls.md)
 - [`docs/policies/git-governance.md`](../policies/git-governance.md)
 - [`docs/operations/toolchain-bootstrap.md`](../operations/toolchain-bootstrap.md)
 - [`docs/operations/dispatch-lease-recovery.md`](../operations/dispatch-lease-recovery.md)
@@ -185,6 +186,14 @@ admission checks, authorization checks, GitHub Project scope mapping, repository
 scope mapping, credential boundary, worker route boundary, break-glass path,
 access review, audit evidence, onboarding and offboarding, failure handling,
 remaining operational gaps, or permission level as an authority readiness gap.
+
+Security threat models and prompt-injection controls must follow
+[`docs/policies/security-threat-model-and-prompt-injection-controls.md`](../policies/security-threat-model-and-prompt-injection-controls.md).
+The Manager must treat missing threat actors, trust boundaries, assets, abuse
+cases, prompt-injection paths, data exfiltration paths, credential-broker misuse
+paths, worker-route escalation paths, GitHub Project control-plane risks,
+mitigations, detection evidence, fail-closed behavior, owner review cadence,
+residual risk, or next action as a security-authority readiness gap.
 
 Human-facing UI surfaces must follow
 [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).
