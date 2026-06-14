@@ -38,6 +38,9 @@ credential, dispatch, closeout, and evidence-integrity failures.
 The dedicated incident response runbook and current docs-only tabletop package
 are captured in
 [`incident-response-runbook-2026-06-13.md`](incident-response-runbook-2026-06-13.md).
+The approved docs-only local incident response drill and postmortem exercise is
+captured in
+[`incident-response-drill-postmortem-2026-06-14.md`](incident-response-drill-postmortem-2026-06-14.md).
 
 | Severity | Trigger | Response target | Commander |
 | --- | --- | --- | --- |
@@ -173,8 +176,8 @@ mitigation, postmortem, or resolved on-call decision.
 
 ## Remaining Gaps
 
-This baseline does not finish operations readiness. Remaining work includes
-approved sandbox incident drills, runtime postmortem automation, capacity
-planning, long-running soak tests, production paging implementation, central
-metrics backend verification, approved sandbox restore evidence, and routine
-operations exercises.
+This baseline does not finish operations readiness. Approved local incident
+response drill and postmortem evidence exists, but remaining work includes live
+paging delivery, runtime postmortem automation, capacity planning, long-running
+soak tests, central metrics backend verification, approved sandbox restore
+evidence, and routine operations exercises.
