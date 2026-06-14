@@ -309,7 +309,7 @@
     {
       "id": "logging_observability",
       "name": "Logging and observability",
-      "currentPercent": 94,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "State, logs, metrics, traces, alerts, dashboards, and audit exports let operators detect, diagnose, prove, and improve system behavior without reading private worker memory.",
       "currentEvidence": [
@@ -328,13 +328,12 @@
         "scripts/run-central-metrics-sandbox-backend.sh",
         "scripts/validate-central-metrics-sandbox-backend.sh",
         "docs/operations/on-call-alert-routing-drill-2026-06-13.md",
-        "scripts/validate-on-call-alert-routing-drill.sh"
+        "scripts/validate-on-call-alert-routing-drill.sh",
+        "docs/operations/on-call-delivery-sandbox-2026-06-14.md",
+        "scripts/run-on-call-delivery-sandbox.sh",
+        "scripts/validate-on-call-delivery-sandbox.sh"
       ],
-      "gaps": [
-        "Central metrics backend design, metrics catalog, alert-rule baseline, local replay evidence, and approved local sandbox backend evidence now cover ingestion, storage/query, dashboard rows, alert evaluation, redaction, retention, cardinality, trace correlation requirements, SLO linkage, and audit-export evidence.",
-        "Operational dashboards and alert rules are evaluated in local replay, approved local sandbox metrics evidence, and routed through a GitHub evidence dry-run drill, but production paging backend delivery is not connected.",
-        "Live trace collection, live paging delivery, and externally managed retention/export verification remain unproven."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can an operator identify stalled dispatch, unhealthy workers, and credential denial within minutes?",
         "Can metrics and logs be correlated by issue, route, worker, session, and commit?",
@@ -344,37 +343,12 @@
         "Metrics catalog",
         "Alert rules",
         "Dashboard screenshot or terminal capture",
-        "Redacted audit export sample"
+        "Redacted audit export sample",
+        "Approved on-call delivery sandbox gate",
+        "SEV1 and SEV2 delivery receipt evidence",
+        "Quiet-hours routing and escalation receipt evidence"
       ],
-      "nextIssues": [
-        {
-          "title": "Connect approved live paging backend and delivery route",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82",
-          "acceptanceCriteria": [
-            "Record explicit Human approval for backend, roster, notification sinks, quiet-hours behavior, delivery test plan, cleanup, and residual-risk handling.",
-            "Exercise representative SEV1 and SEV2 alert delivery against the approved backend or an explicitly approved sandbox substitute.",
-            "Capture alert input, routing decision, quiet-hours decision, delivery receipt, escalation receipt, cleanup receipt, residual risk, and next action.",
-            "Update docs/enterprise-readiness/criteria.json only from captured approved backend or approved sandbox delivery evidence."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-on-call-paging-alerting.sh",
-            "bash scripts/validate-on-call-alert-routing-drill.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted live or approved sandbox delivery validation named by the implementation"
-          ],
-          "authorityRequirement": "Docs-only or local dry-run validation by default. Live alerting service, paging service, metrics service, infrastructure, credential, worker, remote host, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Approval record",
-            "Approved backend or approved sandbox delivery evidence",
-            "Quiet-hours evidence",
-            "Validation command output",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "operations_sre",
@@ -593,33 +567,33 @@
     {
       "id": "on_call_paging_alerting",
       "name": "On-call, paging, and alerting",
-      "currentPercent": 74,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Connect approved live paging backend and delivery route",
+      "nextIssueTitle": "Completed approved on-call delivery sandbox gate",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82",
       "acceptanceCriteria": [
-        "Record explicit Human approval for live paging backend, escalation roster, notification sinks, quiet-hours behavior, delivery test plan, cleanup, and residual-risk handling.",
-        "Route representative SEV1 and SEV2 alerts through the approved backend or explicitly approved sandbox substitute.",
-        "Capture alert input, routing decision, quiet-hours decision, delivery receipt, escalation receipt, cleanup receipt, residual risk, and next action.",
-        "Update docs/enterprise-readiness/criteria.json only from captured approved backend or approved sandbox evidence."
+        "Approved local sandbox substitute routes representative SEV1 and SEV2 alerts.",
+        "Alert input, routing decision, quiet-hours decision, delivery receipt, escalation receipt, cleanup receipt, residual risk, and next action are captured.",
+        "Live alerting service, live paging service, metrics service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated.",
+        "Readiness is updated only from captured approved sandbox delivery evidence."
       ],
       "validationRequired": [
-        "bash scripts/validate-on-call-alert-routing-drill.sh",
+        "bash scripts/run-on-call-delivery-sandbox.sh",
+        "bash scripts/validate-on-call-delivery-sandbox.sh",
         "bash scripts/validate-on-call-paging-alerting.sh",
+        "bash scripts/validate-on-call-alert-routing-drill.sh",
         "bash scripts/validate-central-metrics-backend.sh",
+        "bash scripts/validate-central-metrics-sandbox-backend.sh",
         "bash scripts/validate-sre-operating-baseline.sh",
         "bash scripts/validate-readiness-criteria.sh",
-        "bash scripts/validate-contract-docs.sh",
-        "Targeted live or approved sandbox delivery validation named by the implementation"
+        "bash scripts/validate-contract-docs.sh"
       ],
-      "authorityRequirement": "Docs-only or local dry-run validation by default. Live alerting service, paging service, metrics service, infrastructure, credential, worker, remote host, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox on-call delivery evidence only. Live alerting service, live paging service, metrics service, credentials, infrastructure, workers, remote hosts, Docker, Kubernetes, deployment, production, and GitHub Project control-plane mutation remain separately approval-gated under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
-        "Changed artifacts and rationale",
-        "Approval record",
-        "Approved backend or approved sandbox delivery evidence",
-        "Quiet-hours evidence",
-        "Cleanup receipt",
-        "Residual risk and next action"
+        "docs/operations/on-call-delivery-sandbox-2026-06-14.md",
+        "scripts/run-on-call-delivery-sandbox.sh",
+        "scripts/validate-on-call-delivery-sandbox.sh",
+        "SEV1 and SEV2 alert input, routing decision, quiet-hours decision, delivery receipt, escalation receipt, cleanup receipt, residual risk, and next action"
       ]
     },
     {

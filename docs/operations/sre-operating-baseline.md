@@ -100,6 +100,9 @@ Current on-call path:
   implemented.
 - Paging path: deferred; future implementation must name backend, roster,
   escalation windows, quiet-hours behavior, and test evidence.
+- Approved sandbox delivery path: `on-call-delivery-sandbox-2026-06-14.md`
+  captures SEV1/SEV2 routing, quiet-hours, delivery, escalation, cleanup, and
+  residual-risk evidence without live paging authority.
 - Alerting baseline: [`on-call-paging-alerting.md`](on-call-paging-alerting.md)
   defines alert taxonomy, severity mapping, escalation roster shape,
   notification routing, SLO linkage, metrics linkage, approval boundary, and
@@ -161,7 +164,7 @@ mitigation, postmortem, or resolved on-call decision.
     "status": "intentionally_deferred",
     "ownerDecision": "Paging backend and rota are deferred until a Human owner approves a specific backend, roster, and escalation window",
     "currentPath": "Fire operator watches GitHub issue, PR, workflow, and result-packet surfaces",
-    "pagingPath": "Deferred paging path must name backend, roster, quiet-hours behavior, and test evidence before production use"
+    "pagingPath": "Deferred paging path must name backend, roster, quiet-hours behavior, and test evidence before production use; approved local sandbox delivery evidence is captured in docs/operations/on-call-delivery-sandbox-2026-06-14.md"
   },
   "requiredEvidence": [
     "changed artifacts and rationale",
@@ -176,8 +179,8 @@ mitigation, postmortem, or resolved on-call decision.
 
 ## Remaining Gaps
 
-This baseline does not finish operations readiness. Approved local incident
-response drill and postmortem evidence exists, but remaining work includes live
-paging delivery, runtime postmortem automation, capacity planning, long-running
-soak tests, central metrics backend verification, approved sandbox restore
-evidence, and routine operations exercises.
+This baseline does not authorize live operations by itself. Approved local
+incident response, on-call delivery, central metrics, release rollback, restore,
+and route-health sandbox evidence exists, while live paging delivery, runtime
+postmortem automation, capacity planning, long-running soak tests, and
+production operations exercises remain separately approval-gated.

@@ -89,6 +89,15 @@ local dry-run evidence package for that path, and issue
 live backend delivery.
 The current local dry-run drill is captured in
 [`on-call-alert-routing-drill-2026-06-13.md`](on-call-alert-routing-drill-2026-06-13.md).
+The approved local sandbox delivery gate is captured in
+[`on-call-delivery-sandbox-2026-06-14.md`](on-call-delivery-sandbox-2026-06-14.md).
+That gate exercises representative SEV1 and SEV2 alert delivery through a
+deterministic sandbox backend substitute, records routing decisions,
+quiet-hours decisions, delivery receipts, escalation receipts, cleanup,
+residual risk, and next action, and does not authorize live alerting service,
+live paging service, metrics service, credentials, infrastructure, workers,
+remote hosts, Docker, Kubernetes, deployment, production, or GitHub Project
+control-plane mutation.
 
 ## Quiet-Hours Behavior
 
@@ -310,7 +319,7 @@ control-plane mutation wording.
   },
   "pagingBackendDecision": {
     "status": "deferred_until_human_approval",
-    "currentPath": "GitHub issue or PR evidence is the audit-visible fallback and is not production paging",
+    "currentPath": "GitHub issue or PR evidence is the audit-visible fallback and is not production paging; approved local sandbox delivery evidence is captured in docs/operations/on-call-delivery-sandbox-2026-06-14.md and is also not production paging",
     "candidateBackends": ["PagerDuty", "Opsgenie", "Grafana OnCall", "Alertmanager receiver", "Slack adapter", "email adapter", "GitHub-only non-urgent route"],
     "approvalRequiredBeforeLiveUse": "Human owner must approve backend, roster, sinks, quiet-hours behavior, alert routing test plan, cleanup, and residual-risk handling"
   },
@@ -375,11 +384,11 @@ control-plane mutation wording.
     "Fail closed when credential, production, infrastructure, worker, remote host, Docker, Kubernetes, deployment, alerting service, or GitHub Project control-plane mutation lacks explicit Human approval"
   ],
   "remainingOperationalGaps": [
-    "GitHub evidence dry-run sink is selected, but approved live paging backend and notification sinks are not connected",
-    "Representative escalation roster and rotation cadence are captured for dry-run evidence, but approved live roster operation is not connected",
-    "Quiet-hours behavior is tested against a dry-run notification sink, but not against live or approved sandbox delivery",
-    "Alert routing drill evidence is captured from replayed metrics, but approved sandbox metrics routing is not captured",
-    "Live delivery evidence, escalation receipts, and cleanup receipts remain follow-up work"
+    "Approved local sandbox delivery evidence exists for representative SEV1 and SEV2 alerts, but live paging backend and production notification sinks remain approval-gated",
+    "Representative escalation roster and rotation cadence are captured for dry-run and approved sandbox evidence, but approved live roster operation is not connected",
+    "Quiet-hours behavior is tested against dry-run and approved local sandbox delivery sinks, but not against live paging delivery",
+    "Alert routing drill evidence is captured from replayed metrics and approved sandbox delivery receipts",
+    "Live delivery evidence and live cleanup evidence remain follow-up work"
   ],
   "followUpIssue": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }

@@ -156,12 +156,14 @@ Initial alert rules:
 - approval-gate or credential-boundary violation alert;
 - missing compliance evidence alert.
 
-Paging remains deferred until the on-call owner approves a backend, roster,
+Live paging remains deferred until the on-call owner approves a backend, roster,
 quiet-hours behavior, and test evidence. The on-call paging and alerting
 baseline in [`on-call-paging-alerting.md`](on-call-paging-alerting.md) defines
 the alert taxonomy, severity mapping, notification routing, SLO linkage, metrics
-linkage, approval boundary, and test evidence shape that future alert
-evaluation drills must satisfy.
+linkage, approval boundary, and test evidence shape. Approved local sandbox
+delivery evidence is captured in
+[`on-call-delivery-sandbox-2026-06-14.md`](on-call-delivery-sandbox-2026-06-14.md)
+without authorizing live alerting or paging services.
 
 ## SLO Linkage
 
@@ -346,7 +348,7 @@ deployment, or GitHub Project control-plane mutation wording.
       "approval boundary violation",
       "missing compliance evidence"
     ],
-    "pagingStatus": "deferred until on-call owner approves backend, roster, quiet-hours behavior, and test evidence"
+    "pagingStatus": "approved local sandbox delivery evidence captured; live paging remains deferred until on-call owner approves backend, roster, quiet-hours behavior, and test evidence"
   },
   "sloLinkage": {
     "dispatch_latency": "metric names, query expression, error-budget window, dashboard panel, incident field, fallback evidence",
@@ -399,8 +401,8 @@ deployment, or GitHub Project control-plane mutation wording.
   "remainingOperationalGaps": [
     "externally managed production storage backend is not selected",
     "live dashboard screenshots from a production backend are not captured",
-    "live alert-rule delivery evidence from an approved paging backend is not captured",
-    "retention enforcement outside the ephemeral sandbox is not operational"
+    "approved local sandbox on-call delivery evidence is captured, while live production paging remains separately approval-gated",
+    "retention enforcement outside the ephemeral sandbox remains separately approval-gated"
   ],
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/82"
 }

@@ -117,7 +117,7 @@ without explicit Human approval.
 {
   "version": 1,
   "permissionLevel": "docs-only design and local deterministic validation",
-  "routingStatus": "GitHub evidence dry-run only; live paging and alert delivery are deferred until explicit Human approval",
+  "routingStatus": "GitHub evidence dry-run plus approved local sandbox delivery evidence; live paging and live alert delivery remain deferred until explicit Human approval",
   "securityBoundary": "This baseline does not authorize credential, worker, remote host, Docker, Kubernetes, infrastructure, production, deployment, metrics service, alerting service, paging service, or GitHub Project control-plane mutation without explicit Human approval",
   "requiredCorrelationIds": [
     "project",
@@ -314,8 +314,8 @@ without explicit Human approval.
   "remainingOperationalGaps": [
     "approved sandbox or live metrics backend is not connected",
     "live trace collection is not captured",
-    "live paging delivery is not approved or captured",
-    "backend retention and export enforcement are not operationally verified"
+    "approved local sandbox on-call delivery evidence is captured while live paging delivery remains separately approval-gated",
+    "backend retention and export enforcement outside approved local sandboxes remains separately approval-gated"
   ],
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/80"
 }
