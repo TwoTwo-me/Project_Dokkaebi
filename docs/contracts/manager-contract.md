@@ -212,13 +212,19 @@ GitHub Project governance and closeout reconciliation packages must follow
 Read-only governance settings export and closeout reconciliation evidence must follow
 [`docs/policies/governance-settings-export-reconciliation-2026-06-14.md`](../policies/governance-settings-export-reconciliation-2026-06-14.md)
 or a later dated package.
+Approved local governance settings sandbox gate evidence must follow
+[`docs/policies/governance-settings-sandbox-gate-2026-06-14.md`](../policies/governance-settings-sandbox-gate-2026-06-14.md)
+or a later dated governance settings gate package.
 The Manager must treat missing project owner, approver, Fire operator, Hammer
 operator, security reviewer, auditor, stale Human Review handling, issue status,
 pull request review/check/merge state, result packet, workpad comment,
 GitHub Project Status, mismatch handling, fail-closed behavior, residual risk,
 next action, branch protection export, repository rulesets export, required
 checks export, PR review rule export, GitHub Project field/settings export, or
-closeout reconciliation report as a management-governance readiness gap.
+closeout reconciliation report as a management-governance readiness gap. For
+approved sandbox gates, the Manager must also require an approval record,
+settings export output, validation output, approval-gate status, cleanup receipt,
+residual risk, and next action before claiming management governance readiness.
 
 Human-facing UI surfaces must follow
 [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).
