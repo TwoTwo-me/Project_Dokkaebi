@@ -13,7 +13,7 @@ Initial target:
 
 Supported/future adapters:
 
-- Codex/oh-my-codex Manager Adapter
+- Codex and oh-my-codex Manager Adapter
 - OpenClaw Manager Adapter
 - Custom Manager Adapter
 
@@ -363,9 +363,15 @@ Release rollback capacity evidence must follow
 Local release rollback drill evidence must follow
 [`docs/operations/release-rollback-drill-2026-06-13.md`](../operations/release-rollback-drill-2026-06-13.md)
 or a later dated drill package.
-The Manager must treat missing staged rollout, rollback trigger, operator,
+Approved local release rollback sandbox gate evidence must follow
+[`docs/operations/release-rollback-sandbox-gate-2026-06-14.md`](../operations/release-rollback-sandbox-gate-2026-06-14.md)
+or a later dated gate package.
+The Manager must treat missing staged rollout, release gate decision,
+rollback gate output, rollback trigger, rollback decision, recovery path, operator,
 evidence, communication, queue threshold, worker threshold, retry threshold,
-review-age threshold, local validation path, drill evidence shape, or approval
+review-age threshold, local validation path, measured soak queue depth, route
+health, retry count, review-age sample, validation output, cleanup receipt,
+residual risk, next action, permission level, drill evidence shape, or approval
 boundary as an operations readiness gap.
 
 Topology backup restore and disaster recovery evidence must follow

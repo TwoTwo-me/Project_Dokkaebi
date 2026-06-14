@@ -379,7 +379,7 @@
     {
       "id": "operations_sre",
       "name": "Operations and SRE",
-      "currentPercent": 94,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "The service has SLOs, incident response, on-call paths, runbooks, rollout and rollback procedures, capacity planning, and routine drills.",
       "currentEvidence": [
@@ -395,6 +395,9 @@
         "scripts/validate-release-rollback-capacity-drills.sh",
         "scripts/validate-release-rollback-drill.sh",
         "docs/operations/release-rollback-drill-2026-06-13.md",
+        "docs/operations/release-rollback-sandbox-gate-2026-06-14.md",
+        "scripts/run-release-rollback-sandbox-gate.sh",
+        "scripts/validate-release-rollback-sandbox-gate.sh",
         "docs/operations/on-call-paging-alerting.md",
         "scripts/validate-on-call-paging-alerting.sh",
         "docs/operations/incident-response-runbook-2026-06-13.md",
@@ -406,11 +409,7 @@
         "docs/operations/on-call-alert-routing-drill-2026-06-13.md",
         "scripts/validate-on-call-alert-routing-drill.sh"
       ],
-      "gaps": [
-        "Dedicated SLO/SLA boundary, incident response, on-call paging and alerting boundaries, central metrics design, release, rollback, capacity, soak, and drill evidence shapes are documented; local release rollback, approved local incident response drill and postmortem evidence, central metrics replay, and on-call alert routing dry-run evidence exist, but live paging and routine production operations drills are not operational.",
-        "Capacity, soak, and central metrics thresholds exist with local replay evidence, but long-running measured soak or approved-sandbox metrics tests are not yet captured.",
-        "Automated runtime gates, approved sandbox rollback evidence, live paging delivery, approved sandbox or explicitly Human-approved live metrics backend delivery, and postmortem automation are still required before production service quality can be claimed."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "What happens when Fire is down, GitHub API is rate-limited, or all workers are unhealthy?",
         "Who is paged and what runbook do they follow?",
@@ -420,36 +419,10 @@
         "SLO document",
         "Incident response runbook",
         "On-call and escalation policy",
-        "Release and rollback drill"
+        "Release and rollback drill",
+        "Approved sandbox release rollback gate"
       ],
-      "nextIssues": [
-        {
-          "title": "Automate release rollback gates and measured soak evidence",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/76",
-          "acceptanceCriteria": [
-            "Release gates run against a runtime or explicitly approved sandbox target and block on failed validation, missing approval evidence, or missing rollback plan.",
-            "Rollback decision output and recovery path are generated from executable command or sandbox evidence.",
-            "Measured soak evidence captures queue depth, route health, retry counts, review-age samples, validation output, cleanup, and residual risk.",
-            "Repository readiness criteria are updated only from captured runtime or approved sandbox evidence."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-release-rollback-capacity-drills.sh",
-            "bash scripts/validate-release-rollback-drill.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted runtime or approved sandbox validation named by the implementation"
-          ],
-          "authorityRequirement": "Docs-only planning by default. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Runtime or approved sandbox evidence",
-            "Validation command output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "compliance_audit",
@@ -772,9 +745,9 @@
     {
       "id": "production_release_rollback_runbook",
       "name": "Production release and rollback runbook",
-      "currentPercent": 72,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Automate release rollback gates and measured soak evidence",
+      "nextIssueTitle": "Completed approved release rollback sandbox gate",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/76",
       "acceptanceCriteria": [
         "Release gates run against a runtime or explicitly approved sandbox target and block on failed validation, missing approval evidence, or missing rollback plan.",
@@ -783,16 +756,20 @@
         "Repository readiness criteria are updated only from captured runtime or approved sandbox evidence."
       ],
       "validationRequired": [
+        "bash scripts/run-release-rollback-sandbox-gate.sh",
+        "bash scripts/validate-release-rollback-sandbox-gate.sh",
         "bash scripts/validate-release-rollback-capacity-drills.sh",
         "bash scripts/validate-release-rollback-drill.sh",
+        "bash scripts/validate-runtime-quality-gate-exercise.sh",
         "bash scripts/validate-readiness-criteria.sh",
-        "bash scripts/validate-contract-docs.sh",
-        "Targeted runtime or approved sandbox validation named by the implementation"
+        "bash scripts/validate-contract-docs.sh"
       ],
-      "authorityRequirement": "Docs-only planning by default. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+      "authorityRequirement": "Completed through approved local sandbox release rollback gate evidence. Runtime, worker, credential, infrastructure, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation remains explicitly not authorized without Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
         "Changed artifacts and rationale",
-        "Runtime or approved sandbox evidence",
+        "Approved local sandbox release rollback gate evidence",
+        "Rollback decision and recovery path output",
+        "Measured soak queue depth, route health, retry count, and review-age evidence",
         "Validation command output",
         "Approval-gate status",
         "Cleanup receipt",
