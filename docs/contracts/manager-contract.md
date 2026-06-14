@@ -75,6 +75,7 @@ Required local artifacts:
 - [`docs/operations/observability-metrics-alert-rules.md`](../operations/observability-metrics-alert-rules.md)
 - [`docs/operations/on-call-paging-alerting.md`](../operations/on-call-paging-alerting.md)
 - [`docs/operations/release-rollback-capacity-drills.md`](../operations/release-rollback-capacity-drills.md)
+- [`docs/operations/runtime-quality-gate-exercise-2026-06-14.md`](../operations/runtime-quality-gate-exercise-2026-06-14.md)
 - [`docs/operations/topology-backup-restore-dr.md`](../operations/topology-backup-restore-dr.md)
 - [`docs/operations/sandbox-restore-drill-2026-06-13.md`](../operations/sandbox-restore-drill-2026-06-13.md)
 - [`docs/operations/worker-route-health-bootstrap-2026-06-14.md`](../operations/worker-route-health-bootstrap-2026-06-14.md)
@@ -404,9 +405,14 @@ enforcement, redaction review, owner review, signature verification, cleanup,
 residual risk, or next action as an immutable audit export readiness gap.
 Runtime quality gates must follow
 [`docs/enterprise-readiness/runtime-quality-gate-matrix.md`](../enterprise-readiness/runtime-quality-gate-matrix.md).
+Routine runtime quality gate exercise evidence must follow
+[`docs/operations/runtime-quality-gate-exercise-2026-06-14.md`](../operations/runtime-quality-gate-exercise-2026-06-14.md)
+or a later dated exercise package.
 The Manager must treat missing orchestration, credential, GitHub adapter,
 worker provider, or UI risk-surface coverage, missing required tests, missing
-accepted risk, missing approval-gate status, missing cleanup receipt, or
+failure-injection checks, missing end-to-end issue processing, missing measured
+soak evidence, missing release-candidate evidence, missing rollback evidence,
+missing accepted risk, missing approval-gate status, missing cleanup receipt, or
 missing next action as a development-quality readiness gap.
 
 ## Toolchain bootstrap contract

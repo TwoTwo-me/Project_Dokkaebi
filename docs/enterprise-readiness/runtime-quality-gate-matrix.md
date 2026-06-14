@@ -45,9 +45,10 @@ validation. Missing accepted-risk text fails validation.
 ## Residual Risk And Next Action
 
 Runtime failure injection, end-to-end issue processing, measured soak,
-release-candidate verification, and rollback gates are still not routine merge
-gates. Next action: complete issue #90 with runtime or explicitly approved
-sandbox evidence.
+release-candidate verification, and rollback gates are routine merge evidence
+through [`../operations/runtime-quality-gate-exercise-2026-06-14.md`](../operations/runtime-quality-gate-exercise-2026-06-14.md).
+Remaining live operations, metrics, paging, and security enforcement gaps stay
+tracked by their dedicated readiness issues.
 
 <!-- runtime-quality-gates:begin -->
 ```json
@@ -57,6 +58,7 @@ sandbox evidence.
   "approvalBoundary": "This matrix does not authorize credential, infrastructure, worker, Docker, Kubernetes, remote host, deployment, production, or GitHub Project control-plane mutation without explicit Human approval",
   "globalGates": {
     "defaultCommands": [
+      "bash scripts/validate-runtime-quality-gate-exercise.sh",
       "bash scripts/validate-readiness-criteria.sh",
       "bash scripts/validate-contract-docs.sh",
       "bash scripts/validate-git-governance.sh"
@@ -104,13 +106,14 @@ sandbox evidence.
         "docs/operations/dispatch-lease-recovery.md",
         "docs/operations/orchestration-recovery-gate.md",
         "docs/operations/sandbox-issue-processing-transcript-2026-06-14.md",
+        "docs/operations/runtime-quality-gate-exercise-2026-06-14.md",
         "docs/examples/replays/accepted-manager-fire-hammer.md"
       ],
       "acceptedRisk": [
-        "repository-local sandbox issue processing transcript is captured",
-        "live multi-worker failure injection is not a routine merge gate"
+        "repository-local sandbox issue processing transcript and routine failure-injection exercise are captured",
+        "production multi-worker failure injection remains approval-gated and tracked by issue #76"
       ],
-      "nextAction": "Add routine runtime failure-injection and soak quality gates in issue #90"
+      "nextAction": "Continue production release rollback and soak hardening in issue #76"
     },
     {
       "id": "credential",
@@ -139,7 +142,7 @@ sandbox evidence.
         "docs/policies/multi-tenant-rbac-drill-2026-06-13.md"
       ],
       "acceptedRisk": [
-        "live broker denial and credential revocation drills are not routine merge gates",
+        "local credential denial replay is routine; live broker denial and credential revocation enforcement remain approval-gated",
         "runtime RBAC enforcement remains tracked by issue #74"
       ],
       "nextAction": "Implement runtime multi-tenant RBAC enforcement gates in issue #74"
@@ -167,13 +170,14 @@ sandbox evidence.
       "evidenceArtifacts": [
         "WORKFLOW.md",
         "docs/policies/git-governance.md",
-        "docs/github-project-v2-symphony-playbook.md"
+        "docs/github-project-v2-symphony-playbook.md",
+        "docs/operations/runtime-quality-gate-exercise-2026-06-14.md"
       ],
       "acceptedRisk": [
-        "live GitHub API failure injection is not a routine merge gate",
+        "repository-local GitHub API failure injection is routine; live GitHub API failure drills remain approval-gated",
         "repository-local sandbox issue processing transcript is captured; live GitHub Project control-plane mutation remains approval-gated"
       ],
-      "nextAction": "Add routine runtime failure-injection and soak quality gates in issue #90"
+      "nextAction": "Keep live GitHub Project mutation behind explicit setup approval and closeout reconciliation"
     },
     {
       "id": "worker_provider",
@@ -199,13 +203,15 @@ sandbox evidence.
       "evidenceArtifacts": [
         "docs/templates/worker-ticket.md",
         "docs/templates/worker-result-packet.md",
-        "docs/operations/sandbox-restore-drill-2026-06-13.md"
+        "docs/operations/sandbox-restore-drill-2026-06-13.md",
+        "docs/operations/worker-route-health-bootstrap-2026-06-14.md",
+        "docs/operations/runtime-quality-gate-exercise-2026-06-14.md"
       ],
       "acceptedRisk": [
-        "multi-provider route failure and capacity soak are not routine merge gates",
-        "multi-provider worker route-health proof remains tracked by issue #103"
+        "multi-provider route health and repository-local route failure evidence are routine merge evidence",
+        "production capacity soak remains approval-gated and tracked by issue #76"
       ],
-      "nextAction": "Prove multi-provider worker route health and remote bootstrap rebuild in issue #103"
+      "nextAction": "Continue production capacity and soak hardening in issue #76"
     },
     {
       "id": "ui",
@@ -247,7 +253,7 @@ sandbox evidence.
       "nextAction": "Continue productization UI setup workflow work in issue #84 and add per-surface visual QA when new UI surfaces ship"
     }
   ],
-  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/90"
+  "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/76"
 }
 ```
 <!-- runtime-quality-gates:end -->

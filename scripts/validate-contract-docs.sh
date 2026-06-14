@@ -68,6 +68,7 @@ require_file scripts/validate-on-call-alert-routing-drill.sh
 require_file scripts/validate-onboarding-troubleshooting.sh
 require_file scripts/validate-release-rollback-capacity-drills.sh
 require_file scripts/validate-release-rollback-drill.sh
+require_file scripts/validate-runtime-quality-gate-exercise.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-sandbox-restore-drill.sh
@@ -110,6 +111,7 @@ require_file docs/operations/on-call-paging-alerting.md
 require_file docs/operations/on-call-alert-routing-drill-2026-06-13.md
 require_file docs/operations/release-rollback-capacity-drills.md
 require_file docs/operations/release-rollback-drill-2026-06-13.md
+require_file docs/operations/runtime-quality-gate-exercise-2026-06-14.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/operations/sandbox-restore-drill-2026-06-13.md
@@ -179,6 +181,7 @@ require_text docs/contracts/manager-contract.md '../operations/central-metrics-b
 require_text docs/contracts/manager-contract.md '../operations/observability-metrics-alert-rules.md'
 require_text docs/contracts/manager-contract.md '../operations/on-call-paging-alerting.md'
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
+require_text docs/contracts/manager-contract.md '../operations/runtime-quality-gate-exercise-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-drill-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../operations/durable-backup-restore-verification-2026-06-14.md'
@@ -537,6 +540,7 @@ require_text scripts/validate-on-call-alert-routing-drill.sh 'PASS Dokkaebi on-c
 require_text scripts/validate-onboarding-troubleshooting.sh 'PASS Dokkaebi onboarding troubleshooting validation passed'
 require_text scripts/validate-release-rollback-capacity-drills.sh 'PASS Dokkaebi release rollback capacity drill validation passed'
 require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release rollback drill validation passed'
+require_text scripts/validate-runtime-quality-gate-exercise.sh 'PASS Dokkaebi runtime quality gate exercise validation passed'
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
 require_text scripts/validate-sandbox-restore-drill.sh 'PASS Dokkaebi sandbox restore drill validation passed'
@@ -675,6 +679,18 @@ require_text docs/operations/release-rollback-drill-2026-06-13.md 'recovery path
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'command output'
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'validation output'
 require_text docs/operations/release-rollback-drill-2026-06-13.md 'staged rollout decision'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md '# Runtime Quality Gate Exercise'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'failure-injection'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'duplicate dispatch'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'retry persistence'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'credential denial'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'GitHub API failure'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'worker route failure'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'UI error-state regression'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'end-to-end issue processing'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'measured soak'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'release candidate'
+require_text docs/operations/runtime-quality-gate-exercise-2026-06-14.md 'rollback'
 require_text docs/operations/topology-backup-restore-dr.md '# Topology Backup Restore And Disaster Recovery Baseline'
 require_text docs/operations/topology-backup-restore-dr.md 'development'
 require_text docs/operations/topology-backup-restore-dr.md 'sandbox'
@@ -1158,6 +1174,7 @@ bash scripts/validate-on-call-alert-routing-drill.sh >/dev/null
 bash scripts/validate-onboarding-troubleshooting.sh >/dev/null
 bash scripts/validate-release-rollback-capacity-drills.sh >/dev/null
 bash scripts/validate-release-rollback-drill.sh >/dev/null
+bash scripts/validate-runtime-quality-gate-exercise.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-sandbox-restore-drill.sh >/dev/null
