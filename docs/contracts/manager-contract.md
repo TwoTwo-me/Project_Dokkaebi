@@ -422,6 +422,18 @@ The Manager must treat missing signed manifest storage, signing-key ownership,
 rotation cadence, revocation triggers, verification cadence, retention
 enforcement, redaction review, owner review, signature verification, cleanup,
 residual risk, or next action as an immutable audit export readiness gap.
+Approved local immutable audit storage sandbox evidence must follow
+[`docs/compliance/immutable-audit-storage-sandbox-2026-06-14.md`](../compliance/immutable-audit-storage-sandbox-2026-06-14.md).
+The Manager must treat missing approved local sandbox storage target,
+object-lock-equivalent retention semantics, stored signed manifest, retained public-key metadata,
+and storage-target verification output as immutable audit export readiness gaps.
+The Manager must also treat missing retention
+enforcement, legal-hold state, deletion or extension decision, owner review,
+redaction review, approval-gate status, cleanup receipt, residual risk, or next
+action as an immutable audit export readiness gap. This sandbox gate does not
+authorize live immutable storage, retention service, signing service,
+credentials, infrastructure, workers, remote hosts, Docker, Kubernetes,
+deployment, production, or GitHub Project control-plane mutation.
 Runtime quality gates must follow
 [`docs/enterprise-readiness/runtime-quality-gate-matrix.md`](../enterprise-readiness/runtime-quality-gate-matrix.md).
 Routine runtime quality gate exercise evidence must follow
