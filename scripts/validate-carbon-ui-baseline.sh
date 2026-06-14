@@ -278,7 +278,7 @@ def validate_payload(payload: dict[str, Any]) -> None:
             reject(f"implementation rules missing {term}")
 
     gaps_text = " ".join(str(item).lower() for item in require_list(payload.get("remainingOperationalGaps"), "remaining operational gaps", 4))
-    for term in ["first-party ui", "desktop visual qa", "mobile visual qa", "contrast report", "component library"]:
+    for term in ["cross-browser", "firefox", "webkit", "non-dashboard", "live ui deployment"]:
         if term not in gaps_text:
             reject(f"remaining operational gaps missing {term}")
 

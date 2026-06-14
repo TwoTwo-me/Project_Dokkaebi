@@ -213,10 +213,15 @@ closeout reconciliation report as a management-governance readiness gap.
 
 Human-facing UI surfaces must follow
 [`docs/design/carbon-ui-baseline.md`](../design/carbon-ui-baseline.md).
+Reusable Carbon component inventory and visual regression evidence must follow
+[`docs/design/carbon-component-library-visual-regression.md`](../design/carbon-component-library-visual-regression.md),
+or a later component-library gate with equivalent artifact validation.
 The Manager must treat missing theme choice, role-based token mapping, layering
 model, interaction states, focus requirements, contrast thresholds, data
 visualization rules, status color rules, component state inventory, visual QA checklist,
-remaining operational gaps, or permission level as a design readiness gap.
+desktop and mobile visual artifact coverage, CI visual regression gate evidence,
+approval-gate status, cleanup receipt, remaining operational gaps, or permission
+level as a design readiness gap.
 
 Role-based onboarding and troubleshooting guides must follow
 [`docs/product/onboarding-troubleshooting.md`](../product/onboarding-troubleshooting.md).

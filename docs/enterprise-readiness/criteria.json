@@ -667,13 +667,19 @@
     {
       "id": "design_system",
       "name": "Design system and visual quality",
-      "currentPercent": 74,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "All Dokkaebi UI surfaces use a documented Carbon Design System baseline for color, interaction states, accessibility, and enterprise information density.",
       "currentEvidence": [
         "docs/enterprise-readiness/criteria.json",
         "docs/design/carbon-ui-baseline.md",
         "scripts/validate-carbon-ui-baseline.sh",
+        "docs/design/carbon-component-library-visual-regression.md",
+        "scripts/validate-carbon-component-library-visual-regression.sh",
+        ".github/workflows/dokkaebi-governance.yml",
+        "docs/design/evidence/carbon-component-library/desktop.png",
+        "docs/design/evidence/carbon-component-library/mobile.png",
+        "docs/design/evidence/carbon-component-library/contrast-report.json",
         "symphony-github-project-tracker/docs/design/dashboard-carbon-proof.md",
         "symphony-github-project-tracker/docs/design/evidence/dashboard-carbon-proof/desktop.png",
         "symphony-github-project-tracker/docs/design/evidence/dashboard-carbon-proof/mobile.png",
@@ -681,11 +687,7 @@
         "symphony-github-project-tracker/scripts/validate-dashboard-carbon-proof.sh",
         "https://github.com/TwoTwo-me/symphony-github-project-tracker/pull/16"
       ],
-      "gaps": [
-        "Only the Symphony observability dashboard currently proves Carbon token usage, responsive mobile layout, contrast evidence, and CJK-safe dynamic text on a first-party UI surface.",
-        "Reusable component-library token proof is not complete across all Dokkaebi UI surfaces.",
-        "CI visual regression capture and full cross-browser visual regression matrix are not complete."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Do UI surfaces use Carbon tokens and theme layering instead of arbitrary palettes?",
         "Do focus, hover, selected, active, disabled, error, warning, and success states meet accessibility requirements?",
@@ -695,39 +697,11 @@
         "Carbon token mapping",
         "Accessibility contrast proof",
         "Desktop and mobile visual QA captures",
-        "Component state inventory"
+        "Component state inventory",
+        "CI visual regression artifact gate",
+        "Cross-browser residual-risk statement"
       ],
-      "nextIssues": [
-        {
-          "title": "Add component library and CI visual regression gate",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/67",
-          "acceptanceCriteria": [
-            "Define a reusable Carbon component or token inventory for first-party UI surfaces instead of relying on one dashboard screen only.",
-            "Add CI visual regression evidence or artifact capture for desktop and mobile dashboard views.",
-            "Include contrast and state coverage for focus, hover, selected, active, disabled, error, warning, success, status, and data elements where applicable.",
-            "Document residual cross-browser matrix gaps or add the first cross-browser validation lane.",
-            "Update docs/enterprise-readiness/criteria.json after component-library and CI visual regression evidence exists."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-carbon-ui-baseline.sh",
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "bash scripts/validate-git-governance.sh",
-            "Targeted component inventory and CI visual regression validation named by the implementation"
-          ],
-          "authorityRequirement": "docs-only, local UI validation, or CI artifact validation unless a later PR explicitly records higher approved authority. Deployment, production write, credential, infrastructure, worker, remote host, Docker, Kubernetes, and GitHub Project control-plane mutation require explicit Human approval under docs/policies/authority-and-safety.md.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Component inventory or design token library evidence",
-            "CI visual regression output or artifact links",
-            "Desktop and mobile visual QA evidence",
-            "Contrast and state validation output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     }
   ],
   "criticalCapabilities": [

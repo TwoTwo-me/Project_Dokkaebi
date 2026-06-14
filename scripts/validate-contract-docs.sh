@@ -46,6 +46,7 @@ require_file scripts/validate-git-governance.sh
 require_file scripts/validate-dokkaebi-plugin.sh
 require_file scripts/validate-readiness-criteria.sh
 require_file scripts/validate-carbon-ui-baseline.sh
+require_file scripts/validate-carbon-component-library-visual-regression.sh
 require_file scripts/validate-credential-lifecycle.sh
 require_file scripts/validate-credential-revocation-drill.sh
 require_file scripts/validate-security-threat-model.sh
@@ -82,6 +83,10 @@ require_file docs/enterprise-readiness/development-loop.md
 require_file docs/enterprise-readiness/runtime-quality-gate-matrix.md
 require_file docs/reports/company-readiness-assessment.md
 require_file docs/design/carbon-ui-baseline.md
+require_file docs/design/carbon-component-library-visual-regression.md
+require_file docs/design/evidence/carbon-component-library/desktop.png
+require_file docs/design/evidence/carbon-component-library/mobile.png
+require_file docs/design/evidence/carbon-component-library/contrast-report.json
 require_file docs/product/onboarding-troubleshooting.md
 require_file docs/operations/worker-cli-auth.md
 require_file docs/policies/credential-lifecycle-and-revocation.md
@@ -153,6 +158,7 @@ require_text docs/contracts/manager-contract.md '../examples/replays/rejected-mi
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-worker-route-result-metadata.md'
 require_text docs/contracts/manager-contract.md '../examples/replays/rejected-missing-closeout-review-evidence.md'
 require_text docs/contracts/manager-contract.md '../design/carbon-ui-baseline.md'
+require_text docs/contracts/manager-contract.md '../design/carbon-component-library-visual-regression.md'
 require_text docs/contracts/manager-contract.md '../product/onboarding-troubleshooting.md'
 require_text docs/contracts/manager-contract.md '../policies/authority-and-safety.md'
 require_text docs/contracts/manager-contract.md '../policies/credential-lifecycle-and-revocation.md'
@@ -224,6 +230,9 @@ require_text docs/contracts/manager-contract.md 'staged rollout'
 require_text docs/contracts/manager-contract.md 'Topology backup restore and disaster recovery evidence'
 require_text docs/contracts/manager-contract.md 'environment tier'
 require_text docs/contracts/manager-contract.md 'backup target'
+require_text docs/contracts/manager-contract.md 'Reusable Carbon component inventory'
+require_text docs/contracts/manager-contract.md 'desktop and mobile visual artifact coverage'
+require_text docs/contracts/manager-contract.md 'CI visual regression gate evidence'
 require_text docs/contracts/manager-contract.md 'Credential-free sandbox restore drill evidence'
 require_text docs/contracts/manager-contract.md 'measured RPO/RTO'
 require_text docs/contracts/manager-contract.md 'cleanup receipt'
@@ -421,6 +430,21 @@ require_text docs/design/carbon-ui-baseline.md 'remaining operational gaps'
 require_text docs/design/carbon-ui-baseline.md 'permission level'
 require_text docs/design/carbon-ui-baseline.md 'docs-only'
 require_text docs/design/carbon-ui-baseline.md 'Carbon Design System'
+require_text docs/design/carbon-component-library-visual-regression.md '# Carbon Component Library And Visual Regression Gate'
+require_text docs/design/carbon-component-library-visual-regression.md 'component inventory'
+require_text docs/design/carbon-component-library-visual-regression.md 'Carbon token inventory'
+require_text docs/design/carbon-component-library-visual-regression.md 'CI visual regression'
+require_text docs/design/carbon-component-library-visual-regression.md 'artifact capture'
+require_text docs/design/carbon-component-library-visual-regression.md 'desktop viewport'
+require_text docs/design/carbon-component-library-visual-regression.md 'mobile viewport'
+require_text docs/design/carbon-component-library-visual-regression.md 'contrast coverage'
+require_text docs/design/carbon-component-library-visual-regression.md 'root-retained artifact copies'
+require_text docs/design/carbon-component-library-visual-regression.md 'requiresSubmoduleCheckout'
+require_text docs/design/carbon-component-library-visual-regression.md 'cross-browser'
+require_text docs/design/carbon-component-library-visual-regression.md 'approval-gate status'
+require_text docs/design/carbon-component-library-visual-regression.md 'cleanup receipt'
+require_text docs/design/carbon-component-library-visual-regression.md 'residual risk'
+require_text docs/design/carbon-component-library-visual-regression.md 'next action'
 require_text docs/product/onboarding-troubleshooting.md '# Role-Based Onboarding And Troubleshooting Guide'
 require_text docs/product/onboarding-troubleshooting.md 'admin journey'
 require_text docs/product/onboarding-troubleshooting.md 'approver journey'
@@ -482,6 +506,8 @@ require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-co
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-git-governance.sh'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-dokkaebi-plugin.sh'
 require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-readiness-criteria.sh'
+require_text .github/workflows/dokkaebi-governance.yml 'bash scripts/validate-carbon-component-library-visual-regression.sh'
+require_text .github/workflows/dokkaebi-governance.yml 'submodules: false'
 
 require_text scripts/validate-git-governance.sh 'PASS Dokkaebi Git governance checks passed'
 require_text scripts/validate-git-governance.sh 'Context:'
@@ -492,6 +518,7 @@ require_text scripts/validate-git-governance.sh 'Risks:'
 require_text scripts/validate-dokkaebi-plugin.sh 'PASS Dokkaebi plugin packaging checks passed'
 require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise readiness criteria are present and structurally valid'
 require_text scripts/validate-carbon-ui-baseline.sh 'PASS Dokkaebi Carbon UI baseline validation passed'
+require_text scripts/validate-carbon-component-library-visual-regression.sh 'PASS Dokkaebi Carbon component library visual regression validation passed'
 require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant RBAC validation passed'
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
@@ -1094,6 +1121,7 @@ PY
 
 bash scripts/validate-readiness-criteria.sh >/dev/null
 bash scripts/validate-carbon-ui-baseline.sh >/dev/null
+bash scripts/validate-carbon-component-library-visual-regression.sh >/dev/null
 bash scripts/validate-credential-lifecycle.sh >/dev/null
 bash scripts/validate-credential-revocation-drill.sh >/dev/null
 bash scripts/validate-security-threat-model.sh >/dev/null
