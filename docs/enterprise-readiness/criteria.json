@@ -98,7 +98,7 @@
     {
       "id": "core_orchestration",
       "name": "Core orchestration",
-      "currentPercent": 94,
+      "currentPercent": 98,
       "targetPercent": 100,
       "enterpriseStandard": "Fire reliably discovers, admits, dispatches, monitors, retries, and closes work without duplicate execution, stale state, or silent loss across restarts.",
       "currentEvidence": [
@@ -351,7 +351,7 @@
     {
       "id": "management_governance",
       "name": "Management and governance",
-      "currentPercent": 94,
+      "currentPercent": 98,
       "targetPercent": 100,
       "enterpriseStandard": "GitHub Project fields, issue intake, Human approval, PR review, result packets, and closeout reconciliation are governed by reproducible policy and auditable roles.",
       "currentEvidence": [
@@ -365,11 +365,13 @@
         "docs/templates/worker-result-packet.md",
         ".github/pull_request_template.md",
         "docs/policies/project-governance-and-closeout-reconciliation.md",
-        "scripts/validate-project-governance-reconciliation.sh"
+        "scripts/validate-project-governance-reconciliation.sh",
+        "docs/policies/governance-settings-export-reconciliation-2026-06-14.md",
+        "scripts/validate-governance-settings-export-reconciliation.sh"
       ],
       "gaps": [
-        "GitHub branch protection and project rules are documented, but reproducible settings export evidence is not captured.",
-        "Role matrix, stale Human Review escalation, and closeout reconciliation policy are documented and locally validated, but automated closeout reconciliation output is not captured."
+        "Role matrix, stale Human Review escalation, and closeout reconciliation policy are documented and locally validated; read-only settings export evidence and automated closeout reconciliation output are captured for PR #99 and issue #20.",
+        "Live branch protection read returned HTTP 404, repository rulesets export returned an empty array, formal PR review decision was not recorded, workpad evidence was not captured, and GitHub Project field/settings export is not captured."
       ],
       "evaluationQuestions": [
         "Can a non-automation team member understand why an item is in its current state?",
@@ -384,24 +386,27 @@
       ],
       "nextIssues": [
         {
-          "title": "Export governance settings and automate closeout reconciliation",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/97",
+          "title": "Apply approved GitHub ruleset and Project settings export gate",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/100",
           "acceptanceCriteria": [
-            "Export or generate reproducible evidence for branch protection, rulesets, required checks, PR review rules, and GitHub Project field/settings configuration.",
-            "Produce a closeout reconciliation report comparing issue state, PR review/check/merge state, result-packet evidence, workpad comments, and GitHub Project status.",
-            "Report mismatches, stale Human Review items, missing approval evidence, and missing result-packet evidence with fail-closed next actions.",
+            "Capture explicit Human approval for the exact read or mutation target before using live repository or GitHub Project settings as readiness evidence.",
+            "Export branch protection or ruleset settings, required checks, PR review requirements, and GitHub Project field/settings configuration from the approved target.",
+            "If settings must be changed, apply them only under explicit setup approval and capture rollback/cleanup evidence.",
+            "Re-run closeout reconciliation against at least one merged PR and linked issue using the exported settings.",
             "Update docs/enterprise-readiness/criteria.json only from captured repository, approved sandbox, or explicitly Human-approved GitHub evidence."
           ],
           "validationRequired": [
+            "bash scripts/validate-governance-settings-export-reconciliation.sh",
             "bash scripts/validate-project-governance-reconciliation.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted settings export or reconciliation validation named by the implementation"
+            "Targeted live or approved sandbox settings export validation named by the implementation"
           ],
-          "authorityRequirement": "Docs-only planning by default. Live GitHub settings export is read-only but must record the exact source and approval boundary before being used as readiness evidence. GitHub Project control-plane mutation, branch protection mutation, credentials, infrastructure, workers, merge, deploy, or production operations require explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-only and read-only repository inspection by default. GitHub Project control-plane mutation, branch protection mutation, repository settings mutation, credentials, infrastructure, workers, merge, deploy, or production operations require explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
-            "Settings export or approved substitute evidence",
+            "Approval record",
+            "Settings export output",
             "Closeout reconciliation report output",
             "Validation command output",
             "Approval-gate status",
