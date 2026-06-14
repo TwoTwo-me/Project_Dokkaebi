@@ -204,15 +204,23 @@ or GitHub Project control-plane mutation requires explicit Human approval under
 | PR failure troubleshooting | Template sections are missing, checks fail, branch is stale, or merge authority is unclear. | Refresh branch state, fill the template, rerun checks, cite the linked issue, and wait for the required Human review when applicable. |
 | Result-packet failure troubleshooting | Acceptance evidence, validation evidence, scope control, approval-gate status, cleanup, or residual risk is missing. | Request a corrected packet; do not close the issue until the packet reconciles with the PR and project state. |
 
+## Completed Productization Evidence
+
+- The guided onboarding UI includes a multi-project setup workflow for
+  Greenfield and Brownfield dry-run setup with field discovery, required fields,
+  admission mapping, repository setup checks, rollback notes, and retained
+  browser proof. Live GitHub Project setup mutation remains approval-gated.
+- The browser action log records desktop Greenfield, desktop Brownfield, mobile
+  Greenfield, and mobile Brownfield setup states with retained screenshots for
+  review.
+
 ## Remaining Productization Gaps
 
-- The guided onboarding UI is implemented in the Symphony web surface, but setup
-  remains read-only and not yet connected to multi-project field discovery or
-  dry-run setup.
-- Role-specific screenshots and browser QA exist for the first UI pass, but are
-  not yet retained by CI as product UI regression artifacts.
-- Multi-project setup still requires experienced review of GitHub Project fields
-  and backend configuration.
+- Role-specific screenshots and browser action logs are retained and validated
+  as repository evidence, but CI does not yet regenerate a cross-browser product
+  UI visual matrix on every relevant change.
+- Multi-project setup still needs deeper product UI workflow integration across
+  live issue, PR, and result-packet states.
 - Troubleshooting remains partially document-led rather than fully embedded in
   the product UI.
 
@@ -394,10 +402,16 @@ or GitHub Project control-plane mutation requires explicit Human approval under
       ]
     }
   },
+  "completedProductizationEvidence": [
+    "guided onboarding UI includes issue #84 multi-project setup workflow proof",
+    "Greenfield and Brownfield setup modes cover field discovery, required fields, admission mapping, repository setup checks, and rollback notes",
+    "browser action log records desktop Greenfield, desktop Brownfield, mobile Greenfield, and mobile Brownfield setup states",
+    "desktop and mobile screenshots are retained under the submodule design evidence path",
+    "product UI proof remains local validation only and keeps live GitHub Project control-plane mutation approval-gated"
+  ],
   "remainingProductizationGaps": [
-    "guided onboarding UI exists but needs multi-project setup workflow integration",
-    "role-specific screenshots are captured locally but not yet retained as CI product UI regression evidence",
-    "multi-project setup still requires experienced review",
+    "guided onboarding UI screenshots and browser action logs are retained by repository validation, but CI does not regenerate cross-browser product UI evidence",
+    "multi-project operator troubleshooting still needs deeper product UI workflow integration across issue, PR, and result-packet state",
     "troubleshooting is not fully embedded in product UI"
   ]
 }
