@@ -40,6 +40,14 @@ for term in \
   "clear next actions" \
   "multi-project setup workflow" \
   "browser action log" \
+  "CI-regenerated browser matrix" \
+  "onboarding-visual-matrix" \
+  "Chromium" \
+  "Firefox" \
+  "WebKit" \
+  "scroll width" \
+  "Carbon selected-button text color" \
+  "GitHub Actions job summary" \
   "desktop Greenfield" \
   "mobile Brownfield" \
   "approval boundary" \
@@ -288,6 +296,16 @@ def validate_payload(payload: dict[str, Any]) -> None:
             "greenfield",
             "brownfield",
             "browser action log",
+            "ci-regenerated browser matrix",
+            "onboarding-visual-matrix",
+            "chromium",
+            "firefox",
+            "webkit",
+            "scroll width",
+            "selected setup state",
+            "carbon selected-button text color",
+            "github actions job summary",
+            "uploaded browser action logs",
             "desktop",
             "mobile",
             "product ui",
@@ -298,8 +316,7 @@ def validate_payload(payload: dict[str, Any]) -> None:
 
     gaps_value = payload.get("remainingProductizationGaps", [])
     if gaps_value:
-        gaps = " ".join(str(item).lower() for item in require_list(gaps_value, "remaining productization gaps", 3))
-        contains_all(gaps, {"guided onboarding ui", "screenshots", "multi-project", "product ui"}, "remaining productization gaps")
+        reject("remaining productization gaps must be empty after onboarding visual CI completion")
 
 
 doc_text = Path(sys.argv[1]).read_text(encoding="utf-8")
@@ -364,6 +381,18 @@ expect_reject("missing result-packet closeout actions", mutated)
 mutated = copy.deepcopy(baseline)
 mutated["approvalBoundary"] = "credential mutation authorized"
 expect_reject("unauthorized sensitive mutation wording", mutated)
+
+mutated = copy.deepcopy(baseline)
+mutated["completedProductizationEvidence"] = [
+    item
+    for item in mutated["completedProductizationEvidence"]
+    if "onboarding-visual-matrix" not in item and "visual matrix" not in item and "GitHub Actions" not in item
+]
+expect_reject("missing CI visual productization evidence", mutated)
+
+mutated = copy.deepcopy(baseline)
+mutated["remainingProductizationGaps"] = ["cross-browser product UI evidence is still missing"]
+expect_reject("stale remaining productization gap", mutated)
 
 expect_reject(
     "private maintainer context wording",
