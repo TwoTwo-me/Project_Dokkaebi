@@ -285,6 +285,13 @@ Fault-injected orchestration recovery evidence must follow
 The gate must reject duplicate dispatch, early stale lease recovery, retry loss after restart,
 and closeout without route result evidence before a Manager cites the recovery path as
 readiness evidence.
+Sandbox issue processing transcript evidence must follow
+[`docs/operations/sandbox-issue-processing-transcript-2026-06-14.md`](../operations/sandbox-issue-processing-transcript-2026-06-14.md)
+or a later dated transcript package. The Manager must treat missing discovery,
+admission, dispatch readiness, Worker result evidence, Manager review,
+closeout, approval-gate status, authority boundary, replay instructions,
+cleanup receipt, private-memory exclusion, or residual risk as a core
+orchestration readiness gap.
 
 SRE operating evidence must follow
 [`docs/operations/sre-operating-baseline.md`](../operations/sre-operating-baseline.md).
