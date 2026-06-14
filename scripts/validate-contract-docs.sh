@@ -361,6 +361,13 @@ require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'worker route b
 require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'access-review evidence'
 require_text docs/policies/multi-tenant-rbac-drill-2026-06-13.md 'approval-gate status'
 require_text scripts/validate-multi-tenant-rbac-drill.sh 'PASS Dokkaebi multi-tenant RBAC drill validation passed'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md '# Runtime Multi-Tenant RBAC Evidence'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md 'dispatch admission'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md 'credential grant pre-dispatch'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md 'worker route pre-dispatch'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md 'access-review output'
+require_text docs/policies/runtime-multi-tenant-rbac-2026-06-14.md 'cleanup receipt'
+require_text scripts/validate-runtime-multi-tenant-rbac.sh 'PASS Dokkaebi runtime multi-tenant RBAC validation passed'
 
 require_text docs/policies/credential-lifecycle-and-revocation.md '# Credential Lifecycle And Revocation Dry Run'
 require_text docs/policies/credential-lifecycle-and-revocation.md 'token classes'
@@ -534,6 +541,7 @@ require_text scripts/validate-readiness-criteria.sh 'PASS Dokkaebi enterprise re
 require_text scripts/validate-carbon-ui-baseline.sh 'PASS Dokkaebi Carbon UI baseline validation passed'
 require_text scripts/validate-carbon-component-library-visual-regression.sh 'PASS Dokkaebi Carbon component library visual regression validation passed'
 require_text scripts/validate-multi-tenant-rbac.sh 'PASS Dokkaebi multi-tenant RBAC validation passed'
+require_text scripts/validate-runtime-multi-tenant-rbac.sh 'PASS Dokkaebi runtime multi-tenant RBAC validation passed'
 require_text scripts/validate-dispatch-lease-recovery.sh 'PASS Dokkaebi dispatch lease recovery validation passed'
 require_text scripts/validate-orchestration-recovery-gate.sh 'PASS Dokkaebi orchestration recovery gate validation passed'
 require_text scripts/validate-sandbox-issue-processing-transcript.sh 'PASS Dokkaebi sandbox issue processing transcript validation passed'
@@ -1178,6 +1186,7 @@ bash scripts/validate-project-governance-reconciliation.sh >/dev/null
 bash scripts/validate-governance-settings-export-reconciliation.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-multi-tenant-rbac-drill.sh >/dev/null
+bash scripts/validate-runtime-multi-tenant-rbac.sh >/dev/null
 bash scripts/validate-dispatch-lease-recovery.sh >/dev/null
 bash scripts/validate-orchestration-recovery-gate.sh >/dev/null
 bash scripts/validate-sandbox-issue-processing-transcript.sh >/dev/null

@@ -188,11 +188,16 @@ Multi-tenant RBAC designs must follow
 Local RBAC replay drills must follow
 [`docs/policies/multi-tenant-rbac-drill-2026-06-13.md`](../policies/multi-tenant-rbac-drill-2026-06-13.md)
 or a later dated drill package.
+Runtime multi-tenant RBAC enforcement evidence must follow
+[`docs/policies/runtime-multi-tenant-rbac-2026-06-14.md`](../policies/runtime-multi-tenant-rbac-2026-06-14.md)
+or a later dated runtime evidence package.
 The Manager must treat missing tenant boundaries, role taxonomy, permission matrix,
 admission checks, authorization checks, GitHub Project scope mapping, repository
 scope mapping, credential boundary, worker route boundary, break-glass path,
-access review, audit evidence, onboarding and offboarding, failure handling,
-remaining operational gaps, or permission level as an authority readiness gap.
+access review, runtime dispatch admission output, credential grant pre-dispatch
+output, worker route pre-dispatch output, audit evidence, onboarding and
+offboarding, failure handling, cleanup receipt, residual risk, next action, or
+permission level as an authority readiness gap.
 
 Security threat models and prompt-injection controls must follow
 [`docs/policies/security-threat-model-and-prompt-injection-controls.md`](../policies/security-threat-model-and-prompt-injection-controls.md).

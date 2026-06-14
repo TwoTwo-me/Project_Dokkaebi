@@ -36,9 +36,11 @@ PASS Dokkaebi security threat model validation passed
 ## Residual Risk And Next Action
 
 This baseline documents controls and deterministic validation. Runtime
-multi-tenant RBAC enforcement, live credential broker checks, generated
-access-review output, and worker-route credential gates remain pending. Next
-action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
+multi-tenant RBAC enforcement, generated access-review output, credential grant
+checks, and worker-route gates are captured in
+[`runtime-multi-tenant-rbac-2026-06-14.md`](runtime-multi-tenant-rbac-2026-06-14.md).
+Live identity-provider rollout, live credential backend issuance, and live
+worker-fleet enforcement remain approval-gated.
 
 <!-- security-threat-model:begin -->
 ```json
@@ -120,7 +122,7 @@ action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
       "failClosedBehavior": "deny control-plane mutation without setup approval and current state confirmation",
       "ownerReviewCadence": "project owner reviews field schema changes before rollout and quarterly",
       "residualRisk": "live project webhook semantics remain subject to GitHub preview behavior",
-      "nextAction": "prove runtime ProjectV2 mutation authorization in issue #74 or related runtime gate"
+      "nextAction": "keep ProjectV2 control-plane mutation approval-gated; routine runtime admission is covered by runtime-multi-tenant-rbac-2026-06-14.md"
     },
     {
       "id": "credential_broker_misuse",
@@ -145,8 +147,8 @@ action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
       ],
       "failClosedBehavior": "deny grants without owner, scope, expiry, and audit evidence",
       "ownerReviewCadence": "security owner reviews broker denials monthly and after incidents",
-      "residualRisk": "live broker enforcement must still be proven by runtime tests",
-      "nextAction": "complete runtime credential and worker-route gates through issue #74"
+      "residualRisk": "live credential backend rollout remains approval-gated after local runtime gate proof",
+      "nextAction": "use runtime-multi-tenant-rbac-2026-06-14.md as the local gate baseline before any approved live credential backend rollout"
     },
     {
       "id": "worker_route_escalation",
@@ -171,8 +173,8 @@ action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
       ],
       "failClosedBehavior": "deny dispatch when route capability or isolation evidence is missing",
       "ownerReviewCadence": "Fire operator reviews route capability inventory monthly",
-      "residualRisk": "runtime route enforcement remains pending",
-      "nextAction": "prove worker-route admission and credential gates in issue #74"
+      "residualRisk": "live remote, Docker, and Kubernetes route enforcement remains approval-gated after local runtime gate proof",
+      "nextAction": "use runtime-multi-tenant-rbac-2026-06-14.md as the local gate baseline before any approved live worker fleet rollout"
     },
     {
       "id": "evidence_exfiltration",
@@ -224,7 +226,7 @@ action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
       "failClosedBehavior": "block gated action when approval evidence is missing or stale",
       "ownerReviewCadence": "approver reviews stale approval queues weekly",
       "residualRisk": "external approval systems require later integration evidence",
-      "nextAction": "link approval evidence to runtime admission gates in issue #74"
+      "nextAction": "keep approval evidence linked to runtime admission gates and review stale approvals during access review"
     }
   ],
   "validationOutput": [
@@ -233,11 +235,11 @@ action: complete issue #74 for runtime multi-tenant RBAC enforcement gates.
     "PASS Dokkaebi contract docs are present, linked, and structurally aligned"
   ],
   "residualRisk": [
-    "runtime multi-tenant RBAC enforcement is not complete",
-    "live credential broker checks are not captured",
-    "worker-route credential gates are not captured"
+    "live identity-provider rollout remains approval-gated",
+    "live credential backend issuance remains approval-gated",
+    "live remote, Docker, and Kubernetes worker-route enforcement remains approval-gated"
   ],
-  "nextAction": "Complete issue #74 for runtime multi-tenant RBAC enforcement gates.",
+  "nextAction": "Continue approved local runtime gate validation through runtime-multi-tenant-rbac-2026-06-14.md and require separate approval for live rollout.",
   "followUpIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/74"
 }
 ```

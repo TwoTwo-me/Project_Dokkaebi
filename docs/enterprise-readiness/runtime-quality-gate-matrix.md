@@ -129,23 +129,26 @@ tracked by their dedicated readiness issues.
       "requiredTests": [
         "bash scripts/validate-multi-tenant-rbac.sh",
         "bash scripts/validate-multi-tenant-rbac-drill.sh",
+        "bash scripts/validate-runtime-multi-tenant-rbac.sh",
         "bash scripts/validate-compliance-package.sh",
         "bash scripts/validate-compliance-audit-review.sh"
       ],
       "mergeGateCommands": [
         "bash scripts/validate-multi-tenant-rbac.sh",
+        "bash scripts/validate-runtime-multi-tenant-rbac.sh",
         "bash scripts/validate-contract-docs.sh"
       ],
       "evidenceArtifacts": [
         "docs/policies/authority-and-safety.md",
         "docs/policies/multi-tenant-rbac.md",
-        "docs/policies/multi-tenant-rbac-drill-2026-06-13.md"
+        "docs/policies/multi-tenant-rbac-drill-2026-06-13.md",
+        "docs/policies/runtime-multi-tenant-rbac-2026-06-14.md"
       ],
       "acceptedRisk": [
         "local credential denial replay is routine; live broker denial and credential revocation enforcement remain approval-gated",
-        "runtime RBAC enforcement remains tracked by issue #74"
+        "live identity-provider, credential backend, and worker fleet rollout remain approval-gated after local runtime RBAC proof"
       ],
-      "nextAction": "Implement runtime multi-tenant RBAC enforcement gates in issue #74"
+      "nextAction": "Use runtime-multi-tenant-rbac-2026-06-14.md as the routine local RBAC gate and require separate approval for live rollout"
     },
     {
       "id": "github_adapter",
