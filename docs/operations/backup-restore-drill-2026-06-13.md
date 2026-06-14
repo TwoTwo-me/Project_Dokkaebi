@@ -87,11 +87,13 @@ documentation and deterministic validation output remain as drill evidence.
 
 ## Residual Risk And Next Action
 
-Residual risk remains for approved sandbox restore evidence, durable backup
-automation, immutable audit export, and future production recovery approval.
+Residual risk remains for approved sandbox restore evidence, multi-provider
+route-health proof, immutable audit export, and future production recovery
+approval.
 
-Next action: create an approved sandbox restore drill with real export fixtures
-after the explicit approval path and evidence retention surface are recorded.
+Next action: use the durable backup restore verification package and follow-up
+worker route-health issue to prove approved route eligibility beyond the local
+replay surface.
 
 <!-- backup-restore-drill:begin -->
 ```json
@@ -210,11 +212,11 @@ after the explicit approval path and evidence retention surface are recorded.
   },
   "residualRisk": [
     "Approved sandbox restore evidence is still pending",
-    "Durable backup automation is still pending",
+    "Multi-provider route-health proof is still pending",
     "Immutable audit export is still pending",
     "Future production recovery approval remains out of scope"
   ],
-  "nextAction": "Create an approved sandbox restore drill with real export fixtures after the approval path and evidence retention surface are recorded"
+  "nextAction": "Use the durable backup restore verification package and follow-up worker route-health issue to prove approved route eligibility beyond the local replay surface"
 }
 ```
 <!-- backup-restore-drill:end -->

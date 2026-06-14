@@ -69,6 +69,7 @@ require_file scripts/validate-release-rollback-drill.sh
 require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-sandbox-restore-drill.sh
+require_file scripts/validate-durable-backup-restore-verification.sh
 require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
@@ -104,6 +105,7 @@ require_file docs/operations/release-rollback-drill-2026-06-13.md
 require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/operations/sandbox-restore-drill-2026-06-13.md
+require_file docs/operations/durable-backup-restore-verification-2026-06-14.md
 require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
@@ -168,6 +170,7 @@ require_text docs/contracts/manager-contract.md '../operations/on-call-paging-al
 require_text docs/contracts/manager-contract.md '../operations/release-rollback-capacity-drills.md'
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-drill-2026-06-13.md'
+require_text docs/contracts/manager-contract.md '../operations/durable-backup-restore-verification-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
@@ -217,6 +220,9 @@ require_text docs/contracts/manager-contract.md 'backup target'
 require_text docs/contracts/manager-contract.md 'Credential-free sandbox restore drill evidence'
 require_text docs/contracts/manager-contract.md 'measured RPO/RTO'
 require_text docs/contracts/manager-contract.md 'cleanup receipt'
+require_text docs/contracts/manager-contract.md 'Durable backup restore verification evidence'
+require_text docs/contracts/manager-contract.md 'retention policy checks'
+require_text docs/contracts/manager-contract.md 'redaction checks'
 require_text docs/contracts/manager-contract.md 'Compliance evidence packages'
 require_text docs/contracts/manager-contract.md 'approval control'
 require_text docs/contracts/manager-contract.md 'sample evidence chain'
@@ -496,6 +502,7 @@ require_text scripts/validate-release-rollback-drill.sh 'PASS Dokkaebi release r
 require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topology backup restore DR validation passed'
 require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
 require_text scripts/validate-sandbox-restore-drill.sh 'PASS Dokkaebi sandbox restore drill validation passed'
+require_text scripts/validate-durable-backup-restore-verification.sh 'PASS Dokkaebi durable backup restore verification passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
 require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 require_text scripts/validate-immutable-audit-export.sh 'PASS Dokkaebi immutable audit export validation passed'
@@ -648,6 +655,13 @@ require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'validation out
 require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'approval-gate status'
 require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'cleanup receipt'
 require_text docs/operations/sandbox-restore-drill-2026-06-13.md 'does not authorize'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md '# Durable Backup Restore Verification'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'project exports'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'lease/retry state'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'route-result summaries'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'evidence packages'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'retention checks'
+require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'redaction checks'
 require_text docs/compliance/control-map-and-evidence-package.md '# Compliance Control Map And Evidence Package'
 require_text docs/compliance/control-map-and-evidence-package.md 'approval control'
 require_text docs/compliance/control-map-and-evidence-package.md 'access control'
@@ -1081,6 +1095,7 @@ bash scripts/validate-release-rollback-drill.sh >/dev/null
 bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-sandbox-restore-drill.sh >/dev/null
+bash scripts/validate-durable-backup-restore-verification.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null

@@ -203,9 +203,9 @@ sandbox evidence.
       ],
       "acceptedRisk": [
         "multi-provider route failure and capacity soak are not routine merge gates",
-        "durable backup verification remains tracked by issue #86"
+        "multi-provider worker route-health proof remains tracked by issue #103"
       ],
-      "nextAction": "Automate durable backup restore verification in issue #86"
+      "nextAction": "Prove multi-provider worker route health and remote bootstrap rebuild in issue #103"
     },
     {
       "id": "ui",

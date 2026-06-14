@@ -97,13 +97,12 @@ repository evidence remains.
 
 ## Residual Risk And Next Action
 
-Residual risk remains for durable backup automation, approved runtime restore
-verification, live restore rehearsal, production DR approval, and routine
-scheduled exercises.
+Residual risk remains for multi-provider route-health proof, approved runtime
+restore verification, live restore rehearsal, production DR approval, and
+routine scheduled exercises.
 
-Next action: issue #86 tracks durable backup restore verification with
-project-export, lease/retry, route-result, retention, redaction, cleanup, and
-approval-gate evidence.
+Next action: issue #103 tracks approved worker route-health and remote bootstrap
+rebuild proof after the local durable backup restore verification package.
 
 <!-- sandbox-restore-drill:begin -->
 ```json
@@ -229,12 +228,12 @@ approval-gate evidence.
     "retainedEvidence": "sanitized checked-in artifact and validation output only"
   },
   "residualRisk": [
-    "Durable backup automation is still pending",
+    "Multi-provider route-health proof is still pending",
     "Approved runtime restore verification is still pending",
     "Live restore rehearsal and production DR approval remain out of scope",
     "Routine scheduled disaster recovery exercises are still pending"
   ],
-  "nextAction": "Issue #86 will automate durable backup restore verification with project-export, lease/retry, route-result, retention, redaction, cleanup, and approval-gate evidence"
+  "nextAction": "Issue #103 tracks approved worker route-health and remote bootstrap rebuild proof after the local durable backup restore verification package"
 }
 ```
 <!-- sandbox-restore-drill:end -->

@@ -190,5 +190,5 @@ drill is captured in
 [`release-rollback-drill-2026-06-13.md`](release-rollback-drill-2026-06-13.md),
 but automated runtime release gates, approved sandbox rollback evidence,
 measured capacity and soak evidence, production paging implementation, central
-metrics, approved sandbox restore evidence, durable backup automation, and
-routine operations exercises remain.
+metrics, approved sandbox restore evidence, multi-provider route-health proof,
+and routine operations exercises remain.

@@ -129,7 +129,7 @@
     {
       "id": "infrastructure_platform",
       "name": "Infrastructure and platform",
-      "currentPercent": 80,
+      "currentPercent": 92,
       "targetPercent": 100,
       "enterpriseStandard": "Development, sandbox, staging, and production topologies are reproducible, isolated, monitored, backed up, and recoverable with least-privilege worker routes.",
       "currentEvidence": [
@@ -141,13 +141,14 @@
         "scripts/validate-backup-restore-drill.sh",
         "docs/operations/sandbox-restore-drill-2026-06-13.md",
         "scripts/validate-sandbox-restore-drill.sh",
+        "docs/operations/durable-backup-restore-verification-2026-06-14.md",
+        "scripts/validate-durable-backup-restore-verification.sh",
         "symphony-github-project-tracker/docker",
         "symphony-github-project-tracker/elixir/config"
       ],
       "gaps": [
-        "Topology, HA, backup, restore, and DR evidence shape plus local replay and credential-free disposable local sandbox restore evidence with measured RPO/RTO results are captured, but durable backup automation and approved runtime restore verification are still pending.",
-        "Docker and Kubernetes route maturity is uneven.",
-        "Remote worker bootstrap is approved only for named development and sandbox targets."
+        "Durable backup automation is now covered by local executable verification, but multi-provider worker route health and remote bootstrap rebuild evidence still need proof across local, SSH, Docker, and Kubernetes routes.",
+        "Remote, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation remains approval-gated for exact named targets."
       ],
       "evaluationQuestions": [
         "Can a new environment be rebuilt from documented commands and checked state?",
@@ -162,22 +163,19 @@
       ],
       "nextIssues": [
         {
-          "title": "Automate durable backup restore verification",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/86",
+          "title": "Prove multi-provider worker route health and remote bootstrap rebuild",
+          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/103",
           "acceptanceCriteria": [
-            "Add an executable durable backup verification path for project exports, lease/retry state, route-result summaries, and evidence packages.",
-            "Capture restore verification output, measured RPO and RTO, retention policy checks, redaction checks, approval-gate status, cleanup receipt, residual risk, and next action.",
+            "Worker route health evidence covers local, SSH, Docker, and Kubernetes capability detection, dispatch eligibility, skip reasons, and cleanup rules.",
+            "Rebuild or bootstrap evidence shows a named development or approved sandbox target can be recreated from documented commands and checked state.",
             "Update docs/enterprise-readiness/criteria.json only from captured local, approved sandbox, or explicitly Human-approved runtime evidence."
           ],
           "validationRequired": [
-            "bash scripts/validate-sandbox-restore-drill.sh",
-            "bash scripts/validate-backup-restore-drill.sh",
-            "bash scripts/validate-topology-backup-restore-dr.sh",
             "bash scripts/validate-readiness-criteria.sh",
             "bash scripts/validate-contract-docs.sh",
-            "Targeted durable backup verification named by the implementation"
+            "Targeted worker route health validation named by the implementation"
           ],
-          "authorityRequirement": "Docs-and-local-validation by default. Approved-sandbox-validation requires exact target approval. Runtime, remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Docs-and-local-validation by default. Any SSH, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation requires explicit Human approval for the exact target and allowed operations.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Acceptance-criteria evidence",
@@ -829,9 +827,9 @@
     {
       "id": "backup_restore_dr",
       "name": "Backup, restore, and disaster recovery",
-      "currentPercent": 82,
+      "currentPercent": 100,
       "targetPercent": 100,
-      "nextIssueTitle": "Automate durable backup restore verification",
+      "nextIssueTitle": "Completed durable backup restore verification",
       "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/86",
       "acceptanceCriteria": [
         "Add an executable durable backup verification path for project exports, lease/retry state, route-result summaries, and evidence packages.",
@@ -844,7 +842,7 @@
         "bash scripts/validate-topology-backup-restore-dr.sh",
         "bash scripts/validate-readiness-criteria.sh",
         "bash scripts/validate-contract-docs.sh",
-        "Targeted durable backup verification named by the implementation"
+        "bash scripts/validate-durable-backup-restore-verification.sh"
       ],
       "authorityRequirement": "Docs-and-local-validation by default. Approved-sandbox-validation requires exact target approval. Runtime, remote host, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
       "resultEvidence": [
