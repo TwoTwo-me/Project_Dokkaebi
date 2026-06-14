@@ -72,6 +72,7 @@ require_file scripts/validate-topology-backup-restore-dr.sh
 require_file scripts/validate-backup-restore-drill.sh
 require_file scripts/validate-sandbox-restore-drill.sh
 require_file scripts/validate-durable-backup-restore-verification.sh
+require_file scripts/validate-worker-route-health-bootstrap.sh
 require_file scripts/validate-compliance-package.sh
 require_file scripts/validate-compliance-audit-review.sh
 require_file scripts/validate-immutable-audit-export.sh
@@ -113,6 +114,7 @@ require_file docs/operations/topology-backup-restore-dr.md
 require_file docs/operations/backup-restore-drill-2026-06-13.md
 require_file docs/operations/sandbox-restore-drill-2026-06-13.md
 require_file docs/operations/durable-backup-restore-verification-2026-06-14.md
+require_file docs/operations/worker-route-health-bootstrap-2026-06-14.md
 require_file docs/compliance/control-map-and-evidence-package.md
 require_file docs/compliance/audit-review-2026-06-13.md
 require_file docs/compliance/immutable-audit-export.md
@@ -180,6 +182,7 @@ require_text docs/contracts/manager-contract.md '../operations/release-rollback-
 require_text docs/contracts/manager-contract.md '../operations/topology-backup-restore-dr.md'
 require_text docs/contracts/manager-contract.md '../operations/sandbox-restore-drill-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../operations/durable-backup-restore-verification-2026-06-14.md'
+require_text docs/contracts/manager-contract.md '../operations/worker-route-health-bootstrap-2026-06-14.md'
 require_text docs/contracts/manager-contract.md '../compliance/control-map-and-evidence-package.md'
 require_text docs/contracts/manager-contract.md '../compliance/audit-review-2026-06-13.md'
 require_text docs/contracts/manager-contract.md '../compliance/immutable-audit-export.md'
@@ -538,6 +541,7 @@ require_text scripts/validate-topology-backup-restore-dr.sh 'PASS Dokkaebi topol
 require_text scripts/validate-backup-restore-drill.sh 'PASS Dokkaebi backup restore drill validation passed'
 require_text scripts/validate-sandbox-restore-drill.sh 'PASS Dokkaebi sandbox restore drill validation passed'
 require_text scripts/validate-durable-backup-restore-verification.sh 'PASS Dokkaebi durable backup restore verification passed'
+require_text scripts/validate-worker-route-health-bootstrap.sh 'PASS Dokkaebi worker route health bootstrap validation passed'
 require_text scripts/validate-compliance-package.sh 'PASS Dokkaebi compliance package validation passed'
 require_text scripts/validate-compliance-audit-review.sh 'PASS Dokkaebi compliance audit review validation passed'
 require_text scripts/validate-immutable-audit-export.sh 'PASS Dokkaebi immutable audit export validation passed'
@@ -712,6 +716,16 @@ require_text docs/operations/durable-backup-restore-verification-2026-06-14.md '
 require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'evidence packages'
 require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'retention checks'
 require_text docs/operations/durable-backup-restore-verification-2026-06-14.md 'redaction checks'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md '# Worker Route Health And Bootstrap Rebuild Evidence'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'local worktree'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'SSH worker'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'Docker worker'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'Kubernetes Job'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'capability detection'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'dispatch eligibility'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'skip reasons'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'cleanup rules'
+require_text docs/operations/worker-route-health-bootstrap-2026-06-14.md 'approval-gate status'
 require_text docs/compliance/control-map-and-evidence-package.md '# Compliance Control Map And Evidence Package'
 require_text docs/compliance/control-map-and-evidence-package.md 'approval control'
 require_text docs/compliance/control-map-and-evidence-package.md 'access control'
@@ -1148,6 +1162,7 @@ bash scripts/validate-topology-backup-restore-dr.sh >/dev/null
 bash scripts/validate-backup-restore-drill.sh >/dev/null
 bash scripts/validate-sandbox-restore-drill.sh >/dev/null
 bash scripts/validate-durable-backup-restore-verification.sh >/dev/null
+bash scripts/validate-worker-route-health-bootstrap.sh >/dev/null
 bash scripts/validate-compliance-package.sh >/dev/null
 bash scripts/validate-compliance-audit-review.sh >/dev/null
 bash scripts/validate-immutable-audit-export.sh >/dev/null

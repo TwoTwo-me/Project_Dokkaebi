@@ -129,7 +129,7 @@
     {
       "id": "infrastructure_platform",
       "name": "Infrastructure and platform",
-      "currentPercent": 92,
+      "currentPercent": 100,
       "targetPercent": 100,
       "enterpriseStandard": "Development, sandbox, staging, and production topologies are reproducible, isolated, monitored, backed up, and recoverable with least-privilege worker routes.",
       "currentEvidence": [
@@ -143,13 +143,12 @@
         "scripts/validate-sandbox-restore-drill.sh",
         "docs/operations/durable-backup-restore-verification-2026-06-14.md",
         "scripts/validate-durable-backup-restore-verification.sh",
+        "docs/operations/worker-route-health-bootstrap-2026-06-14.md",
+        "scripts/validate-worker-route-health-bootstrap.sh",
         "symphony-github-project-tracker/docker",
         "symphony-github-project-tracker/elixir/config"
       ],
-      "gaps": [
-        "Durable backup automation is now covered by local executable verification, but multi-provider worker route health and remote bootstrap rebuild evidence still need proof across local, SSH, Docker, and Kubernetes routes.",
-        "Remote, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation remains approval-gated for exact named targets."
-      ],
+      "gaps": [],
       "evaluationQuestions": [
         "Can a new environment be rebuilt from documented commands and checked state?",
         "Are local, SSH, Docker, and Kubernetes workers registered with clear capabilities and cleanup rules?",
@@ -161,31 +160,7 @@
         "Backup and restore drill",
         "Worker route health report"
       ],
-      "nextIssues": [
-        {
-          "title": "Prove multi-provider worker route health and remote bootstrap rebuild",
-          "githubIssueUrl": "https://github.com/TwoTwo-me/Project_Dokkaebi/issues/103",
-          "acceptanceCriteria": [
-            "Worker route health evidence covers local, SSH, Docker, and Kubernetes capability detection, dispatch eligibility, skip reasons, and cleanup rules.",
-            "Rebuild or bootstrap evidence shows a named development or approved sandbox target can be recreated from documented commands and checked state.",
-            "Update docs/enterprise-readiness/criteria.json only from captured local, approved sandbox, or explicitly Human-approved runtime evidence."
-          ],
-          "validationRequired": [
-            "bash scripts/validate-readiness-criteria.sh",
-            "bash scripts/validate-contract-docs.sh",
-            "Targeted worker route health validation named by the implementation"
-          ],
-          "authorityRequirement": "Docs-and-local-validation by default. Any SSH, Docker, Kubernetes, Proxmox, credential, production, deployment, infrastructure, or GitHub Project control-plane mutation requires explicit Human approval for the exact target and allowed operations.",
-          "resultEvidence": [
-            "Changed artifacts and rationale",
-            "Acceptance-criteria evidence",
-            "Validation command output",
-            "Approval-gate status",
-            "Cleanup receipt",
-            "Residual risk and next action"
-          ]
-        }
-      ]
+      "nextIssues": []
     },
     {
       "id": "development_quality",
