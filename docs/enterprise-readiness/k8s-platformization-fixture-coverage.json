@@ -1,0 +1,291 @@
+{
+  "areaId": "k8s_platformization",
+  "matrixVersion": 1,
+  "purpose": "Machine-readable lock for K8S admission and static-control fixture coverage. Validators fail if issue prose claims coverage that is not represented by an accepted fixture, rejected fixture, or non-admission control entry here.",
+  "issueGate": "k8s-admission-policy-gate",
+  "acceptedFixtures": [
+    {
+      "coverageId": "accepted-hammer-no-k8s",
+      "path": "k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml",
+      "routeProfile": "hammer-no-k8s",
+      "serviceAccount": "hammer-no-k8s"
+    },
+    {
+      "coverageId": "accepted-hammer-k8s-readonly",
+      "path": "k8s/fixtures/accepted/hammer-job-approved.yaml",
+      "routeProfile": "hammer-k8s-readonly",
+      "serviceAccount": "hammer-k8s-readonly"
+    },
+    {
+      "coverageId": "accepted-hammer-k8s-app-deployer",
+      "path": "k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml",
+      "routeProfile": "hammer-k8s-app-deployer",
+      "serviceAccount": "hammer-k8s-app-deployer"
+    },
+    {
+      "coverageId": "accepted-hammer-k8s-job-runner",
+      "path": "k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml",
+      "routeProfile": "hammer-k8s-job-runner",
+      "serviceAccount": "hammer-k8s-job-runner"
+    }
+  ],
+  "rejectedFixtures": [
+    {
+      "coverageId": "deny-missing-approval-id",
+      "path": "k8s/fixtures/rejected/missing-approval-id.yaml",
+      "denyClass": "missing approval label",
+      "expectedErrors": ["missing label dokkaebi.io/approval-id"]
+    },
+    {
+      "coverageId": "deny-mismatched-serviceaccount-profile",
+      "path": "k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml",
+      "denyClass": "route profile and ServiceAccount mismatch",
+      "expectedErrors": ["route profile and ServiceAccount mismatch"]
+    },
+    {
+      "coverageId": "deny-privileged-hostpath",
+      "path": "k8s/fixtures/rejected/privileged-hostpath.yaml",
+      "denyClass": "hostPath volume",
+      "expectedErrors": ["hostPath volume is forbidden"]
+    },
+    {
+      "coverageId": "deny-secret-env-reference",
+      "path": "k8s/fixtures/rejected/secret-env-reference.yaml",
+      "denyClass": "Secret volume and env reference",
+      "expectedErrors": [
+        "Secret volume is forbidden",
+        "container Secret env valueFrom is forbidden"
+      ]
+    },
+    {
+      "coverageId": "deny-missing-result-packet-sink",
+      "path": "k8s/fixtures/rejected/missing-result-packet-sink.yaml",
+      "denyClass": "missing result packet sink",
+      "expectedErrors": ["missing DOKKAEBI_RESULT_PACKET_SINK"]
+    },
+    {
+      "coverageId": "deny-missing-container-security-context",
+      "path": "k8s/fixtures/rejected/missing-container-security-context.yaml",
+      "denyClass": "missing container securityContext",
+      "expectedErrors": ["container securityContext is required"]
+    },
+    {
+      "coverageId": "deny-missing-pod-security-context",
+      "path": "k8s/fixtures/rejected/missing-pod-security-context.yaml",
+      "denyClass": "missing pod securityContext",
+      "expectedErrors": ["pod securityContext is required"]
+    },
+    {
+      "coverageId": "deny-hostnetwork",
+      "path": "k8s/fixtures/rejected/hostnetwork.yaml",
+      "denyClass": "hostNetwork",
+      "expectedErrors": ["hostNetwork is forbidden"]
+    },
+    {
+      "coverageId": "deny-hostport",
+      "path": "k8s/fixtures/rejected/hostport.yaml",
+      "denyClass": "hostPort",
+      "expectedErrors": ["container hostPort is forbidden"]
+    },
+    {
+      "coverageId": "deny-broad-volume-mount",
+      "path": "k8s/fixtures/rejected/broad-volume-mount.yaml",
+      "denyClass": "broad volume mount",
+      "expectedErrors": ["container broad volume mount is forbidden"]
+    },
+    {
+      "coverageId": "deny-hostpid",
+      "path": "k8s/fixtures/rejected/hostpid.yaml",
+      "denyClass": "hostPID",
+      "expectedErrors": ["hostPID is forbidden"]
+    },
+    {
+      "coverageId": "deny-hostipc",
+      "path": "k8s/fixtures/rejected/hostipc.yaml",
+      "denyClass": "hostIPC",
+      "expectedErrors": ["hostIPC is forbidden"]
+    },
+    {
+      "coverageId": "deny-share-process-namespace",
+      "path": "k8s/fixtures/rejected/share-process-namespace.yaml",
+      "denyClass": "shareProcessNamespace",
+      "expectedErrors": ["shareProcessNamespace is forbidden"]
+    },
+    {
+      "coverageId": "deny-init-container-privileged",
+      "path": "k8s/fixtures/rejected/init-container-privileged.yaml",
+      "denyClass": "initContainer privilege",
+      "expectedErrors": ["initContainer privileged container is forbidden"]
+    },
+    {
+      "coverageId": "deny-ephemeral-container-privileged",
+      "path": "k8s/fixtures/rejected/ephemeral-container-privileged.yaml",
+      "denyClass": "ephemeralContainer privilege",
+      "expectedErrors": ["ephemeralContainer privileged container is forbidden"]
+    },
+    {
+      "coverageId": "deny-root-pod-security-context",
+      "path": "k8s/fixtures/rejected/root-pod-security-context.yaml",
+      "denyClass": "pod root execution",
+      "expectedErrors": [
+        "pod runAsNonRoot true is required",
+        "pod non-root runAsUser is required"
+      ]
+    },
+    {
+      "coverageId": "deny-no-k8s-token-override",
+      "path": "k8s/fixtures/rejected/no-k8s-token-override.yaml",
+      "denyClass": "hammer-no-k8s token override",
+      "expectedErrors": ["hammer-no-k8s must not mount Kubernetes API token"]
+    },
+    {
+      "coverageId": "deny-unapproved-image-profile",
+      "path": "k8s/fixtures/rejected/unapproved-image-profile.yaml",
+      "denyClass": "unapproved image profile",
+      "expectedErrors": ["unapproved image profile"]
+    },
+    {
+      "coverageId": "deny-invalid-result-packet-sink",
+      "path": "k8s/fixtures/rejected/invalid-result-packet-sink.yaml",
+      "denyClass": "invalid result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-wrong-kind",
+      "path": "k8s/fixtures/rejected/wrong-kind.yaml",
+      "denyClass": "wrong apiVersion or kind",
+      "expectedErrors": [
+        "apiVersion must be batch/v1",
+        "kind must be Job"
+      ]
+    },
+    {
+      "coverageId": "deny-projected-serviceaccount-token",
+      "path": "k8s/fixtures/rejected/projected-serviceaccount-token.yaml",
+      "denyClass": "projected serviceAccountToken",
+      "expectedErrors": ["projected serviceAccountToken volume is forbidden"]
+    },
+    {
+      "coverageId": "deny-projected-secret",
+      "path": "k8s/fixtures/rejected/projected-secret.yaml",
+      "denyClass": "projected Secret",
+      "expectedErrors": ["projected Secret volume is forbidden"]
+    },
+    {
+      "coverageId": "deny-csi-secret-store",
+      "path": "k8s/fixtures/rejected/csi-secret-store.yaml",
+      "denyClass": "CSI Secret Store",
+      "expectedErrors": ["CSI secret-store volume is forbidden"]
+    },
+    {
+      "coverageId": "deny-image-pull-secrets",
+      "path": "k8s/fixtures/rejected/image-pull-secrets.yaml",
+      "denyClass": "imagePullSecrets",
+      "expectedErrors": ["imagePullSecrets are forbidden"]
+    },
+    {
+      "coverageId": "deny-empty-approval-id",
+      "path": "k8s/fixtures/rejected/empty-approval-id.yaml",
+      "denyClass": "empty approval label",
+      "expectedErrors": ["missing label dokkaebi.io/approval-id"]
+    },
+    {
+      "coverageId": "deny-empty-credential-grant-id",
+      "path": "k8s/fixtures/rejected/empty-credential-grant-id.yaml",
+      "denyClass": "empty credential grant label",
+      "expectedErrors": ["missing label dokkaebi.io/credential-grant-id"]
+    },
+    {
+      "coverageId": "deny-empty-ticket-id",
+      "path": "k8s/fixtures/rejected/empty-ticket-id.yaml",
+      "denyClass": "empty ticket label",
+      "expectedErrors": ["missing label dokkaebi.io/ticket-id"]
+    },
+    {
+      "coverageId": "deny-container-privileged-only",
+      "path": "k8s/fixtures/rejected/container-privileged-only.yaml",
+      "denyClass": "container privilege",
+      "expectedErrors": ["container privileged container is forbidden"]
+    },
+    {
+      "coverageId": "deny-capabilities-add",
+      "path": "k8s/fixtures/rejected/capabilities-add.yaml",
+      "denyClass": "capabilities.add",
+      "expectedErrors": ["container capabilities.add is forbidden"]
+    },
+    {
+      "coverageId": "deny-ephemeral-container-secret-env",
+      "path": "k8s/fixtures/rejected/ephemeral-container-secret-env.yaml",
+      "denyClass": "ephemeralContainer Secret env",
+      "expectedErrors": ["ephemeralContainer Secret env valueFrom is forbidden"]
+    },
+    {
+      "coverageId": "deny-ephemeral-container-root-mount",
+      "path": "k8s/fixtures/rejected/ephemeral-container-root-mount.yaml",
+      "denyClass": "ephemeralContainer broad root mount",
+      "expectedErrors": ["ephemeralContainer broad volume mount is forbidden"]
+    },
+    {
+      "coverageId": "deny-bare-result-packet-sink",
+      "path": "k8s/fixtures/rejected/bare-result-packet-sink.yaml",
+      "denyClass": "bare result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-duplicate-invalid-result-packet-sink",
+      "path": "k8s/fixtures/rejected/duplicate-invalid-result-packet-sink.yaml",
+      "denyClass": "duplicate invalid result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-duplicate-empty-result-packet-sink",
+      "path": "k8s/fixtures/rejected/duplicate-empty-result-packet-sink.yaml",
+      "denyClass": "duplicate empty result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-init-container-invalid-result-packet-sink",
+      "path": "k8s/fixtures/rejected/init-container-invalid-result-packet-sink.yaml",
+      "denyClass": "initContainer invalid result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-init-container-empty-result-packet-sink",
+      "path": "k8s/fixtures/rejected/init-container-empty-result-packet-sink.yaml",
+      "denyClass": "initContainer empty result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-ephemeral-container-invalid-result-packet-sink",
+      "path": "k8s/fixtures/rejected/ephemeral-container-invalid-result-packet-sink.yaml",
+      "denyClass": "ephemeralContainer invalid result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-ephemeral-container-empty-result-packet-sink",
+      "path": "k8s/fixtures/rejected/ephemeral-container-empty-result-packet-sink.yaml",
+      "denyClass": "ephemeralContainer empty result packet sink",
+      "expectedErrors": ["result packet sink must match ticket id"]
+    },
+    {
+      "coverageId": "deny-empty-resources",
+      "path": "k8s/fixtures/rejected/empty-resources.yaml",
+      "denyClass": "empty resource requests and limits",
+      "expectedErrors": ["container must define resource requests and limits"]
+    }
+  ],
+  "nonAdmissionControlFixtures": [
+    {
+      "coverageId": "deny-overlay-traversal",
+      "path": "k8s/fixtures/rejected/overlay-traversal-kustomization.yaml",
+      "control": "overlay traversal",
+      "expectedErrorContains": "resources must be exactly ../../base"
+    },
+    {
+      "coverageId": "deny-rbac-extra-workload-permission",
+      "path": "k8s/fixtures/rejected/rbac-extra-workload-permission.yaml",
+      "control": "unauthorized RBAC expansion",
+      "expectedErrorContains": "must match exact approved RBAC rules"
+    }
+  ]
+}

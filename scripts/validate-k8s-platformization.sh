@@ -19,14 +19,17 @@ except ImportError as exc:
 
 errors: list[str] = []
 k8s_evidence_lock_path = Path("docs/enterprise-readiness/k8s-platformization-current-evidence.json")
+k8s_fixture_coverage_path = Path("docs/enterprise-readiness/k8s-platformization-fixture-coverage.json")
 
 required_files = [
     Path("docs/adr/0002-k8s-fire-hammer-platformization.md"),
     Path("docs/reports/project-dokkaebi-k8s-handoff.md"),
     Path("docs/enterprise-readiness/k8s-platformization-issues.md"),
     Path("docs/operations/k8s-platformization-fixture-replay-2026-06-14.md"),
+    Path("docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md"),
     Path("docs/enterprise-readiness/criteria.json"),
     k8s_evidence_lock_path,
+    k8s_fixture_coverage_path,
     Path("k8s/base/kustomization.yaml"),
     Path("k8s/base/namespace.yaml"),
     Path("k8s/base/serviceaccounts.yaml"),
@@ -34,7 +37,10 @@ required_files = [
     Path("k8s/base/rbac-hammer-profiles.yaml"),
     Path("k8s/base/admission-policy.yaml"),
     Path("k8s/base/networkpolicy.yaml"),
+    Path("k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml"),
     Path("k8s/fixtures/accepted/hammer-job-approved.yaml"),
+    Path("k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml"),
+    Path("k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml"),
     Path("k8s/fixtures/rejected/missing-approval-id.yaml"),
     Path("k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml"),
     Path("k8s/fixtures/rejected/privileged-hostpath.yaml"),
@@ -169,6 +175,72 @@ def require_exact_k8s_current_evidence(area: dict) -> None:
         errors.append("k8s_platformization currentEvidence has unlocked entries: " + ", ".join(extra))
     if not missing and not extra:
         errors.append("k8s_platformization currentEvidence order must match k8s evidence lock")
+
+
+def load_fixture_coverage_matrix() -> dict:
+    if not k8s_fixture_coverage_path.is_file():
+        return {}
+    try:
+        data = json.loads(k8s_fixture_coverage_path.read_text())
+    except json.JSONDecodeError as exc:
+        errors.append(f"invalid JSON in {k8s_fixture_coverage_path}: {exc}")
+        return {}
+    if data.get("areaId") != "k8s_platformization":
+        errors.append(f"{k8s_fixture_coverage_path} areaId must be k8s_platformization")
+    if data.get("matrixVersion") != 1:
+        errors.append(f"{k8s_fixture_coverage_path} matrixVersion must be 1")
+    if data.get("issueGate") != "k8s-admission-policy-gate":
+        errors.append(f"{k8s_fixture_coverage_path} issueGate must be k8s-admission-policy-gate")
+    for field in ["acceptedFixtures", "rejectedFixtures", "nonAdmissionControlFixtures"]:
+        if not isinstance(data.get(field), list) or not data.get(field):
+            errors.append(f"{k8s_fixture_coverage_path} {field} must be a non-empty list")
+    return data
+
+
+def require_unique_coverage_entries(entries: list[dict], field: str) -> None:
+    seen_ids: set[str] = set()
+    seen_paths: set[str] = set()
+    for entry in entries:
+        if not isinstance(entry, dict):
+            errors.append(f"{k8s_fixture_coverage_path} {field} entries must be mappings")
+            continue
+        coverage_id = entry.get("coverageId")
+        path = entry.get("path")
+        if not isinstance(coverage_id, str) or not coverage_id:
+            errors.append(f"{k8s_fixture_coverage_path} {field} entry missing coverageId")
+        elif coverage_id in seen_ids:
+            errors.append(f"{k8s_fixture_coverage_path} duplicate coverageId: {coverage_id}")
+        else:
+            seen_ids.add(coverage_id)
+        if not isinstance(path, str) or not path:
+            errors.append(f"{k8s_fixture_coverage_path} {field} entry missing path")
+        elif path in seen_paths:
+            errors.append(f"{k8s_fixture_coverage_path} duplicate fixture path: {path}")
+        else:
+            seen_paths.add(path)
+        if isinstance(path, str) and not Path(path).is_file():
+            errors.append(f"{k8s_fixture_coverage_path} fixture path does not exist: {path}")
+
+
+fixture_coverage_matrix = load_fixture_coverage_matrix()
+require_unique_coverage_entries(
+    fixture_coverage_matrix.get("acceptedFixtures", [])
+    if isinstance(fixture_coverage_matrix.get("acceptedFixtures"), list)
+    else [],
+    "acceptedFixtures",
+)
+require_unique_coverage_entries(
+    fixture_coverage_matrix.get("rejectedFixtures", [])
+    if isinstance(fixture_coverage_matrix.get("rejectedFixtures"), list)
+    else [],
+    "rejectedFixtures",
+)
+require_unique_coverage_entries(
+    fixture_coverage_matrix.get("nonAdmissionControlFixtures", [])
+    if isinstance(fixture_coverage_matrix.get("nonAdmissionControlFixtures"), list)
+    else [],
+    "nonAdmissionControlFixtures",
+)
 
 
 base_dir = Path("k8s/base")
@@ -838,118 +910,51 @@ def admission_errors(job: dict) -> list[str]:
     return found
 
 
-accepted_fixture = Path("k8s/fixtures/accepted/hammer-job-approved.yaml")
-accepted_errors = admission_errors(load_single_yaml(accepted_fixture))
-if accepted_errors:
-    errors.append(f"{accepted_fixture} should be accepted but has errors: {', '.join(accepted_errors)}")
-
-exact_rejected_expectations = {
-    Path("k8s/fixtures/rejected/missing-approval-id.yaml"): ["missing label dokkaebi.io/approval-id"],
-    Path("k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml"): [
-        "route profile and ServiceAccount mismatch",
-    ],
-    Path("k8s/fixtures/rejected/privileged-hostpath.yaml"): ["hostPath volume is forbidden"],
-    Path("k8s/fixtures/rejected/secret-env-reference.yaml"): [
-        "Secret volume is forbidden",
-        "container Secret env valueFrom is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/missing-result-packet-sink.yaml"): [
-        "missing DOKKAEBI_RESULT_PACKET_SINK",
-    ],
-    Path("k8s/fixtures/rejected/missing-container-security-context.yaml"): [
-        "container securityContext is required",
-    ],
-    Path("k8s/fixtures/rejected/missing-pod-security-context.yaml"): [
-        "pod securityContext is required",
-    ],
-    Path("k8s/fixtures/rejected/hostnetwork.yaml"): ["hostNetwork is forbidden"],
-    Path("k8s/fixtures/rejected/hostport.yaml"): ["container hostPort is forbidden"],
-    Path("k8s/fixtures/rejected/broad-volume-mount.yaml"): [
-        "container broad volume mount is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/hostpid.yaml"): ["hostPID is forbidden"],
-    Path("k8s/fixtures/rejected/hostipc.yaml"): ["hostIPC is forbidden"],
-    Path("k8s/fixtures/rejected/share-process-namespace.yaml"): [
-        "shareProcessNamespace is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/init-container-privileged.yaml"): [
-        "initContainer privileged container is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/ephemeral-container-privileged.yaml"): [
-        "ephemeralContainer privileged container is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/root-pod-security-context.yaml"): [
-        "pod runAsNonRoot true is required",
-        "pod non-root runAsUser is required",
-    ],
-    Path("k8s/fixtures/rejected/no-k8s-token-override.yaml"): [
-        "hammer-no-k8s must not mount Kubernetes API token",
-    ],
-    Path("k8s/fixtures/rejected/unapproved-image-profile.yaml"): ["unapproved image profile"],
-    Path("k8s/fixtures/rejected/invalid-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/wrong-kind.yaml"): [
-        "apiVersion must be batch/v1",
-        "kind must be Job",
-    ],
-    Path("k8s/fixtures/rejected/projected-serviceaccount-token.yaml"): [
-        "projected serviceAccountToken volume is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/projected-secret.yaml"): [
-        "projected Secret volume is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/csi-secret-store.yaml"): [
-        "CSI secret-store volume is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/image-pull-secrets.yaml"): [
-        "imagePullSecrets are forbidden",
-    ],
-    Path("k8s/fixtures/rejected/empty-approval-id.yaml"): ["missing label dokkaebi.io/approval-id"],
-    Path("k8s/fixtures/rejected/empty-credential-grant-id.yaml"): [
-        "missing label dokkaebi.io/credential-grant-id",
-    ],
-    Path("k8s/fixtures/rejected/empty-ticket-id.yaml"): ["missing label dokkaebi.io/ticket-id"],
-    Path("k8s/fixtures/rejected/container-privileged-only.yaml"): [
-        "container privileged container is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/capabilities-add.yaml"): [
-        "container capabilities.add is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/ephemeral-container-secret-env.yaml"): [
-        "ephemeralContainer Secret env valueFrom is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/ephemeral-container-root-mount.yaml"): [
-        "ephemeralContainer broad volume mount is forbidden",
-    ],
-    Path("k8s/fixtures/rejected/bare-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/duplicate-invalid-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/duplicate-empty-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/init-container-invalid-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/init-container-empty-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/ephemeral-container-invalid-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/ephemeral-container-empty-result-packet-sink.yaml"): [
-        "result packet sink must match ticket id",
-    ],
-    Path("k8s/fixtures/rejected/empty-resources.yaml"): [
-        "container must define resource requests and limits",
-    ],
+accepted_fixture_expectations = {
+    Path(str(entry.get("path", ""))): (
+        str(entry.get("routeProfile", "")),
+        str(entry.get("serviceAccount", "")),
+    )
+    for entry in fixture_coverage_matrix.get("acceptedFixtures", [])
+    if isinstance(entry, dict)
 }
+expected_accepted_profiles = set(profile_service_accounts)
+actual_accepted_profiles = {profile for profile, _ in accepted_fixture_expectations.values()}
+if actual_accepted_profiles != expected_accepted_profiles:
+    errors.append(
+        "accepted fixture matrix must cover every approved route profile: "
+        + ", ".join(sorted(expected_accepted_profiles))
+    )
+for accepted_fixture, (expected_profile, expected_service_account) in accepted_fixture_expectations.items():
+    job = load_single_yaml(accepted_fixture)
+    accepted_errors = admission_errors(job)
+    if accepted_errors:
+        errors.append(f"{accepted_fixture} should be accepted but has errors: {', '.join(accepted_errors)}")
+        continue
+    metadata = job.get("metadata", {}) if isinstance(job.get("metadata"), dict) else {}
+    labels = metadata.get("labels", {}) if isinstance(metadata.get("labels"), dict) else {}
+    spec = pod_spec(job)
+    if labels.get("dokkaebi.io/route-profile") != expected_profile:
+        errors.append(f"{accepted_fixture} route profile must be {expected_profile}")
+    if spec.get("serviceAccountName") != expected_service_account:
+        errors.append(f"{accepted_fixture} ServiceAccount must be {expected_service_account}")
+
+matrix_rejected_entries = [
+    entry
+    for entry in fixture_coverage_matrix.get("rejectedFixtures", [])
+    if isinstance(entry, dict)
+]
+exact_rejected_expectations = {
+    Path(str(entry.get("path", ""))): entry.get("expectedErrors", [])
+    for entry in matrix_rejected_entries
+}
+for rejected_fixture, expected_errors in exact_rejected_expectations.items():
+    if not isinstance(expected_errors, list) or not all(isinstance(item, str) for item in expected_errors):
+        errors.append(f"{rejected_fixture} expectedErrors must be a list of strings")
 non_admission_rejected_fixtures = {
-    Path("k8s/fixtures/rejected/overlay-traversal-kustomization.yaml"),
-    Path("k8s/fixtures/rejected/rbac-extra-workload-permission.yaml"),
+    Path(str(entry.get("path", "")))
+    for entry in fixture_coverage_matrix.get("nonAdmissionControlFixtures", [])
+    if isinstance(entry, dict)
 }
 actual_admission_rejected_fixtures = {
     path for path in Path("k8s/fixtures/rejected").glob("*.yaml")
@@ -975,10 +980,24 @@ for exact_fixture, expected_errors in exact_rejected_expectations.items():
             f"got {', '.join(fixture_errors) if fixture_errors else '<none>'}"
         )
 
-rbac_rejected_expectations = {
-    Path("k8s/fixtures/rejected/rbac-extra-workload-permission.yaml"): "must match exact approved RBAC rules",
-}
-for rejected_fixture, expected_error in rbac_rejected_expectations.items():
+for entry in fixture_coverage_matrix.get("nonAdmissionControlFixtures", []):
+    if not isinstance(entry, dict):
+        continue
+    rejected_fixture = Path(str(entry.get("path", "")))
+    expected_error = str(entry.get("expectedErrorContains", ""))
+    if not expected_error:
+        errors.append(f"{rejected_fixture} missing expectedErrorContains")
+        continue
+    if "overlay-traversal" in str(entry.get("coverageId", "")):
+        fixture_errors = overlay_errors(rejected_fixture)
+        if not fixture_errors:
+            errors.append(f"{rejected_fixture} should be rejected but has no overlay errors")
+            continue
+        if not any(expected_error in fixture_error for fixture_error in fixture_errors):
+            errors.append(
+                f"{rejected_fixture} missing expected rejection {expected_error}; got {', '.join(fixture_errors)}"
+            )
+        continue
     docs = read_yaml_documents(rejected_fixture)
     fixture_errors: list[str] = []
     for doc in docs:
@@ -998,6 +1017,80 @@ areas = {
     for area in criteria.get("areas", [])
     if isinstance(area, dict) and area.get("id")
 }
+required_k8s_subcriteria = {
+    "k8s_loop_contract": {"weight": 10, "currentPercent": 100},
+    "k8s_base_controls_static": {"weight": 15, "currentPercent": 100},
+    "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
+    "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
+    "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 0},
+    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 0},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 40},
+    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
+}
+
+
+def validate_k8s_subcriteria(area: dict) -> None:
+    subcriteria = area.get("subCriteria")
+    if not isinstance(subcriteria, list) or not subcriteria:
+        errors.append("k8s_platformization must define granular subCriteria")
+        return
+    by_id = {
+        item.get("id"): item
+        for item in subcriteria
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    missing = sorted(set(required_k8s_subcriteria) - set(by_id))
+    extra = sorted(set(by_id) - set(required_k8s_subcriteria))
+    if missing:
+        errors.append("k8s_platformization subCriteria missing ids: " + ", ".join(missing))
+    if extra:
+        errors.append("k8s_platformization subCriteria has extra ids: " + ", ".join(extra))
+    total_weight = 0
+    weighted_score = 0.0
+    for item_id, expected in required_k8s_subcriteria.items():
+        item = by_id.get(item_id)
+        if not item:
+            continue
+        weight = item.get("weight")
+        current = item.get("currentPercent")
+        target = item.get("targetPercent")
+        total_weight += int(weight) if isinstance(weight, int) else 0
+        if weight != expected["weight"]:
+            errors.append(f"{item_id} weight must be {expected['weight']}")
+        if current != expected["currentPercent"]:
+            errors.append(f"{item_id} currentPercent must be {expected['currentPercent']}")
+        if target != 100:
+            errors.append(f"{item_id} targetPercent must be 100")
+        if isinstance(weight, int) and isinstance(current, int):
+            weighted_score += weight * current / 100
+        evidence_paths = item.get("currentEvidence")
+        if not isinstance(evidence_paths, list):
+            errors.append(f"{item_id} currentEvidence must be a list")
+        elif current != 0 and not evidence_paths:
+            errors.append(f"{item_id} currentEvidence must be non-empty for non-zero progress")
+        else:
+            for evidence_path in evidence_paths:
+                if not isinstance(evidence_path, str) or not Path(evidence_path).exists():
+                    errors.append(f"{item_id} currentEvidence path does not exist: {evidence_path}")
+        gaps = item.get("gaps")
+        if current == 100:
+            if gaps:
+                errors.append(f"{item_id} scored 100 must not retain open gaps")
+        else:
+            if not isinstance(gaps, list) or not gaps:
+                errors.append(f"{item_id} below 100 must list gaps")
+            if not item.get("nextIssueTitle"):
+                errors.append(f"{item_id} below 100 must name nextIssueTitle")
+    if total_weight != 100:
+        errors.append(f"k8s_platformization subCriteria weights must sum to 100, got {total_weight}")
+    expected_area_score = round(weighted_score)
+    if area.get("currentPercent") != expected_area_score:
+        errors.append(
+            f"k8s_platformization currentPercent must equal weighted subCriteria score {expected_area_score}"
+        )
+
+
 k8s_area = areas.get("k8s_platformization")
 if not k8s_area:
     errors.append("criteria.json missing k8s_platformization area")
@@ -1005,6 +1098,7 @@ else:
     if k8s_area.get("currentPercent") in (None, 100):
         errors.append("k8s_platformization must remain below 100 until runtime evidence closes it")
     require_exact_k8s_current_evidence(k8s_area)
+    validate_k8s_subcriteria(k8s_area)
     next_issues = k8s_area.get("nextIssues", [])
     if len(next_issues) < 5:
         errors.append("k8s_platformization must publish at least five issue candidates")

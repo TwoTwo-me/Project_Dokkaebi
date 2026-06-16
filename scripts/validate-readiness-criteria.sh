@@ -15,6 +15,7 @@ criteria_path = Path(
     os.environ.get("READINESS_CRITERIA_PATH", "docs/enterprise-readiness/criteria.json")
 )
 k8s_evidence_lock_path = Path("docs/enterprise-readiness/k8s-platformization-current-evidence.json")
+k8s_fixture_coverage_path = Path("docs/enterprise-readiness/k8s-platformization-fixture-coverage.json")
 report_path = Path("docs/reports/company-readiness-assessment.md")
 loop_path = Path("docs/enterprise-readiness/development-loop.md")
 issue_form_path = Path(".github/ISSUE_TEMPLATE/development-system-task.yml")
@@ -25,6 +26,7 @@ errors: list[str] = []
 for path in [
     criteria_path,
     k8s_evidence_lock_path,
+    k8s_fixture_coverage_path,
     report_path,
     loop_path,
     issue_form_path,
@@ -108,6 +110,80 @@ def evidence_path_exists(evidence_path: str) -> bool:
         evidence_path.startswith(submodule_root + "/")
         and submodule_gitlink_exists(submodule_root)
     )
+
+
+required_k8s_subcriteria = {
+    "k8s_loop_contract": {"weight": 10, "currentPercent": 100},
+    "k8s_base_controls_static": {"weight": 15, "currentPercent": 100},
+    "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
+    "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
+    "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 0},
+    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 0},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 40},
+    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
+}
+
+
+def validate_k8s_subcriteria(area: dict) -> None:
+    subcriteria = area.get("subCriteria")
+    if not isinstance(subcriteria, list) or not subcriteria:
+        errors.append("k8s_platformization must define granular subCriteria")
+        return
+    by_id = {
+        item.get("id"): item
+        for item in subcriteria
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+    missing = sorted(set(required_k8s_subcriteria) - set(by_id))
+    extra = sorted(set(by_id) - set(required_k8s_subcriteria))
+    if missing:
+        errors.append("k8s_platformization subCriteria missing ids: " + ", ".join(missing))
+    if extra:
+        errors.append("k8s_platformization subCriteria has extra ids: " + ", ".join(extra))
+    total_weight = 0
+    weighted_score = 0.0
+    for item_id, expected in required_k8s_subcriteria.items():
+        item = by_id.get(item_id)
+        if not item:
+            continue
+        weight = item.get("weight")
+        current = item.get("currentPercent")
+        target = item.get("targetPercent")
+        total_weight += int(weight) if isinstance(weight, int) else 0
+        if weight != expected["weight"]:
+            errors.append(f"{item_id} weight must be {expected['weight']}")
+        if current != expected["currentPercent"]:
+            errors.append(f"{item_id} currentPercent must be {expected['currentPercent']}")
+        if target != 100:
+            errors.append(f"{item_id} targetPercent must be 100")
+        if isinstance(weight, int) and isinstance(current, int):
+            weighted_score += weight * current / 100
+        evidence_paths = item.get("currentEvidence")
+        if not isinstance(evidence_paths, list):
+            errors.append(f"{item_id} currentEvidence must be a list")
+        elif current != 0 and not evidence_paths:
+            errors.append(f"{item_id} currentEvidence must be non-empty for non-zero progress")
+        else:
+            for evidence_path in evidence_paths:
+                if not isinstance(evidence_path, str) or not evidence_path_exists(evidence_path):
+                    errors.append(f"{item_id} currentEvidence path does not exist: {evidence_path}")
+        gaps = item.get("gaps")
+        if current == 100:
+            if gaps:
+                errors.append(f"{item_id} scored 100 must not retain open gaps")
+        else:
+            if not isinstance(gaps, list) or not gaps:
+                errors.append(f"{item_id} below 100 must list gaps")
+            if not item.get("nextIssueTitle"):
+                errors.append(f"{item_id} below 100 must name nextIssueTitle")
+    if total_weight != 100:
+        errors.append(f"k8s_platformization subCriteria weights must sum to 100, got {total_weight}")
+    expected_area_score = round(weighted_score)
+    if area.get("currentPercent") != expected_area_score:
+        errors.append(
+            f"k8s_platformization currentPercent must equal weighted subCriteria score {expected_area_score}"
+        )
 
 required_top = {
     "version",
@@ -250,6 +326,7 @@ else:
 
         if area_id == "k8s_platformization":
             require_exact_k8s_current_evidence(area)
+            validate_k8s_subcriteria(area)
             if len(area.get("nextIssues", [])) < 5:
                 errors.append(f"{area_id} must publish at least five nextIssues")
             required_issue_anchors = {

@@ -17,6 +17,10 @@ The K8S `currentEvidence` list is additionally locked by
 [`k8s-platformization-current-evidence.json`](k8s-platformization-current-evidence.json),
 so adding, removing, or reordering K8S evidence must update the lock and
 validators in the same change.
+K8S fixture coverage is additionally locked by
+[`k8s-platformization-fixture-coverage.json`](k8s-platformization-fixture-coverage.json),
+which maps every accepted route and denied unsafe class to a concrete fixture
+and expected validation result.
 
 ## Scoring Rules
 
@@ -43,7 +47,25 @@ validators in the same change.
 | compliance_audit | 100/100 | `bash scripts/validate-compliance-package.sh` |
 | productization_ux | 100/100 | `bash scripts/validate-onboarding-troubleshooting.sh` |
 | design_system | 100/100 | `bash scripts/validate-carbon-ui-baseline.sh` |
-| k8s_platformization | 55/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_platformization | 72/100 | `bash scripts/validate-k8s-platformization.sh` |
+
+## K8S Sub-Capability Scores
+
+`k8s_platformization` is weighted from the granular capabilities below. A
+sub-capability reaches 100 only when its evidence exists and validators enforce
+the evidence shape.
+
+| Capability | Score | Gate |
+| --- | ---: | --- |
+| k8s_loop_contract | 100/100 | `bash scripts/validate-readiness-criteria.sh` |
+| k8s_base_controls_static | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_admission_fixture_matrix | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_accepted_route_profile_fixtures | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_disposable_api_server_admission_rbac | 100/100 | `docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md` |
+| fire_k8s_deployment_runtime_smoke | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#fire-k8s-deployment-smoke` |
+| hammer_job_profile_runtime_smoke | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#hammer-job-profile-smoke` |
+| k8s_result_packet_reconciliation | 40/100 | `docs/operations/k8s-platformization-fixture-replay-2026-06-14.md` |
+| eks_identity_secret_boundary | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#eks-identity-and-secret-boundary` |
 
 ## Critical Capability Scores
 
@@ -61,14 +83,15 @@ validators in the same change.
 
 ## K8S Remaining Issue Gates
 
-`k8s_platformization` remains 55/100 because live or approved-sandbox runtime
-proof is still missing. The remaining score increase is blocked on the five
-candidate issues below, which preserve the docs-only approval boundary until a
-Human explicitly approves a live target.
+`k8s_platformization` is 72/100 after the granular score split, route-profile
+accepted fixtures, fixture coverage matrix, and disposable API server
+admission/RBAC proof. It must not mark a score 100 until the remaining
+Fire, Hammer runtime, reconciliation, and EKS identity gaps below are proven
+with durable evidence.
 
 | Issue gate | Required proof |
 | --- | --- |
-| `k8s-admission-policy-gate` | Admission policy installation or approved-sandbox proof fails closed for unsafe Hammer Jobs, including missing or empty authority labels, missing result packet sink, repo-local wrong apiVersion or kind fixture schema, unapproved image/profile, empty resources, invalid, duplicate, bare, initContainer, or ephemeralContainer result sink, privileged/capability escalation, hostNetwork, hostPort, hostPID, hostIPC, shareProcessNamespace, broad volume mount, default-root security contexts, ephemeral debug bypass, imagePullSecrets, projected token/Secret material, unsafe overlay traversal, RBAC expansion, Secret access, and `hammer-no-k8s` token override. |
+| `k8s-admission-policy-gate` | Keep the fixture coverage matrix and disposable API server admission proof current when new deny classes, route profiles, images, result packet sinks, or `hammer-no-k8s` token override paths are added. |
 | `fire-k8s-deployment-smoke` | Fire starts in Kubernetes and creates only approved Hammer Jobs with least privilege. |
 | `hammer-job-profile-smoke` | Each Hammer profile proves route metadata, result evidence, and can/cannot boundaries. |
 | `k8s-result-packet-reconciliation` | GitHub Project state, Kubernetes Job state, logs, PR/checks, and result packets reconcile before closeout. |
