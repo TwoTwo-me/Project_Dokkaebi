@@ -27,6 +27,8 @@ then validated with:
 
 ```bash
 bash scripts/validate-readiness-criteria.sh
+bash scripts/validate-enterprise-scorecard.sh
+bash scripts/validate-all.sh
 ```
 
 ## Closed Loop
@@ -69,13 +71,29 @@ Self-improvement work follows the same loop as product work:
 2. Capture RED evidence showing the missing or weak loop behavior.
 3. Make the smallest criteria, documentation, issue-template, or validator
    change that closes the gap.
-4. Run readiness, contract, package, git-governance, and targeted validation.
+4. Run readiness, scorecard, contract, package, git-governance, all-validator,
+   and targeted validation.
 5. Open and merge a pull request before using the improved loop to rescore
    readiness.
 
 The loop must not use self-improvement to bypass Human approval, weaken result
 evidence, skip validation, mutate production or infrastructure, or mark a
 criterion 100% without evidence.
+
+## Program Scorecard
+
+[`project-scorecard.md`](project-scorecard.md) is the human-readable program
+scorecard for the 100-point loop. It must stay derived from `criteria.json`,
+must show any item below 100 with explicit gaps and next issue gates, and must
+not mark a score 100 unless the evidence and validators are already present.
+
+Scorecard changes must run:
+
+```bash
+bash scripts/validate-enterprise-scorecard.sh
+bash scripts/validate-readiness-criteria.sh
+bash scripts/validate-all.sh
+```
 
 ## Issue Contract
 
@@ -94,6 +112,41 @@ GitHub Project `Status` remains the lifecycle source of truth for work items.
 Issues, workpads, pull requests, logs, and validation outputs are evidence
 surfaces. Repository issues that are not attached to the approved Project are
 planning backlog, not active lifecycle records.
+
+## K8S Platformization Lane
+
+Kubernetes Fire and Hammer platformization is tracked as a first-class readiness
+lane in [`criteria.json`](criteria.json) under `k8s_platformization`. The initial
+publication surface is the repo-local issue backlog in
+[`k8s-platformization-issues.md`](k8s-platformization-issues.md), not live
+GitHub mutation. These candidates let the loop keep producing reviewable work
+while preserving the approval boundary for GitHub Project control-plane,
+cluster, credential, worker, deployment, and production changes.
+
+Before a K8S platformization candidate becomes dispatchable, a Manager must:
+
+- file or update the public GitHub issue without including secrets, private
+  machine paths, raw tokens, or private tool execution labels;
+- attach the issue to an approved GitHub Project with lifecycle/admission
+  fields;
+- preserve the relevant criteria id, scope, non-goals, validation commands,
+  approval gates, manual QA channel, and expected result evidence;
+- keep live cluster, EKS, Docker, remote host, credential, worker, deployment,
+  production, and GitHub Project control-plane mutation blocked unless explicit
+  Human approval names the exact target and operation.
+
+The K8S lane improves itself through the same RED/GREEN evidence rule as the
+general readiness loop. If a K8S issue candidate is not dispatchable, a
+validator misses unsafe RBAC, or a documented admission/result-packet boundary
+is not enforceable, the next issue should fix the loop before additional
+runtime scope is added.
+
+A K8S loop iteration may close while `k8s_platformization` remains below 100%
+only when the remaining runtime gaps are explicit `nextIssues`, the validator
+still fails closed for unsafe or incomplete evidence, and the closeout states
+that live or approved-sandbox proof is still required. The loop must not turn
+repo-local fixtures, static manifests, or replay tables into a production-ready
+score.
 
 ## Worktree And Branch Contract
 

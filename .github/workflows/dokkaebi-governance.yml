@@ -33,6 +33,15 @@ jobs:
       - name: Validate enterprise readiness criteria
         run: bash scripts/validate-readiness-criteria.sh
 
+      - name: Validate enterprise scorecard loop
+        run: bash scripts/validate-enterprise-scorecard.sh
+
+      - name: Validate K8S platformization loop
+        run: bash scripts/validate-k8s-platformization.sh
+
+      - name: Validate all repository governance gates
+        run: bash scripts/validate-all.sh
+
   git-governance:
     name: git-governance
     if: github.event_name == 'pull_request'

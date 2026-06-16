@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hammer-ticket-pdk8s-reject-005
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/ticket-id: PDK8S-REJECT-005
+    dokkaebi.io/tenant-id: tenant-sandbox
+    dokkaebi.io/approval-id: approval-docs-only-2026-06-14
+    dokkaebi.io/route-profile: hammer-k8s-readonly
+    dokkaebi.io/credential-grant-id: grant-docs-only-none
+    dokkaebi.io/image-profile: dokkaebi-hammer-dev-sandbox
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dokkaebi-hammer
+        app.kubernetes.io/part-of: dokkaebi
+        dokkaebi.io/ticket-id: PDK8S-REJECT-005
+        dokkaebi.io/tenant-id: tenant-sandbox
+        dokkaebi.io/route-profile: hammer-k8s-readonly
+    spec:
+      restartPolicy: Never
+      serviceAccountName: hammer-k8s-readonly
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: hammer
+        image: ghcr.io/project-dokkaebi/hammer:dev-sandbox
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DOKKAEBI_TICKET_ID
+          value: PDK8S-REJECT-005
+        - name: DOKKAEBI_PERMISSION_LEVEL
+          value: docs-only
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+          capabilities:
+            drop:
+            - ALL

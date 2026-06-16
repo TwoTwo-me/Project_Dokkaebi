@@ -177,7 +177,10 @@
         "docs/operations/runtime-quality-gate-exercise-2026-06-14.md",
         "scripts/validate-runtime-quality-gate-exercise.sh",
         "symphony-github-project-tracker/elixir/Makefile",
-        "symphony-github-project-tracker/elixir/test"
+        "symphony-github-project-tracker/elixir/test",
+        "docs/enterprise-readiness/project-scorecard.md",
+        "scripts/validate-enterprise-scorecard.sh",
+        "scripts/validate-all.sh"
       ],
       "gaps": [],
       "evaluationQuestions": [
@@ -499,6 +502,248 @@
         "Cross-browser residual-risk statement"
       ],
       "nextIssues": []
+    },
+    {
+      "id": "k8s_platformization",
+      "name": "Kubernetes Fire and Hammer platformization",
+      "currentPercent": 55,
+      "targetPercent": 100,
+      "enterpriseStandard": "Dokkaebi Fire runs inside Kubernetes with least-privilege Job orchestration, Hammer runs as one scoped Job per ticket, admission/RBAC/NetworkPolicy enforce route boundaries, and GitHub Project lifecycle, result packets, PRs, logs, and audit evidence reconcile without trusting issue prose.",
+      "currentEvidence": [
+        "docs/reports/dokkaebi-k8s-only-comparison.md",
+        "docs/reports/project-dokkaebi-k8s-handoff.md",
+        "docs/adr/0002-k8s-fire-hammer-platformization.md",
+        "docs/enterprise-readiness/k8s-platformization-issues.md",
+        "docs/enterprise-readiness/k8s-platformization-current-evidence.json",
+        "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md",
+        "docs/enterprise-readiness/development-loop.md",
+        "k8s/base/kustomization.yaml",
+        "k8s/base/namespace.yaml",
+        "k8s/base/serviceaccounts.yaml",
+        "k8s/base/rbac-fire.yaml",
+        "k8s/base/rbac-hammer-profiles.yaml",
+        "k8s/base/admission-policy.yaml",
+        "k8s/base/networkpolicy.yaml",
+        "k8s/fixtures/accepted/hammer-job-approved.yaml",
+        "k8s/fixtures/rejected/missing-approval-id.yaml",
+        "k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml",
+        "k8s/fixtures/rejected/privileged-hostpath.yaml",
+        "k8s/fixtures/rejected/secret-env-reference.yaml",
+        "k8s/fixtures/rejected/missing-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/hostnetwork.yaml",
+        "k8s/fixtures/rejected/hostport.yaml",
+        "k8s/fixtures/rejected/broad-volume-mount.yaml",
+        "k8s/overlays/local/kustomization.yaml",
+        "k8s/overlays/eks/kustomization.yaml",
+        "scripts/validate-k8s-platformization.sh",
+        "scripts/validate-readiness-criteria.sh",
+        "docs/enterprise-readiness/project-scorecard.md",
+        "k8s/fixtures/rejected/hostpid.yaml",
+        "k8s/fixtures/rejected/hostipc.yaml",
+        "k8s/fixtures/rejected/share-process-namespace.yaml",
+        "k8s/fixtures/rejected/init-container-privileged.yaml",
+        "k8s/fixtures/rejected/ephemeral-container-privileged.yaml",
+        "k8s/fixtures/rejected/root-pod-security-context.yaml",
+        "k8s/fixtures/rejected/no-k8s-token-override.yaml",
+        "k8s/fixtures/rejected/unapproved-image-profile.yaml",
+        "k8s/fixtures/rejected/invalid-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/wrong-kind.yaml",
+        "k8s/fixtures/rejected/projected-serviceaccount-token.yaml",
+        "k8s/fixtures/rejected/projected-secret.yaml",
+        "k8s/fixtures/rejected/csi-secret-store.yaml",
+        "k8s/fixtures/rejected/image-pull-secrets.yaml",
+        "k8s/fixtures/rejected/overlay-traversal-kustomization.yaml",
+        "k8s/fixtures/rejected/rbac-extra-workload-permission.yaml",
+        "k8s/fixtures/rejected/empty-approval-id.yaml",
+        "k8s/fixtures/rejected/empty-credential-grant-id.yaml",
+        "k8s/fixtures/rejected/empty-ticket-id.yaml",
+        "k8s/fixtures/rejected/container-privileged-only.yaml",
+        "k8s/fixtures/rejected/capabilities-add.yaml",
+        "k8s/fixtures/rejected/ephemeral-container-secret-env.yaml",
+        "k8s/fixtures/rejected/ephemeral-container-root-mount.yaml",
+        "k8s/fixtures/rejected/bare-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/duplicate-invalid-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/duplicate-empty-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/init-container-invalid-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/init-container-empty-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/ephemeral-container-invalid-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/ephemeral-container-empty-result-packet-sink.yaml",
+        "k8s/fixtures/rejected/empty-resources.yaml",
+        "scripts/validate-enterprise-scorecard.sh",
+        "scripts/validate-all.sh",
+        "k8s/fixtures/rejected/missing-container-security-context.yaml",
+        "k8s/fixtures/rejected/missing-pod-security-context.yaml"
+      ],
+      "gaps": [
+        "Admission policy is represented by local accepted/rejected fixtures but not yet installed in any cluster.",
+        "Fire Deployment packaging and live startup smoke remain future work.",
+        "Hammer Job profile smoke is not yet proven against a live or approved sandbox Kubernetes target.",
+        "GitHub Project, Kubernetes Job status, logs, and result-packet reconciliation is locally replayed but not yet proven against a live or approved sandbox route.",
+        "EKS workload identity and Secret boundary decision is documented as deferred, but the final EKS identity strategy is not yet selected from live evidence."
+      ],
+      "evaluationQuestions": [
+        "Can Fire create only approved Hammer Jobs while being unable to read Secrets or mutate RBAC, namespaces, CRDs, nodes, persistent volumes, or production application resources?",
+        "Can each Hammer route profile prove least privilege, result evidence, and cleanup without sharing a broad ServiceAccount?",
+        "Can admission reject malformed or over-privileged Job requests even when issue text or result packets are prompt-injection surfaces?",
+        "Can the Manager reconcile GitHub Project lifecycle state, Kubernetes Job state, logs, PR/check state, and result packet evidence before closeout?"
+      ],
+      "evidenceRequired": [
+        "K8S architecture ADR",
+        "Repo-local issue publication backlog",
+        "Kustomize base and overlays for namespaces, ServiceAccounts, RBAC, and NetworkPolicy",
+        "Static RBAC and loop validator output",
+        "Admission accepted/rejected fixture evidence",
+        "Repository-local Fire/Hammer can/cannot matrix",
+        "Result packet and Job status reconciliation replay",
+        "EKS identity and Secret access boundary record",
+        "Fire-in-K8S startup and approved Hammer Job creation smoke",
+        "Hammer Job profile can/cannot matrix against a live or approved sandbox route"
+      ],
+      "nextIssues": [
+        {
+          "title": "Define K8S admission policy gate for Hammer Jobs",
+          "githubIssueUrl": "https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S/issues/new?template=development-system-task.yml",
+          "publicationStatus": "candidate-not-published",
+          "issueBodyPath": "docs/enterprise-readiness/k8s-platformization-issues.md#k8s-admission-policy-gate",
+          "acceptanceCriteria": [
+            "Accepted Job fixture includes ticket id, tenant id, approval id, route profile, credential grant id, approved image/profile, resource requests and limits, result packet sink, namespace, and ServiceAccount match.",
+            "Rejected fixtures cover missing or empty approval, ticket, and credential labels, missing result packet sink, invalid, duplicate-invalid, duplicate-empty, bare-prefix, initContainer, and ephemeralContainer result packet sinks, mismatched ServiceAccount/profile, repo-local wrong apiVersion or kind fixture schema, unapproved image/profile, empty resources, hostPath, privileged containers, capabilities.add, hostNetwork, hostPort, hostPID, hostIPC, shareProcessNamespace, broad volume mount, missing/default-root pod and container security contexts, pod-level root execution, initContainer privilege, ephemeralContainer privilege, ephemeral Secret env/root mount bypass, imagePullSecrets, projected service account token, projected Secret, CSI secret-store volume, hammer-no-k8s token override, overlay traversal, unauthorized RBAC expansion, and Secret access.",
+            "Validation fails closed without live cluster mutation."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-k8s-platformization.sh",
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "bash scripts/validate-enterprise-scorecard.sh",
+            "bash scripts/validate-all.sh"
+          ],
+          "authorityRequirement": "Docs-only by default. Live admission controller, Kubernetes API server, EKS, cloud, credential, deployment, production, worker, Docker, remote host, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Admission decision matrix",
+            "RED denied-fixture evidence and GREEN validator output",
+            "Approval-gate status",
+            "Cleanup receipt",
+            "Residual risk and next action"
+          ]
+        },
+        {
+          "title": "Package Fire Deployment smoke with least-privilege Job orchestration",
+          "githubIssueUrl": "https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S/issues/new?template=development-system-task.yml",
+          "publicationStatus": "candidate-not-published",
+          "issueBodyPath": "docs/enterprise-readiness/k8s-platformization-issues.md#fire-k8s-deployment-smoke",
+          "acceptanceCriteria": [
+            "Fire manifest references only approved non-secret configuration and a brokered credential path.",
+            "Fire ServiceAccount can create/get/list/watch/delete Jobs and read Job Pods, Pod logs, Events, and non-secret ConfigMaps only in approved namespaces.",
+            "Fire cannot get/list/watch Secrets and cannot mutate RBAC, namespaces, CRDs, nodes, persistent volumes, or production application resources.",
+            "Smoke plan names the exact later command that proves Fire starts, reads GitHub Project configuration, creates only an approved Hammer Job, and writes result evidence back to the configured surface."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-k8s-platformization.sh",
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "bash scripts/validate-enterprise-scorecard.sh",
+            "bash scripts/validate-all.sh"
+          ],
+          "authorityRequirement": "Docs-only by default. Live Kubernetes, EKS, cloud, credential, deployment, production, worker, Docker, remote host, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Rendered manifest evidence",
+            "RBAC can/cannot matrix",
+            "Validation output",
+            "Approval-gate status",
+            "Cleanup receipt",
+            "Residual risk and next action"
+          ]
+        },
+        {
+          "title": "Prove Hammer Job profile smoke and route-result metadata",
+          "githubIssueUrl": "https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S/issues/new?template=development-system-task.yml",
+          "publicationStatus": "candidate-not-published",
+          "issueBodyPath": "docs/enterprise-readiness/k8s-platformization-issues.md#hammer-job-profile-smoke",
+          "acceptanceCriteria": [
+            "hammer-no-k8s has no Kubernetes API token mounted and cannot override the no-token boundary through the Job pod spec.",
+            "Every Kubernetes-capable Hammer profile has a named namespace, ServiceAccount, resource limits, image/profile, result packet sink, cleanup rule, and approval boundary.",
+            "Breakglass remains unbound and inactive unless a later ADR and Human approval define expiry, reason, audit, and cleanup.",
+            "Result packet evidence names route profile, namespace, ServiceAccount, image digest, exit status, log surface, validation output, and cleanup result."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-k8s-platformization.sh",
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "bash scripts/validate-enterprise-scorecard.sh",
+            "bash scripts/validate-all.sh"
+          ],
+          "authorityRequirement": "Docs-only by default. Live worker, Kubernetes, Docker, credential, deployment, production, remote host, cloud, EKS, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Profile matrix",
+            "Route metadata",
+            "Result packet schema update if needed",
+            "Validation output",
+            "Approval-gate status",
+            "Cleanup receipt",
+            "Residual risk and next action"
+          ]
+        },
+        {
+          "title": "Define K8S result packet and GitHub lifecycle reconciliation",
+          "githubIssueUrl": "https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S/issues/new?template=development-system-task.yml",
+          "publicationStatus": "candidate-not-published",
+          "issueBodyPath": "docs/enterprise-readiness/k8s-platformization-issues.md#k8s-result-packet-reconciliation",
+          "acceptanceCriteria": [
+            "Reconciliation rejects Done when GitHub Project status, Job status, logs, result packet, PR/check state, or approval evidence disagree.",
+            "Stale or failed Jobs become follow-up issues or Fix Requested with preserved route/result metadata.",
+            "Closeout evidence remains durable outside Manager memory.",
+            "A local replay proves the reject/accept matrix without live external writes."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-k8s-platformization.sh",
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "bash scripts/validate-enterprise-scorecard.sh",
+            "bash scripts/validate-all.sh"
+          ],
+          "authorityRequirement": "Docs-only by default. Live GitHub Project, Kubernetes, credential, worker, Docker, remote host, deployment, production, cloud, or EKS mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Accepted and rejected replay evidence",
+            "Validation output",
+            "Approval-gate status",
+            "Cleanup receipt",
+            "Residual risk and next action"
+          ]
+        },
+        {
+          "title": "Decide EKS workload identity and Secret boundary",
+          "githubIssueUrl": "https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S/issues/new?template=development-system-task.yml",
+          "publicationStatus": "candidate-not-published",
+          "issueBodyPath": "docs/enterprise-readiness/k8s-platformization-issues.md#eks-identity-and-secret-boundary",
+          "acceptanceCriteria": [
+            "Decision record names why the selected identity strategy fits Fire, Hammer, credential broker, tenant RBAC, and audit requirements.",
+            "Secret access remains default denied; any named Secret exception requires Human approval, reason, expiry, and cleanup evidence.",
+            "Hammer prompts, issue bodies, result packets, Job env, logs, and artifacts must not include raw Manager PATs, OAuth tokens, SSH private keys, kubeconfigs, cloud credentials, or GitHub App private keys.",
+            "Validation fails closed on broad Secret read/list/watch or missing approval boundary text."
+          ],
+          "validationRequired": [
+            "bash scripts/validate-k8s-platformization.sh",
+            "bash scripts/validate-readiness-criteria.sh",
+            "bash scripts/validate-contract-docs.sh",
+            "bash scripts/validate-enterprise-scorecard.sh",
+            "bash scripts/validate-all.sh"
+          ],
+          "authorityRequirement": "Docs-only by default. Live AWS, EKS, IAM, credential, Kubernetes, production, deployment, worker, Docker, remote host, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "resultEvidence": [
+            "Changed artifacts and rationale",
+            "Decision record",
+            "Capability matrix",
+            "RED/GREEN validation",
+            "Approval-gate status",
+            "Cleanup receipt",
+            "Residual risk and next action"
+          ]
+        }
+      ]
     }
   ],
   "criticalCapabilities": [

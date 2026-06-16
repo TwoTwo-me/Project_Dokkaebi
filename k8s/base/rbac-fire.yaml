@@ -1,0 +1,41 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dokkaebi-fire-job-orchestrator
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dokkaebi-fire-job-orchestrator
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dokkaebi-fire-job-orchestrator
+subjects:
+  - kind: ServiceAccount
+    name: dokkaebi-fire
+    namespace: dokkaebi-system

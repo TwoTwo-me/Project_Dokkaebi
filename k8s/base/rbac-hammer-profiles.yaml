@@ -1,0 +1,104 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hammer-k8s-readonly
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-readonly
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "events", "configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hammer-k8s-readonly
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-readonly
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hammer-k8s-readonly
+subjects:
+  - kind: ServiceAccount
+    name: hammer-k8s-readonly
+    namespace: dokkaebi-workers
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hammer-k8s-app-deployer
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-app-deployer
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets", "statefulsets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["services", "configmaps", "pods", "pods/log", "events"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hammer-k8s-app-deployer
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-app-deployer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hammer-k8s-app-deployer
+subjects:
+  - kind: ServiceAccount
+    name: hammer-k8s-app-deployer
+    namespace: dokkaebi-workers
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: hammer-k8s-job-runner
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-job-runner
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "events", "configmaps"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: hammer-k8s-job-runner
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/route-profile: hammer-k8s-job-runner
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: hammer-k8s-job-runner
+subjects:
+  - kind: ServiceAccount
+    name: hammer-k8s-job-runner
+    namespace: dokkaebi-workers
