@@ -46,9 +46,11 @@ See:
 - [`docs/policies/git-governance.md`](docs/policies/git-governance.md)
 - [`docs/enterprise-readiness/criteria.json`](docs/enterprise-readiness/criteria.json)
 - [`docs/enterprise-readiness/development-loop.md`](docs/enterprise-readiness/development-loop.md)
+- [`docs/enterprise-readiness/k8s-platformization-issues.md`](docs/enterprise-readiness/k8s-platformization-issues.md)
 - [`docs/operations/fire-sandbox-service.md`](docs/operations/fire-sandbox-service.md)
 - [`docs/operations/toolchain-bootstrap.md`](docs/operations/toolchain-bootstrap.md)
 - [`docs/adapters/hermes.md`](docs/adapters/hermes.md)
+- [`docs/adr/0002-k8s-fire-hammer-platformization.md`](docs/adr/0002-k8s-fire-hammer-platformization.md)
 - [`docs/templates/worker-ticket.md`](docs/templates/worker-ticket.md)
 - [`docs/templates/worker-result-packet.md`](docs/templates/worker-result-packet.md)
 
@@ -79,6 +81,9 @@ for local/remote install rules and `dokkaebi-hammer` reset boundaries.
    bash scripts/validate-dokkaebi-plugin.sh
    bash scripts/validate-contract-docs.sh
    bash scripts/validate-readiness-criteria.sh
+   bash scripts/validate-enterprise-scorecard.sh
+   bash scripts/validate-k8s-platformization.sh
+   bash scripts/validate-all.sh
    ```
 
 3. Use
@@ -86,6 +91,9 @@ for local/remote install rules and `dokkaebi-hammer` reset boundaries.
    as the company-readiness criteria source of truth. The operating loop for
    issue, worktree, pull request, merge, and re-evaluation is documented in
    [`docs/enterprise-readiness/development-loop.md`](docs/enterprise-readiness/development-loop.md).
+   The human-readable scorecard is
+   [`docs/enterprise-readiness/project-scorecard.md`](docs/enterprise-readiness/project-scorecard.md)
+   and is validated by `bash scripts/validate-enterprise-scorecard.sh`.
 4. Configure Dokkaebi Fire from
    [`symphony-github-project-tracker/elixir/WORKFLOW.md`](symphony-github-project-tracker/elixir/WORKFLOW.md).
    A single `tracker.project_id` remains valid; new multi-project deployments
@@ -100,6 +108,17 @@ for local/remote install rules and `dokkaebi-hammer` reset boundaries.
 7. Keep GitHub Project `Status` as the lifecycle source of truth. Fire logs,
    Hammer logs, workpads, PRs, and validation artifacts are evidence surfaces,
    not replacement state.
+
+## Kubernetes platformization
+
+The K8S lane keeps GitHub Project as the short-term lifecycle source while
+moving Fire and Hammer execution into Kubernetes behind RBAC, admission, and
+NetworkPolicy. The static contract starts in [`k8s/base`](k8s/base), with local
+and EKS overlays under [`k8s/overlays`](k8s/overlays). Repo-local issue
+candidates are published in
+[`docs/enterprise-readiness/k8s-platformization-issues.md`](docs/enterprise-readiness/k8s-platformization-issues.md);
+they are backlog candidates until filed and attached to an approved GitHub
+Project.
 
 ## Initial scope
 

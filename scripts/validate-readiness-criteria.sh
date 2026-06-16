@@ -8,11 +8,13 @@ python3 - <<'PY'
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 
 criteria_path = Path(
     os.environ.get("READINESS_CRITERIA_PATH", "docs/enterprise-readiness/criteria.json")
 )
+k8s_evidence_lock_path = Path("docs/enterprise-readiness/k8s-platformization-current-evidence.json")
 report_path = Path("docs/reports/company-readiness-assessment.md")
 loop_path = Path("docs/enterprise-readiness/development-loop.md")
 issue_form_path = Path(".github/ISSUE_TEMPLATE/development-system-task.yml")
@@ -20,7 +22,14 @@ issue_config_path = Path(".github/ISSUE_TEMPLATE/config.yml")
 
 errors: list[str] = []
 
-for path in [criteria_path, report_path, loop_path, issue_form_path, issue_config_path]:
+for path in [
+    criteria_path,
+    k8s_evidence_lock_path,
+    report_path,
+    loop_path,
+    issue_form_path,
+    issue_config_path,
+]:
     if not path.is_file():
         errors.append(f"missing file: {path}")
 
@@ -34,6 +43,71 @@ try:
 except json.JSONDecodeError as exc:
     print(f"FAIL invalid JSON in {criteria_path}: {exc}", file=sys.stderr)
     sys.exit(1)
+
+
+def load_k8s_current_evidence_lock() -> list[str]:
+    if not k8s_evidence_lock_path.is_file():
+        return []
+    try:
+        lock = json.loads(k8s_evidence_lock_path.read_text())
+    except json.JSONDecodeError as exc:
+        errors.append(f"invalid JSON in {k8s_evidence_lock_path}: {exc}")
+        return []
+    if lock.get("areaId") != "k8s_platformization":
+        errors.append(f"{k8s_evidence_lock_path} areaId must be k8s_platformization")
+    evidence = lock.get("currentEvidence")
+    if not isinstance(evidence, list):
+        errors.append(f"{k8s_evidence_lock_path} currentEvidence must be a list")
+        return []
+    invalid = [repr(item) for item in evidence if not isinstance(item, str) or not item]
+    if invalid:
+        errors.append(f"{k8s_evidence_lock_path} has invalid currentEvidence entries: {', '.join(invalid)}")
+    return [item for item in evidence if isinstance(item, str)]
+
+
+def require_exact_k8s_current_evidence(area: dict) -> None:
+    expected = load_k8s_current_evidence_lock()
+    actual = area.get("currentEvidence")
+    if not isinstance(actual, list):
+        errors.append("k8s_platformization currentEvidence must be a list")
+        return
+    actual_strings = [item for item in actual if isinstance(item, str)]
+    if actual != actual_strings:
+        errors.append("k8s_platformization currentEvidence entries must all be strings")
+    if actual_strings == expected:
+        return
+    missing = [item for item in expected if item not in actual_strings]
+    extra = [item for item in actual_strings if item not in expected]
+    if missing:
+        errors.append("k8s_platformization currentEvidence missing locked entries: " + ", ".join(missing))
+    if extra:
+        errors.append("k8s_platformization currentEvidence has unlocked entries: " + ", ".join(extra))
+    if not missing and not extra:
+        errors.append("k8s_platformization currentEvidence order must match k8s evidence lock")
+
+
+def submodule_gitlink_exists(path: str) -> bool:
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "--stage", path],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return False
+    return result.stdout.startswith("160000 ")
+
+
+def evidence_path_exists(evidence_path: str) -> bool:
+    if Path(evidence_path).exists():
+        return True
+    submodule_root = "symphony-github-project-tracker"
+    return (
+        evidence_path.startswith(submodule_root + "/")
+        and submodule_gitlink_exists(submodule_root)
+    )
 
 required_top = {
     "version",
@@ -104,6 +178,7 @@ else:
         "compliance_audit",
         "productization_ux",
         "design_system",
+        "k8s_platformization",
     }
     seen = set()
     for area in areas:
@@ -128,6 +203,12 @@ else:
             value = area.get(field)
             if value in (None, "", []):
                 errors.append(f"{area_id} missing {field}")
+
+        for evidence_path in area.get("currentEvidence", []):
+            if not isinstance(evidence_path, str) or evidence_path.startswith("https://"):
+                continue
+            if not evidence_path_exists(evidence_path):
+                errors.append(f"{area_id} currentEvidence path does not exist: {evidence_path}")
 
         gaps = area.get("gaps")
         if not isinstance(gaps, list):
@@ -155,6 +236,37 @@ else:
                 errors.append(f"{area_id} has issue without authorityRequirement")
             if not issue.get("resultEvidence"):
                 errors.append(f"{area_id} has issue without resultEvidence")
+
+            if area_id == "k8s_platformization":
+                if issue.get("publicationStatus") != "candidate-not-published":
+                    errors.append(f"{area_id} issue must be candidate-not-published")
+                issue_body_path = issue.get("issueBodyPath", "")
+                if not issue_body_path.startswith("docs/enterprise-readiness/k8s-platformization-issues.md#"):
+                    errors.append(f"{area_id} issue missing k8s issueBodyPath anchor")
+                if "bash scripts/validate-k8s-platformization.sh" not in issue.get("validationRequired", []):
+                    errors.append(f"{area_id} issue missing validate-k8s-platformization.sh")
+                if "explicit Human approval" not in issue.get("authorityRequirement", ""):
+                    errors.append(f"{area_id} issue weakens Human approval boundary")
+
+        if area_id == "k8s_platformization":
+            require_exact_k8s_current_evidence(area)
+            if len(area.get("nextIssues", [])) < 5:
+                errors.append(f"{area_id} must publish at least five nextIssues")
+            required_issue_anchors = {
+                "Define K8S admission policy gate for Hammer Jobs": "docs/enterprise-readiness/k8s-platformization-issues.md#k8s-admission-policy-gate",
+                "Package Fire Deployment smoke with least-privilege Job orchestration": "docs/enterprise-readiness/k8s-platformization-issues.md#fire-k8s-deployment-smoke",
+                "Prove Hammer Job profile smoke and route-result metadata": "docs/enterprise-readiness/k8s-platformization-issues.md#hammer-job-profile-smoke",
+                "Define K8S result packet and GitHub lifecycle reconciliation": "docs/enterprise-readiness/k8s-platformization-issues.md#k8s-result-packet-reconciliation",
+                "Decide EKS workload identity and Secret boundary": "docs/enterprise-readiness/k8s-platformization-issues.md#eks-identity-and-secret-boundary",
+            }
+            actual_issue_anchors = {
+                issue.get("title"): issue.get("issueBodyPath")
+                for issue in area.get("nextIssues", [])
+                if isinstance(issue, dict)
+            }
+            for title, anchor in required_issue_anchors.items():
+                if actual_issue_anchors.get(title) != anchor:
+                    errors.append(f"{area_id} issue drift: {title} must point to {anchor}")
 
     missing_area_ids = sorted(expected_area_ids - seen)
     if missing_area_ids:
