@@ -506,8 +506,138 @@
     {
       "id": "k8s_platformization",
       "name": "Kubernetes Fire and Hammer platformization",
-      "currentPercent": 55,
+      "currentPercent": 72,
       "targetPercent": 100,
+      "subCriteria": [
+        {
+          "id": "k8s_loop_contract",
+          "name": "K8S loop contract and issue publication",
+          "weight": 10,
+          "currentPercent": 100,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "docs/adr/0002-k8s-fire-hammer-platformization.md",
+            "docs/enterprise-readiness/k8s-platformization-issues.md",
+            "docs/enterprise-readiness/development-loop.md"
+          ],
+          "gaps": [],
+          "nextIssueTitle": null
+        },
+        {
+          "id": "k8s_base_controls_static",
+          "name": "Kustomize, namespace, RBAC, ServiceAccount, and NetworkPolicy baseline",
+          "weight": 15,
+          "currentPercent": 100,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "k8s/base/kustomization.yaml",
+            "k8s/base/namespace.yaml",
+            "k8s/base/serviceaccounts.yaml",
+            "k8s/base/rbac-fire.yaml",
+            "k8s/base/rbac-hammer-profiles.yaml",
+            "k8s/base/networkpolicy.yaml",
+            "scripts/validate-k8s-platformization.sh"
+          ],
+          "gaps": [],
+          "nextIssueTitle": null
+        },
+        {
+          "id": "k8s_admission_fixture_matrix",
+          "name": "Admission deny fixture matrix and exact expected failures",
+          "weight": 20,
+          "currentPercent": 100,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "docs/enterprise-readiness/k8s-platformization-fixture-coverage.json",
+            "k8s/base/admission-policy.yaml",
+            "scripts/validate-k8s-platformization.sh"
+          ],
+          "gaps": [],
+          "nextIssueTitle": null
+        },
+        {
+          "id": "k8s_accepted_route_profile_fixtures",
+          "name": "Accepted route-profile fixtures for every approved Hammer ServiceAccount",
+          "weight": 15,
+          "currentPercent": 100,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml",
+            "docs/enterprise-readiness/k8s-platformization-fixture-coverage.json"
+          ],
+          "gaps": [],
+          "nextIssueTitle": null
+        },
+        {
+          "id": "k8s_disposable_api_server_admission_rbac",
+          "name": "Disposable Kubernetes API server admission and RBAC proof",
+          "weight": 10,
+          "currentPercent": 100,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md"
+          ],
+          "gaps": [],
+          "nextIssueTitle": null
+        },
+        {
+          "id": "fire_k8s_deployment_runtime_smoke",
+          "name": "Fire Deployment startup and approved Hammer Job creation smoke",
+          "weight": 10,
+          "currentPercent": 0,
+          "targetPercent": 100,
+          "currentEvidence": [],
+          "gaps": [
+            "Fire Deployment packaging and startup smoke are not yet proven against a running Kubernetes target.",
+            "Fire has not yet created only approved Hammer Jobs from a Kubernetes runtime surface."
+          ],
+          "nextIssueTitle": "Package Fire Deployment smoke with least-privilege Job orchestration"
+        },
+        {
+          "id": "hammer_job_profile_runtime_smoke",
+          "name": "Hammer Job profile runtime smoke and route-result metadata",
+          "weight": 10,
+          "currentPercent": 0,
+          "targetPercent": 100,
+          "currentEvidence": [],
+          "gaps": [
+            "Hammer profiles have static accepted fixtures but no executed Job smoke that captures route profile, namespace, ServiceAccount, image digest, exit status, log surface, and cleanup result.",
+            "Breakglass remains intentionally inactive pending later ADR and Human approval."
+          ],
+          "nextIssueTitle": "Prove Hammer Job profile smoke and route-result metadata"
+        },
+        {
+          "id": "k8s_result_packet_reconciliation",
+          "name": "Kubernetes Job, GitHub lifecycle, log, PR/check, and result-packet reconciliation",
+          "weight": 5,
+          "currentPercent": 40,
+          "targetPercent": 100,
+          "currentEvidence": [
+            "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md"
+          ],
+          "gaps": [
+            "Reconciliation is represented as a local replay, not yet proven against a running Fire/Hammer route.",
+            "Stale or failed Job closeout handling is not yet exercised with Kubernetes status and logs."
+          ],
+          "nextIssueTitle": "Define K8S result packet and GitHub lifecycle reconciliation"
+        },
+        {
+          "id": "eks_identity_secret_boundary",
+          "name": "EKS workload identity and Secret boundary",
+          "weight": 5,
+          "currentPercent": 0,
+          "targetPercent": 100,
+          "currentEvidence": [],
+          "gaps": [
+            "EKS workload identity strategy is intentionally deferred until live AWS/EKS evidence is approved.",
+            "Secret exceptions, if any, still require Human approval, reason, expiry, and cleanup evidence."
+          ],
+          "nextIssueTitle": "Decide EKS workload identity and Secret boundary"
+        }
+      ],
       "enterpriseStandard": "Dokkaebi Fire runs inside Kubernetes with least-privilege Job orchestration, Hammer runs as one scoped Job per ticket, admission/RBAC/NetworkPolicy enforce route boundaries, and GitHub Project lifecycle, result packets, PRs, logs, and audit evidence reconcile without trusting issue prose.",
       "currentEvidence": [
         "docs/reports/dokkaebi-k8s-only-comparison.md",
@@ -515,7 +645,9 @@
         "docs/adr/0002-k8s-fire-hammer-platformization.md",
         "docs/enterprise-readiness/k8s-platformization-issues.md",
         "docs/enterprise-readiness/k8s-platformization-current-evidence.json",
+        "docs/enterprise-readiness/k8s-platformization-fixture-coverage.json",
         "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md",
+        "docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md",
         "docs/enterprise-readiness/development-loop.md",
         "k8s/base/kustomization.yaml",
         "k8s/base/namespace.yaml",
@@ -524,7 +656,10 @@
         "k8s/base/rbac-hammer-profiles.yaml",
         "k8s/base/admission-policy.yaml",
         "k8s/base/networkpolicy.yaml",
+        "k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml",
         "k8s/fixtures/accepted/hammer-job-approved.yaml",
+        "k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml",
+        "k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml",
         "k8s/fixtures/rejected/missing-approval-id.yaml",
         "k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml",
         "k8s/fixtures/rejected/privileged-hostpath.yaml",
@@ -575,10 +710,9 @@
         "k8s/fixtures/rejected/missing-pod-security-context.yaml"
       ],
       "gaps": [
-        "Admission policy is represented by local accepted/rejected fixtures but not yet installed in any cluster.",
-        "Fire Deployment packaging and live startup smoke remain future work.",
-        "Hammer Job profile smoke is not yet proven against a live or approved sandbox Kubernetes target.",
-        "GitHub Project, Kubernetes Job status, logs, and result-packet reconciliation is locally replayed but not yet proven against a live or approved sandbox route.",
+        "Fire Deployment packaging and startup smoke remain future work.",
+        "Hammer Job profiles have static route fixtures but are not yet executed as Jobs with route-result metadata and cleanup evidence.",
+        "GitHub Project, Kubernetes Job status, logs, and result-packet reconciliation is locally replayed but not yet proven against a running Fire/Hammer route.",
         "EKS workload identity and Secret boundary decision is documented as deferred, but the final EKS identity strategy is not yet selected from live evidence."
       ],
       "evaluationQuestions": [
@@ -592,7 +726,10 @@
         "Repo-local issue publication backlog",
         "Kustomize base and overlays for namespaces, ServiceAccounts, RBAC, and NetworkPolicy",
         "Static RBAC and loop validator output",
+        "Machine-readable K8S fixture coverage matrix",
         "Admission accepted/rejected fixture evidence",
+        "Accepted route-profile fixtures for every approved Hammer ServiceAccount",
+        "Disposable Kubernetes API server admission and RBAC proof",
         "Repository-local Fire/Hammer can/cannot matrix",
         "Result packet and Job status reconciliation replay",
         "EKS identity and Secret access boundary record",
