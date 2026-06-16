@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import re
+import subprocess
 import sys
 
 errors: list[str] = []
@@ -82,6 +83,30 @@ def require_exact_k8s_current_evidence(area: dict) -> None:
         errors.append("k8s_platformization currentEvidence has unlocked entries: " + ", ".join(extra))
     if not missing and not extra:
         errors.append("k8s_platformization currentEvidence order must match k8s evidence lock")
+
+
+def submodule_gitlink_exists(path: str) -> bool:
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "--stage", path],
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return False
+    return result.stdout.startswith("160000 ")
+
+
+def evidence_path_exists(evidence_path: str) -> bool:
+    if Path(evidence_path).exists():
+        return True
+    submodule_root = "symphony-github-project-tracker"
+    return (
+        evidence_path.startswith(submodule_root + "/")
+        and submodule_gitlink_exists(submodule_root)
+    )
 
 
 def parse_score_table(markdown: str, heading: str) -> dict[str, tuple[int, int]]:
@@ -178,7 +203,7 @@ else:
     for evidence_path in k8s_area.get("currentEvidence", []):
         if not isinstance(evidence_path, str) or evidence_path.startswith("https://"):
             continue
-        if not Path(evidence_path).exists():
+        if not evidence_path_exists(evidence_path):
             errors.append(f"k8s_platformization currentEvidence path does not exist: {evidence_path}")
 
 for capability in data.get("criticalCapabilities", []):
