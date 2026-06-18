@@ -38,6 +38,16 @@ spec:
           env:
             - name: DOKKAEBI_TICKET_ID
               value: PDK8S-JOB-RUNNER-001
+            - name: DOKKAEBI_TENANT_ID
+              value: tenant-sandbox
+            - name: DOKKAEBI_ROUTE_PROFILE
+              value: hammer-k8s-job-runner
+            - name: DOKKAEBI_NAMESPACE
+              value: dokkaebi-workers
+            - name: DOKKAEBI_SERVICE_ACCOUNT
+              value: hammer-k8s-job-runner
+            - name: DOKKAEBI_IMAGE_PROFILE
+              value: dokkaebi-hammer-dev-sandbox
             - name: DOKKAEBI_RESULT_PACKET_SINK
               value: github-workpad://Project_Dokkaebi_K8S/issues/PDK8S-JOB-RUNNER-001
             - name: DOKKAEBI_PERMISSION_LEVEL

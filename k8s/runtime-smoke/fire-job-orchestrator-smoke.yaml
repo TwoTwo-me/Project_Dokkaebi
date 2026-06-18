@@ -1,0 +1,68 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: fire-k8s-runtime-smoke
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/smoke: k8s-runtime
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dokkaebi-fire
+        app.kubernetes.io/part-of: dokkaebi
+        dokkaebi.io/smoke: k8s-runtime
+    spec:
+      restartPolicy: Never
+      serviceAccountName: dokkaebi-fire
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: fire
+          image: ghcr.io/project-dokkaebi/fire:dev-sandbox
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOKKAEBI_HAMMER_JOB_PATH
+              value: /config/hammer-job.json
+            - name: DOKKAEBI_FIRE_RUNTIME_SURFACE
+              value: local-disposable-kind
+          volumeMounts:
+            - name: hammer-job-payload
+              mountPath: /config
+              readOnly: true
+            - name: fire-tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: hammer-job-payload
+          configMap:
+            name: dokkaebi-fire-smoke-hammer-job
+            items:
+              - key: hammer-job.json
+                path: hammer-job.json
+        - name: fire-tmp
+          emptyDir: {}

@@ -118,9 +118,9 @@ required_k8s_subcriteria = {
     "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
     "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
     "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
-    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 0},
-    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 0},
-    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 40},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 80},
+    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 100},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 80},
     "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
 }
 

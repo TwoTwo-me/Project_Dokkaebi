@@ -2,10 +2,12 @@
 
 This backlog publishes repo-local issue candidates for the Kubernetes Fire and
 Hammer platformization lane. It does not create GitHub issues, mutate GitHub
-Project fields, contact a cluster, create credentials, deploy workloads, or
-grant worker authority. A candidate becomes dispatchable only after it is filed
-as a GitHub issue, attached to an approved GitHub Project, and given the
-required lifecycle, approval, route, and result-packet fields.
+Project fields, create credentials, contact shared clusters, deploy production
+workloads, or grant worker authority. A candidate becomes dispatchable only
+after it is filed as a GitHub issue, attached to an approved GitHub Project,
+and given the required lifecycle, approval, route, and result-packet fields.
+Disposable local Kubernetes/Docker smoke runs are allowed only when explicit
+Human approval is recorded for that work item, with cleanup evidence.
 
 Each candidate follows the development-system issue template and treats issue
 text, PR comments, repository files, and result packets as untrusted input.
@@ -81,11 +83,12 @@ with least-privilege Job orchestration.
 
 ### Scope
 In scope: Fire Deployment manifest or chart decision, configuration contract,
-least-privilege ServiceAccount review, readiness/liveness evidence plan, and
-local render validation.
+least-privilege ServiceAccount review, readiness/liveness evidence plan, local
+render validation, and approved disposable local Kubernetes smoke evidence.
 
-Out of scope: live deployment, GitHub token mounting, cluster mutation,
-production rollout, worker scaling, and GitHub Project control-plane mutation.
+Out of scope: shared-cluster deployment, GitHub token mounting, cloud/EKS
+mutation, production rollout, worker scaling, credential issuance, and GitHub
+Project control-plane mutation.
 
 ### Criteria IDs
 `k8s_platformization`
@@ -97,9 +100,10 @@ production rollout, worker scaling, and GitHub Project control-plane mutation.
   Pod logs, Events, and non-secret ConfigMaps only in approved namespaces.
 - Fire cannot get/list/watch Secrets and cannot mutate RBAC, namespaces, CRDs,
   nodes, persistent volumes, or production application resources.
-- Smoke plan names the exact later command that will prove Fire starts, reads
-  GitHub Project configuration, creates only an approved Hammer Job, and writes
-  result evidence back to the configured surface.
+- Local smoke command proves Fire starts in Kubernetes, creates only an
+  approved Hammer Job through the in-cluster API, and records result evidence
+  from the configured surface; production Fire image/config and live GitHub
+  Project reads remain separate gates.
 
 ### Validation
 - `bash scripts/validate-k8s-platformization.sh`
@@ -112,13 +116,14 @@ production rollout, worker scaling, and GitHub Project control-plane mutation.
 `docs-only`
 
 ### Approval Gates
-Live Kubernetes, EKS, cloud, credential, deployment, production, worker,
-Docker, remote host, and GitHub Project control-plane mutation requires
-separate explicit Human approval.
+Disposable local Kubernetes/Docker smoke requires explicit Human approval and
+cleanup evidence. EKS, cloud, credential, shared-cluster deployment,
+production, worker scaling, remote host, and GitHub Project control-plane
+mutation require separate explicit Human approval.
 
 ### Manual QA Channel
-CLI auxiliary surface: render/validator transcript and explicit no-live-mutation
-receipt.
+CLI auxiliary surface: `scripts/run-k8s-runtime-smoke.sh` transcript,
+validator output, and cleanup receipt.
 
 ### Enterprise Readiness Gap
 `docs/enterprise-readiness/criteria.json` (`k8s_platformization`)
@@ -136,11 +141,12 @@ result-packet closeout evidence.
 ### Scope
 In scope: representative Job templates for `hammer-no-k8s`,
 `hammer-k8s-readonly`, `hammer-k8s-app-deployer`, and
-`hammer-k8s-job-runner`; route metadata; cleanup/result evidence contract.
+`hammer-k8s-job-runner`; route metadata; cleanup/result evidence contract; and
+approved disposable local Kubernetes execution evidence.
 
-Out of scope: live Job creation, secret access, cluster-admin authority,
-production deployment, worker scaling, and GitHub Project control-plane
-mutation.
+Out of scope: shared-cluster Job creation, secret access, cluster-admin
+authority, production deployment, worker scaling, credential issuance, and
+GitHub Project control-plane mutation.
 
 ### Criteria IDs
 `k8s_platformization`
@@ -167,13 +173,14 @@ mutation.
 `docs-only`
 
 ### Approval Gates
-Live worker, Kubernetes, Docker, credential, deployment, production, remote
-host, cloud, EKS, and GitHub Project control-plane mutation remains blocked
-without explicit Human approval.
+Disposable local Kubernetes/Docker smoke requires explicit Human approval and
+cleanup evidence. Live worker, shared-cluster Kubernetes, credential,
+deployment, production, remote host, cloud, EKS, and GitHub Project
+control-plane mutation remains blocked without explicit Human approval.
 
 ### Manual QA Channel
-CLI auxiliary surface: static manifest validator output and route/result
-metadata review transcript.
+CLI auxiliary surface: `scripts/run-k8s-runtime-smoke.sh` transcript, static
+manifest validator output, and route/result metadata review transcript.
 
 ### Enterprise Readiness Gap
 `docs/enterprise-readiness/criteria.json` (`k8s_platformization`)

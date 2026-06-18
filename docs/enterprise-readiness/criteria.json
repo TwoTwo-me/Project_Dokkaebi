@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-06-14",
+  "updated": "2026-06-18",
   "purpose": "Single source of truth for Project Dokkaebi enterprise-readiness evaluation, issue generation, worktree execution, pull request review, merge, and re-evaluation.",
   "sourceReports": [
     "docs/reports/company-readiness-assessment.md"
@@ -506,7 +506,7 @@
     {
       "id": "k8s_platformization",
       "name": "Kubernetes Fire and Hammer platformization",
-      "currentPercent": 72,
+      "currentPercent": 92,
       "targetPercent": 100,
       "subCriteria": [
         {
@@ -587,12 +587,18 @@
           "id": "fire_k8s_deployment_runtime_smoke",
           "name": "Fire Deployment startup and approved Hammer Job creation smoke",
           "weight": 10,
-          "currentPercent": 0,
+          "currentPercent": 80,
           "targetPercent": 100,
-          "currentEvidence": [],
+          "currentEvidence": [
+            "scripts/run-k8s-runtime-smoke.sh",
+            "k8s/runtime-smoke/fire-create-hammer-job.sh",
+            "k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml",
+            "k8s/runtime-smoke/hammer-job-fire-created-approved.json",
+            "docs/operations/k8s-runtime-smoke-2026-06-18.md"
+          ],
           "gaps": [
-            "Fire Deployment packaging and startup smoke are not yet proven against a running Kubernetes target.",
-            "Fire has not yet created only approved Hammer Jobs from a Kubernetes runtime surface."
+            "The local smoke proves a Fire canary Job starts in Kubernetes and creates an approved Hammer Job through the in-cluster API, but it is not the production Fire Deployment image wired to live GitHub Project configuration.",
+            "NetworkPolicy enforcement for Fire API-server egress is not yet proven with a CNI that enforces Kubernetes NetworkPolicy."
           ],
           "nextIssueTitle": "Package Fire Deployment smoke with least-privilege Job orchestration"
         },
@@ -600,27 +606,35 @@
           "id": "hammer_job_profile_runtime_smoke",
           "name": "Hammer Job profile runtime smoke and route-result metadata",
           "weight": 10,
-          "currentPercent": 0,
+          "currentPercent": 100,
           "targetPercent": 100,
-          "currentEvidence": [],
-          "gaps": [
-            "Hammer profiles have static accepted fixtures but no executed Job smoke that captures route profile, namespace, ServiceAccount, image digest, exit status, log surface, and cleanup result.",
-            "Breakglass remains intentionally inactive pending later ADR and Human approval."
+          "currentEvidence": [
+            "scripts/run-k8s-runtime-smoke.sh",
+            "k8s/runtime-smoke/hammer-result-packet.sh",
+            "k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml",
+            "k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml",
+            "docs/operations/k8s-runtime-smoke-2026-06-18.md"
           ],
-          "nextIssueTitle": "Prove Hammer Job profile smoke and route-result metadata"
+          "gaps": [],
+          "nextIssueTitle": null
         },
         {
           "id": "k8s_result_packet_reconciliation",
           "name": "Kubernetes Job, GitHub lifecycle, log, PR/check, and result-packet reconciliation",
           "weight": 5,
-          "currentPercent": 40,
+          "currentPercent": 80,
           "targetPercent": 100,
           "currentEvidence": [
-            "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md"
+            "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md",
+            "scripts/run-k8s-runtime-smoke.sh",
+            "k8s/runtime-smoke/hammer-result-packet.sh",
+            "docs/operations/k8s-runtime-smoke-2026-06-18.md"
           ],
           "gaps": [
-            "Reconciliation is represented as a local replay, not yet proven against a running Fire/Hammer route.",
-            "Stale or failed Job closeout handling is not yet exercised with Kubernetes status and logs."
+            "Local runtime smoke reconciles Kubernetes Job status and Hammer log/result metadata, but it still uses replayed GitHub Project, PR, and check state instead of live control-plane writes.",
+            "Stale or failed Job closeout handling is not yet exercised with a running Fire watch loop."
           ],
           "nextIssueTitle": "Define K8S result packet and GitHub lifecycle reconciliation"
         },
@@ -648,6 +662,7 @@
         "docs/enterprise-readiness/k8s-platformization-fixture-coverage.json",
         "docs/operations/k8s-platformization-fixture-replay-2026-06-14.md",
         "docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md",
+        "docs/operations/k8s-runtime-smoke-2026-06-18.md",
         "docs/enterprise-readiness/development-loop.md",
         "k8s/base/kustomization.yaml",
         "k8s/base/namespace.yaml",
@@ -656,6 +671,10 @@
         "k8s/base/rbac-hammer-profiles.yaml",
         "k8s/base/admission-policy.yaml",
         "k8s/base/networkpolicy.yaml",
+        "k8s/runtime-smoke/fire-create-hammer-job.sh",
+        "k8s/runtime-smoke/hammer-result-packet.sh",
+        "k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml",
+        "k8s/runtime-smoke/hammer-job-fire-created-approved.json",
         "k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml",
         "k8s/fixtures/accepted/hammer-job-approved.yaml",
         "k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml",
@@ -704,15 +723,15 @@
         "k8s/fixtures/rejected/ephemeral-container-invalid-result-packet-sink.yaml",
         "k8s/fixtures/rejected/ephemeral-container-empty-result-packet-sink.yaml",
         "k8s/fixtures/rejected/empty-resources.yaml",
+        "scripts/run-k8s-runtime-smoke.sh",
         "scripts/validate-enterprise-scorecard.sh",
         "scripts/validate-all.sh",
         "k8s/fixtures/rejected/missing-container-security-context.yaml",
         "k8s/fixtures/rejected/missing-pod-security-context.yaml"
       ],
       "gaps": [
-        "Fire Deployment packaging and startup smoke remain future work.",
-        "Hammer Job profiles have static route fixtures but are not yet executed as Jobs with route-result metadata and cleanup evidence.",
-        "GitHub Project, Kubernetes Job status, logs, and result-packet reconciliation is locally replayed but not yet proven against a running Fire/Hammer route.",
+        "Fire local runtime smoke is proven through a canary Fire Job, but production Fire Deployment packaging and live GitHub Project configuration remain future work.",
+        "GitHub Project, PR/check state, Kubernetes Job status, logs, and result-packet reconciliation still need a live approved control-plane proof.",
         "EKS workload identity and Secret boundary decision is documented as deferred, but the final EKS identity strategy is not yet selected from live evidence."
       ],
       "evaluationQuestions": [
@@ -730,6 +749,7 @@
         "Admission accepted/rejected fixture evidence",
         "Accepted route-profile fixtures for every approved Hammer ServiceAccount",
         "Disposable Kubernetes API server admission and RBAC proof",
+        "Disposable Kubernetes Fire/Hammer runtime smoke",
         "Repository-local Fire/Hammer can/cannot matrix",
         "Result packet and Job status reconciliation replay",
         "EKS identity and Secret access boundary record",
@@ -773,7 +793,7 @@
             "Fire manifest references only approved non-secret configuration and a brokered credential path.",
             "Fire ServiceAccount can create/get/list/watch/delete Jobs and read Job Pods, Pod logs, Events, and non-secret ConfigMaps only in approved namespaces.",
             "Fire cannot get/list/watch Secrets and cannot mutate RBAC, namespaces, CRDs, nodes, persistent volumes, or production application resources.",
-            "Smoke plan names the exact later command that proves Fire starts, reads GitHub Project configuration, creates only an approved Hammer Job, and writes result evidence back to the configured surface."
+            "Local smoke command proves Fire starts in Kubernetes, creates only an approved Hammer Job through the in-cluster API, and records result evidence from the configured surface; production Fire image/config and live GitHub Project reads remain separate gates."
           ],
           "validationRequired": [
             "bash scripts/validate-k8s-platformization.sh",
@@ -782,11 +802,12 @@
             "bash scripts/validate-enterprise-scorecard.sh",
             "bash scripts/validate-all.sh"
           ],
-          "authorityRequirement": "Docs-only by default. Live Kubernetes, EKS, cloud, credential, deployment, production, worker, Docker, remote host, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Disposable local Kubernetes/Docker smoke requires explicit Human approval and cleanup evidence. EKS, cloud, credential, shared-cluster deployment, production, worker scaling, remote host, and GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Rendered manifest evidence",
             "RBAC can/cannot matrix",
+            "Runtime smoke transcript",
             "Validation output",
             "Approval-gate status",
             "Cleanup receipt",
@@ -811,11 +832,12 @@
             "bash scripts/validate-enterprise-scorecard.sh",
             "bash scripts/validate-all.sh"
           ],
-          "authorityRequirement": "Docs-only by default. Live worker, Kubernetes, Docker, credential, deployment, production, remote host, cloud, EKS, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Disposable local Kubernetes/Docker smoke requires explicit Human approval and cleanup evidence. Live worker, shared-cluster Kubernetes, credential, deployment, production, remote host, cloud, EKS, or GitHub Project control-plane mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Profile matrix",
             "Route metadata",
+            "Runtime smoke transcript",
             "Result packet schema update if needed",
             "Validation output",
             "Approval-gate status",
@@ -832,7 +854,7 @@
             "Reconciliation rejects Done when GitHub Project status, Job status, logs, result packet, PR/check state, or approval evidence disagree.",
             "Stale or failed Jobs become follow-up issues or Fix Requested with preserved route/result metadata.",
             "Closeout evidence remains durable outside Manager memory.",
-            "A local replay proves the reject/accept matrix without live external writes."
+            "A local replay plus disposable runtime smoke proves the reject/accept matrix, Kubernetes Job state, logs, and result metadata without live external writes."
           ],
           "validationRequired": [
             "bash scripts/validate-k8s-platformization.sh",
@@ -841,10 +863,11 @@
             "bash scripts/validate-enterprise-scorecard.sh",
             "bash scripts/validate-all.sh"
           ],
-          "authorityRequirement": "Docs-only by default. Live GitHub Project, Kubernetes, credential, worker, Docker, remote host, deployment, production, cloud, or EKS mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
+          "authorityRequirement": "Disposable local Kubernetes/Docker smoke requires explicit Human approval and cleanup evidence. Live GitHub Project, shared-cluster Kubernetes, credential, worker, remote host, deployment, production, cloud, or EKS mutation requires explicit Human approval under docs/policies/authority-and-safety.md.",
           "resultEvidence": [
             "Changed artifacts and rationale",
             "Accepted and rejected replay evidence",
+            "Runtime Job/log/result metadata evidence",
             "Validation output",
             "Approval-gate status",
             "Cleanup receipt",

@@ -27,9 +27,11 @@ required_files = [
     Path("docs/enterprise-readiness/k8s-platformization-issues.md"),
     Path("docs/operations/k8s-platformization-fixture-replay-2026-06-14.md"),
     Path("docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md"),
+    Path("docs/operations/k8s-runtime-smoke-2026-06-18.md"),
     Path("docs/enterprise-readiness/criteria.json"),
     k8s_evidence_lock_path,
     k8s_fixture_coverage_path,
+    Path("scripts/run-k8s-runtime-smoke.sh"),
     Path("k8s/base/kustomization.yaml"),
     Path("k8s/base/namespace.yaml"),
     Path("k8s/base/serviceaccounts.yaml"),
@@ -37,6 +39,10 @@ required_files = [
     Path("k8s/base/rbac-hammer-profiles.yaml"),
     Path("k8s/base/admission-policy.yaml"),
     Path("k8s/base/networkpolicy.yaml"),
+    Path("k8s/runtime-smoke/fire-create-hammer-job.sh"),
+    Path("k8s/runtime-smoke/hammer-result-packet.sh"),
+    Path("k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml"),
+    Path("k8s/runtime-smoke/hammer-job-fire-created-approved.json"),
     Path("k8s/fixtures/accepted/hammer-job-no-k8s-approved.yaml"),
     Path("k8s/fixtures/accepted/hammer-job-approved.yaml"),
     Path("k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml"),
@@ -758,6 +764,113 @@ profile_service_accounts = {
 image_profile_images = {
     "dokkaebi-hammer-dev-sandbox": "ghcr.io/project-dokkaebi/hammer:dev-sandbox",
 }
+runtime_fire_job_path = Path("k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml")
+runtime_hammer_job_path = Path("k8s/runtime-smoke/hammer-job-fire-created-approved.json")
+
+
+def primary_container(job: dict) -> dict:
+    containers = container_specs(job)
+    return containers[0] if containers else {}
+
+
+def env_value(container: dict, name: str) -> str | None:
+    for env in container.get("env", []) or []:
+        if isinstance(env, dict) and env.get("name") == name:
+            value = env.get("value")
+            return value if isinstance(value, str) else None
+    return None
+
+
+def require_runtime_result_metadata(job: dict, path: Path) -> None:
+    metadata = job.get("metadata", {}) if isinstance(job.get("metadata"), dict) else {}
+    labels = metadata.get("labels", {}) if isinstance(metadata.get("labels"), dict) else {}
+    spec = pod_spec(job)
+    container = primary_container(job)
+    expected_values = {
+        "DOKKAEBI_TICKET_ID": labels.get("dokkaebi.io/ticket-id"),
+        "DOKKAEBI_TENANT_ID": labels.get("dokkaebi.io/tenant-id"),
+        "DOKKAEBI_ROUTE_PROFILE": labels.get("dokkaebi.io/route-profile"),
+        "DOKKAEBI_NAMESPACE": metadata.get("namespace"),
+        "DOKKAEBI_SERVICE_ACCOUNT": spec.get("serviceAccountName"),
+        "DOKKAEBI_IMAGE_PROFILE": labels.get("dokkaebi.io/image-profile"),
+    }
+    for env_name, expected_value in expected_values.items():
+        if not expected_value:
+            errors.append(f"{path} missing expected metadata source for {env_name}")
+            continue
+        actual_value = env_value(container, env_name)
+        if actual_value != expected_value:
+            errors.append(f"{path} {env_name} must be {expected_value}")
+    if env_value(container, "DOKKAEBI_RESULT_PACKET_SINK") != approved_result_sink_prefix + str(
+        labels.get("dokkaebi.io/ticket-id", "")
+    ):
+        errors.append(f"{path} DOKKAEBI_RESULT_PACKET_SINK must match ticket id")
+    if not env_value(container, "DOKKAEBI_PERMISSION_LEVEL"):
+        errors.append(f"{path} DOKKAEBI_PERMISSION_LEVEL must be set")
+
+
+def validate_runtime_fire_job(path: Path) -> None:
+    fire_job = load_single_yaml(path)
+    metadata = fire_job.get("metadata", {}) if isinstance(fire_job.get("metadata"), dict) else {}
+    if fire_job.get("apiVersion") != "batch/v1" or fire_job.get("kind") != "Job":
+        errors.append(f"{path} must be a batch/v1 Job")
+    if metadata.get("name") != "fire-k8s-runtime-smoke":
+        errors.append(f"{path} metadata.name must be fire-k8s-runtime-smoke")
+    if metadata.get("namespace") != "dokkaebi-system":
+        errors.append(f"{path} must run in dokkaebi-system")
+    spec = pod_spec(fire_job)
+    if spec.get("serviceAccountName") != "dokkaebi-fire":
+        errors.append(f"{path} must use dokkaebi-fire ServiceAccount")
+    if spec.get("automountServiceAccountToken") is not True:
+        errors.append(f"{path} must mount the Fire ServiceAccount token")
+    container = primary_container(fire_job)
+    if container.get("image") != "ghcr.io/project-dokkaebi/fire:dev-sandbox":
+        errors.append(f"{path} must use the approved Fire smoke image")
+    if env_value(container, "DOKKAEBI_HAMMER_JOB_PATH") != "/config/hammer-job.json":
+        errors.append(f"{path} must point Fire at the mounted Hammer Job payload")
+    if not container.get("resources", {}).get("requests") or not container.get("resources", {}).get("limits"):
+        errors.append(f"{path} Fire container must declare resource requests and limits")
+    security_context = container.get("securityContext", {})
+    if not isinstance(security_context, dict):
+        errors.append(f"{path} Fire container must define a securityContext")
+    else:
+        if security_context.get("allowPrivilegeEscalation") is not False:
+            errors.append(f"{path} Fire container must disable privilege escalation")
+        if security_context.get("readOnlyRootFilesystem") is not True:
+            errors.append(f"{path} Fire container must use a read-only root filesystem")
+        drops = security_context.get("capabilities", {}).get("drop", [])
+        if "ALL" not in drops:
+            errors.append(f"{path} Fire container must drop ALL capabilities")
+    volumes = spec.get("volumes", []) if isinstance(spec.get("volumes"), list) else []
+    configmaps = [
+        volume.get("configMap", {}).get("name")
+        for volume in volumes
+        if isinstance(volume, dict) and isinstance(volume.get("configMap"), dict)
+    ]
+    if "dokkaebi-fire-smoke-hammer-job" not in configmaps:
+        errors.append(f"{path} must mount dokkaebi-fire-smoke-hammer-job ConfigMap")
+    if not any(isinstance(volume, dict) and "emptyDir" in volume for volume in volumes):
+        errors.append(f"{path} must mount an emptyDir for writeable /tmp")
+    for volume in volumes:
+        if not isinstance(volume, dict):
+            continue
+        if "secret" in volume or "hostPath" in volume:
+            errors.append(f"{path} must not mount Secret or hostPath volumes")
+
+
+def validate_runtime_hammer_job(path: Path) -> None:
+    hammer_job = load_single_yaml(path)
+    fixture_errors = admission_errors(hammer_job)
+    if fixture_errors:
+        errors.append(f"{path} should be accepted but has errors: {', '.join(fixture_errors)}")
+        return
+    metadata = hammer_job.get("metadata", {}) if isinstance(hammer_job.get("metadata"), dict) else {}
+    if metadata.get("name") != "hammer-ticket-pdk8s-fire-runtime-001":
+        errors.append(f"{path} metadata.name must be hammer-ticket-pdk8s-fire-runtime-001")
+    labels = metadata.get("labels", {}) if isinstance(metadata.get("labels"), dict) else {}
+    if labels.get("dokkaebi.io/route-profile") != "hammer-k8s-job-runner":
+        errors.append(f"{path} must prove Fire can create the job-runner Hammer profile")
+    require_runtime_result_metadata(hammer_job, path)
 approved_result_sink_prefix = "github-workpad://Project_Dokkaebi_K8S/issues/"
 
 
@@ -938,6 +1051,7 @@ for accepted_fixture, (expected_profile, expected_service_account) in accepted_f
         errors.append(f"{accepted_fixture} route profile must be {expected_profile}")
     if spec.get("serviceAccountName") != expected_service_account:
         errors.append(f"{accepted_fixture} ServiceAccount must be {expected_service_account}")
+    require_runtime_result_metadata(job, accepted_fixture)
 
 matrix_rejected_entries = [
     entry
@@ -1011,6 +1125,9 @@ for entry in fixture_coverage_matrix.get("nonAdmissionControlFixtures", []):
             f"{rejected_fixture} missing expected rejection {expected_error}; got {', '.join(fixture_errors)}"
         )
 
+validate_runtime_fire_job(runtime_fire_job_path)
+validate_runtime_hammer_job(runtime_hammer_job_path)
+
 criteria = json.loads(Path("docs/enterprise-readiness/criteria.json").read_text())
 areas = {
     area.get("id"): area
@@ -1023,9 +1140,9 @@ required_k8s_subcriteria = {
     "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
     "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
     "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
-    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 0},
-    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 0},
-    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 40},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 80},
+    "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 100},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 80},
     "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
 }
 
