@@ -140,6 +140,23 @@ Expected evidence:
 - no raw ChatGPT OAuth material appears in Hammer logs or result packets;
 - blocked or deleted virtual key prevents the same request from succeeding.
 
+## Repository Smoke
+
+The repository includes a disposable Kubernetes smoke for the parts that can be
+verified without an operator ChatGPT login:
+
+```bash
+bash scripts/run-litellm-chatgpt-k8s-smoke.sh
+```
+
+The smoke proves that a LiteLLM Pod can load the ChatGPT provider config and
+reach the OAuth device-flow gate. It then switches to a non-ChatGPT smoke model
+to prove the Kubernetes Service, Postgres-backed virtual-key creation, worker
+request path, unauthenticated denial, fake-provider denial, virtual-key
+blocking, worker pod boundary, and cleanup behavior. The observed 2026-06-18
+evidence is recorded in
+[`litellm-chatgpt-k8s-smoke-2026-06-18.md`](litellm-chatgpt-k8s-smoke-2026-06-18.md).
+
 ## Product Position
 
 Dokkaebi should document this as an optional operating recipe, not a platform
