@@ -47,7 +47,7 @@ and expected validation result.
 | compliance_audit | 100/100 | `bash scripts/validate-compliance-package.sh` |
 | productization_ux | 100/100 | `bash scripts/validate-onboarding-troubleshooting.sh` |
 | design_system | 100/100 | `bash scripts/validate-carbon-ui-baseline.sh` |
-| k8s_platformization | 72/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_platformization | 92/100 | `bash scripts/validate-k8s-platformization.sh` |
 
 ## K8S Sub-Capability Scores
 
@@ -62,9 +62,9 @@ the evidence shape.
 | k8s_admission_fixture_matrix | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
 | k8s_accepted_route_profile_fixtures | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
 | k8s_disposable_api_server_admission_rbac | 100/100 | `docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md` |
-| fire_k8s_deployment_runtime_smoke | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#fire-k8s-deployment-smoke` |
-| hammer_job_profile_runtime_smoke | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#hammer-job-profile-smoke` |
-| k8s_result_packet_reconciliation | 40/100 | `docs/operations/k8s-platformization-fixture-replay-2026-06-14.md` |
+| fire_k8s_deployment_runtime_smoke | 80/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
+| hammer_job_profile_runtime_smoke | 100/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
+| k8s_result_packet_reconciliation | 80/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
 | eks_identity_secret_boundary | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#eks-identity-and-secret-boundary` |
 
 ## Critical Capability Scores
@@ -83,18 +83,18 @@ the evidence shape.
 
 ## K8S Remaining Issue Gates
 
-`k8s_platformization` is 72/100 after the granular score split, route-profile
-accepted fixtures, fixture coverage matrix, and disposable API server
-admission/RBAC proof. It must not mark a score 100 until the remaining
-Fire, Hammer runtime, reconciliation, and EKS identity gaps below are proven
-with durable evidence.
+`k8s_platformization` is 92/100 after the granular score split, route-profile
+accepted fixtures, fixture coverage matrix, disposable API server
+admission/RBAC proof, and local disposable Fire/Hammer runtime smoke. It must
+not mark a score 100 until the remaining production Fire, live reconciliation,
+and EKS identity gaps below are proven with durable evidence.
 
 | Issue gate | Required proof |
 | --- | --- |
 | `k8s-admission-policy-gate` | Keep the fixture coverage matrix and disposable API server admission proof current when new deny classes, route profiles, images, result packet sinks, or `hammer-no-k8s` token override paths are added. |
-| `fire-k8s-deployment-smoke` | Fire starts in Kubernetes and creates only approved Hammer Jobs with least privilege. |
-| `hammer-job-profile-smoke` | Each Hammer profile proves route metadata, result evidence, and can/cannot boundaries. |
-| `k8s-result-packet-reconciliation` | GitHub Project state, Kubernetes Job state, logs, PR/checks, and result packets reconcile before closeout. |
+| `fire-k8s-deployment-smoke` | Local Fire canary starts in Kubernetes and creates only approved Hammer Jobs; production Fire image/config and CNI-enforced API-server egress remain to prove. |
+| `hammer-job-profile-smoke` | Each approved Hammer profile proves route metadata, result evidence, can/cannot boundaries, and cleanup in a disposable local Kubernetes run. |
+| `k8s-result-packet-reconciliation` | Local Job state, logs, and result metadata reconcile; live GitHub Project state, PR/checks, and stale/failed Job closeout remain to prove before 100. |
 | `eks-identity-and-secret-boundary` | EKS workload identity and Secret access remain least privilege, approved, and auditable. |
 
 ## Validation
