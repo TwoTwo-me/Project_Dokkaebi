@@ -33,7 +33,7 @@ spec:
           type: RuntimeDefault
       containers:
       - name: hammer
-        image: ghcr.io/project-dokkaebi/hammer:dev-sandbox
+        image: ghcr.io/twotwo-me/hammer:dev-sandbox
         imagePullPolicy: IfNotPresent
         env:
         - name: DOKKAEBI_TICKET_ID
@@ -64,7 +64,7 @@ spec:
         emptyDir: {}
       ephemeralContainers:
       - name: unsafe-debug
-        image: ghcr.io/project-dokkaebi/hammer:dev-sandbox
+        image: ghcr.io/twotwo-me/hammer:dev-sandbox
         command:
         - sh
         volumeMounts:

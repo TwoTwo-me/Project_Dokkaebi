@@ -25,7 +25,8 @@
           "app.kubernetes.io/part-of": "dokkaebi",
           "dokkaebi.io/ticket-id": "PDK8S-FIRE-RUNTIME-001",
           "dokkaebi.io/tenant-id": "tenant-sandbox",
-          "dokkaebi.io/route-profile": "hammer-k8s-job-runner"
+          "dokkaebi.io/route-profile": "hammer-k8s-job-runner",
+          "dokkaebi.io/k8s-api-access": "approved"
         }
       },
       "spec": {
@@ -42,7 +43,7 @@
         "containers": [
           {
             "name": "hammer",
-            "image": "ghcr.io/project-dokkaebi/hammer:dev-sandbox",
+            "image": "ghcr.io/twotwo-me/hammer:dev-sandbox",
             "imagePullPolicy": "IfNotPresent",
             "env": [
               {

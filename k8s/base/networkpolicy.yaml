@@ -39,6 +39,368 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
+  name: default-deny-litellm
+  namespace: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-litellm-dns-egress
+  namespace: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-litellm-postgres-egress
+  namespace: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: litellm
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: litellm-postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-postgres-ingress-from-litellm
+  namespace: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: litellm-postgres
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: litellm
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-litellm-ingress-from-dokkaebi
+  namespace: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: litellm
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: dokkaebi-fire
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-workers
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: dokkaebi-hammer
+              dokkaebi.io/litellm-key-scope: run-scoped
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-observability
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-fire-litellm-egress
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-fire
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-llm
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: litellm
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-fire-prometheus-ingress
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-fire
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-observability
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9464
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-hammer-kubernetes-api-egress
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+  annotations:
+    dokkaebi.io/cluster-service-ip-placeholder: "true"
+    dokkaebi.io/patch-required: "Set cidr to the approved kubernetes.default service IP before applying to a live cluster."
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-hammer
+      dokkaebi.io/k8s-api-access: approved
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.96.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-hammer-litellm-egress
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-hammer
+      dokkaebi.io/litellm-key-scope: run-scoped
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-llm
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: litellm
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-observability
+  namespace: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-observability-dns-egress
+  namespace: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-scrape-dokkaebi
+  namespace: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-system
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: dokkaebi-fire
+      ports:
+        - protocol: TCP
+          port: 9464
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: dokkaebi-llm
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: litellm
+      ports:
+        - protocol: TCP
+          port: 4000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-grafana-prometheus-egress
+  namespace: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - protocol: TCP
+          port: 9090
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-prometheus-ingress-from-grafana
+  namespace: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: grafana
+      ports:
+        - protocol: TCP
+          port: 9090
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-fire-kubernetes-api-egress
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+  annotations:
+    dokkaebi.io/cluster-service-ip-placeholder: "true"
+    dokkaebi.io/patch-required: "Set cidr to the approved kubernetes.default service IP before applying to a live cluster."
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-fire
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.96.0.1/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
   name: default-deny-fire-system
   namespace: dokkaebi-system
   labels:

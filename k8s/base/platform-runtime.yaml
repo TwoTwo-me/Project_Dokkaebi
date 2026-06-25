@@ -1,0 +1,326 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dokkaebi-platform-version
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-platform-version
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/migration-id: migration-k8s-0-1-0
+data:
+  platformVersion: "0.1.0-k8s"
+  releaseChannel: "blue"
+  migrationMode: "active-writer-lease-canary"
+  contract: "Fire holds one active-writer Lease, dispatches canary route profiles first, and rolls back through GitOps revert plus old route drain."
+  fireVersion: "dev-sandbox"
+  greenCandidateVersion: "dev-sandbox"
+  hammerProfileVersion: "hammer-profile-v1"
+  litellmConfigVersion: "litellm-config-v1"
+  dashboardPackVersion: "dashboard-pack-v1"
+  migrationId: "migration-k8s-0-1-0"
+---
+apiVersion: coordination.k8s.io/v1
+kind: Lease
+metadata:
+  name: dokkaebi-fire-active-writer
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/active-writer: "true"
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/fire-version: dev-sandbox
+    dokkaebi.io/migration-id: migration-k8s-0-1-0
+spec:
+  holderIdentity: pending-human-approved-fire-owner
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dokkaebi-fire-active-writer
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+rules:
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["create", "get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dokkaebi-fire-active-writer
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dokkaebi-fire-active-writer
+subjects:
+  - kind: ServiceAccount
+    name: dokkaebi-fire
+    namespace: dokkaebi-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokkaebi-fire
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/fire-version: dev-sandbox
+    dokkaebi.io/release-track: blue
+    dokkaebi.io/migration-id: migration-k8s-0-1-0
+    dokkaebi.io/canary: "false"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-fire
+      app.kubernetes.io/part-of: dokkaebi
+      dokkaebi.io/release-track: blue
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dokkaebi-fire
+        app.kubernetes.io/part-of: dokkaebi
+        dokkaebi.io/platform-version: "0.1.0-k8s"
+        dokkaebi.io/fire-version: dev-sandbox
+        dokkaebi.io/release-track: blue
+        dokkaebi.io/migration-id: migration-k8s-0-1-0
+        dokkaebi.io/canary: "false"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9464"
+        dokkaebi.io/active-writer-lease: dokkaebi-fire-active-writer
+        dokkaebi.io/image-digest-status: private-registry-digest-required-before-live-apply
+        dokkaebi.io/image-digest-approval-gate: explicit-human-approved-fire-build-digest
+    spec:
+      serviceAccountName: dokkaebi-fire
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: fire
+          image: ghcr.io/project-dokkaebi/fire:dev-sandbox
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOKKAEBI_PLATFORM_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: dokkaebi-platform-version
+                  key: platformVersion
+            - name: DOKKAEBI_RELEASE_CHANNEL
+              valueFrom:
+                configMapKeyRef:
+                  name: dokkaebi-platform-version
+                  key: releaseChannel
+            - name: DOKKAEBI_ACTIVE_WRITER_LEASE_NAME
+              value: dokkaebi-fire-active-writer
+            - name: DOKKAEBI_LITELLM_BASE_URL
+              value: http://litellm.dokkaebi-llm.svc.cluster.local:4000
+            - name: DOKKAEBI_METRICS_PORT
+              value: "9464"
+            - name: DOKKAEBI_DISPATCH_REQUIRES_LEASE
+              value: "true"
+            - name: DOKKAEBI_FIRE_MODE
+              value: active-writer
+          ports:
+            - name: metrics
+              containerPort: 9464
+          readinessProbe:
+            tcpSocket:
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: metrics
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dokkaebi-fire-metrics
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/fire-version: dev-sandbox
+spec:
+  selector:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/release-track: blue
+  ports:
+    - name: metrics
+      port: 9464
+      targetPort: metrics
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dokkaebi-fire-green
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/fire-version: dev-sandbox
+    dokkaebi.io/release-track: green
+    dokkaebi.io/migration-id: migration-k8s-0-1-0
+    dokkaebi.io/canary: "true"
+spec:
+  replicas: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: dokkaebi-fire
+      app.kubernetes.io/part-of: dokkaebi
+      dokkaebi.io/release-track: green
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dokkaebi-fire
+        app.kubernetes.io/part-of: dokkaebi
+        dokkaebi.io/platform-version: "0.1.0-k8s"
+        dokkaebi.io/fire-version: dev-sandbox
+        dokkaebi.io/release-track: green
+        dokkaebi.io/migration-id: migration-k8s-0-1-0
+        dokkaebi.io/canary: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9464"
+        dokkaebi.io/active-writer-lease: dokkaebi-fire-active-writer
+        dokkaebi.io/promotion-gate: explicit-human-approval-required
+        dokkaebi.io/image-digest-status: private-registry-digest-required-before-live-apply
+        dokkaebi.io/image-digest-approval-gate: explicit-human-approved-fire-build-digest
+    spec:
+      serviceAccountName: dokkaebi-fire
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: fire
+          image: ghcr.io/project-dokkaebi/fire:dev-sandbox
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOKKAEBI_PLATFORM_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: dokkaebi-platform-version
+                  key: platformVersion
+            - name: DOKKAEBI_RELEASE_CHANNEL
+              value: green
+            - name: DOKKAEBI_ACTIVE_WRITER_LEASE_NAME
+              value: dokkaebi-fire-active-writer
+            - name: DOKKAEBI_DISPATCH_REQUIRES_LEASE
+              value: "true"
+            - name: DOKKAEBI_DISPATCH_ENABLED
+              value: "false"
+            - name: DOKKAEBI_FIRE_MODE
+              value: candidate-observer
+            - name: DOKKAEBI_LITELLM_BASE_URL
+              value: http://litellm.dokkaebi-llm.svc.cluster.local:4000
+            - name: DOKKAEBI_METRICS_PORT
+              value: "9464"
+          ports:
+            - name: metrics
+              containerPort: 9464
+          readinessProbe:
+            tcpSocket:
+              port: metrics
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: metrics
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dokkaebi-fire-green-metrics
+  namespace: dokkaebi-system
+  labels:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/platform-version: "0.1.0-k8s"
+    dokkaebi.io/fire-version: dev-sandbox
+    dokkaebi.io/release-track: green
+spec:
+  selector:
+    app.kubernetes.io/name: dokkaebi-fire
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/release-track: green
+  ports:
+    - name: metrics
+      port: 9464
+      targetPort: metrics

@@ -4,6 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+bash scripts/validate-k8s-local-external-litellm-overlay.sh
+
 python3 - <<'PY'
 from __future__ import annotations
 
@@ -39,6 +41,9 @@ required_files = [
     Path("k8s/base/rbac-hammer-profiles.yaml"),
     Path("k8s/base/admission-policy.yaml"),
     Path("k8s/base/networkpolicy.yaml"),
+    Path("k8s/base/platform-runtime.yaml"),
+    Path("k8s/base/litellm.yaml"),
+    Path("k8s/base/observability.yaml"),
     Path("k8s/runtime-smoke/fire-create-hammer-job.sh"),
     Path("k8s/runtime-smoke/hammer-result-packet.sh"),
     Path("k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml"),
@@ -47,6 +52,7 @@ required_files = [
     Path("k8s/fixtures/accepted/hammer-job-approved.yaml"),
     Path("k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml"),
     Path("k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml"),
+    Path("k8s/fixtures/accepted/hammer-job-litellm-virtual-key-approved.yaml"),
     Path("k8s/fixtures/rejected/missing-approval-id.yaml"),
     Path("k8s/fixtures/rejected/mismatched-serviceaccount-profile.yaml"),
     Path("k8s/fixtures/rejected/privileged-hostpath.yaml"),
@@ -64,6 +70,7 @@ required_files = [
     Path("k8s/fixtures/rejected/ephemeral-container-privileged.yaml"),
     Path("k8s/fixtures/rejected/root-pod-security-context.yaml"),
     Path("k8s/fixtures/rejected/no-k8s-token-override.yaml"),
+    Path("k8s/fixtures/rejected/no-k8s-api-egress-label-spoof.yaml"),
     Path("k8s/fixtures/rejected/unapproved-image-profile.yaml"),
     Path("k8s/fixtures/rejected/invalid-result-packet-sink.yaml"),
     Path("k8s/fixtures/rejected/wrong-kind.yaml"),
@@ -88,7 +95,12 @@ required_files = [
     Path("k8s/fixtures/rejected/ephemeral-container-invalid-result-packet-sink.yaml"),
     Path("k8s/fixtures/rejected/ephemeral-container-empty-result-packet-sink.yaml"),
     Path("k8s/fixtures/rejected/empty-resources.yaml"),
+    Path("k8s/fixtures/rejected/provider-api-key-secret-env.yaml"),
+    Path("k8s/fixtures/rejected/litellm-master-key-secret-env.yaml"),
+    Path("k8s/fixtures/rejected/github-token-secret-env.yaml"),
+    Path("k8s/fixtures/rejected/litellm-virtual-key-self-spoof.yaml"),
     Path("k8s/overlays/local/kustomization.yaml"),
+    Path("k8s/overlays/local/external-litellm.yaml"),
     Path("k8s/overlays/eks/kustomization.yaml"),
 ]
 
@@ -271,6 +283,9 @@ required_base_resources = {
     "rbac-hammer-profiles.yaml",
     "admission-policy.yaml",
     "networkpolicy.yaml",
+    "platform-runtime.yaml",
+    "litellm.yaml",
+    "observability.yaml",
 }
 listed_base_resources = {
     resource for resource in base_resources if isinstance(resource, str)
@@ -311,26 +326,75 @@ for doc in documents:
 for key in [
     ("Namespace", "", "dokkaebi-system"),
     ("Namespace", "", "dokkaebi-workers"),
+    ("Namespace", "", "dokkaebi-llm"),
+    ("Namespace", "", "dokkaebi-observability"),
     ("ServiceAccount", "dokkaebi-system", "dokkaebi-fire"),
+    ("ServiceAccount", "dokkaebi-system", "dokkaebi-credential-broker"),
     ("ServiceAccount", "dokkaebi-workers", "hammer-no-k8s"),
     ("ServiceAccount", "dokkaebi-workers", "hammer-k8s-readonly"),
     ("ServiceAccount", "dokkaebi-workers", "hammer-k8s-app-deployer"),
     ("ServiceAccount", "dokkaebi-workers", "hammer-k8s-job-runner"),
     ("ServiceAccount", "dokkaebi-workers", "hammer-breakglass"),
+    ("ServiceAccount", "dokkaebi-llm", "litellm"),
+    ("ServiceAccount", "dokkaebi-llm", "litellm-postgres"),
+    ("ServiceAccount", "dokkaebi-observability", "prometheus"),
+    ("ServiceAccount", "dokkaebi-observability", "grafana"),
     ("Role", "dokkaebi-workers", "dokkaebi-fire-job-orchestrator"),
+    ("Role", "dokkaebi-system", "dokkaebi-fire-active-writer"),
+    ("Role", "dokkaebi-workers", "dokkaebi-litellm-virtual-key-secret-writer"),
     ("Role", "dokkaebi-workers", "hammer-k8s-readonly"),
     ("Role", "dokkaebi-workers", "hammer-k8s-app-deployer"),
     ("Role", "dokkaebi-workers", "hammer-k8s-job-runner"),
     ("RoleBinding", "dokkaebi-workers", "dokkaebi-fire-job-orchestrator"),
+    ("RoleBinding", "dokkaebi-system", "dokkaebi-fire-active-writer"),
+    ("RoleBinding", "dokkaebi-workers", "dokkaebi-litellm-virtual-key-secret-writer"),
     ("RoleBinding", "dokkaebi-workers", "hammer-k8s-readonly"),
     ("RoleBinding", "dokkaebi-workers", "hammer-k8s-app-deployer"),
     ("RoleBinding", "dokkaebi-workers", "hammer-k8s-job-runner"),
     ("ValidatingAdmissionPolicy", "", "dokkaebi-hammer-job-policy"),
     ("ValidatingAdmissionPolicyBinding", "", "dokkaebi-hammer-job-policy-binding"),
+    ("ConfigMap", "dokkaebi-system", "dokkaebi-platform-version"),
+    ("Lease", "dokkaebi-system", "dokkaebi-fire-active-writer"),
+    ("Deployment", "dokkaebi-system", "dokkaebi-fire"),
+    ("Deployment", "dokkaebi-system", "dokkaebi-fire-green"),
+    ("Service", "dokkaebi-system", "dokkaebi-fire-metrics"),
+    ("Service", "dokkaebi-system", "dokkaebi-fire-green-metrics"),
+    ("Secret", "dokkaebi-llm", "litellm-runtime-placeholder"),
+    ("ConfigMap", "dokkaebi-llm", "litellm-config"),
+    ("PersistentVolumeClaim", "dokkaebi-llm", "litellm-postgres-data"),
+    ("Deployment", "dokkaebi-llm", "litellm-postgres"),
+    ("Service", "dokkaebi-llm", "litellm-postgres"),
+    ("Deployment", "dokkaebi-llm", "litellm"),
+    ("Service", "dokkaebi-llm", "litellm"),
+    ("Secret", "dokkaebi-observability", "grafana-admin-placeholder"),
+    ("ConfigMap", "dokkaebi-observability", "prometheus-config"),
+    ("ConfigMap", "dokkaebi-observability", "grafana-provisioning"),
+    ("ConfigMap", "dokkaebi-observability", "grafana-dashboard-dokkaebi-platform"),
+    ("PersistentVolumeClaim", "dokkaebi-observability", "prometheus-data"),
+    ("PersistentVolumeClaim", "dokkaebi-observability", "grafana-data"),
+    ("Deployment", "dokkaebi-observability", "prometheus"),
+    ("Service", "dokkaebi-observability", "prometheus"),
+    ("Deployment", "dokkaebi-observability", "grafana"),
+    ("Service", "dokkaebi-observability", "grafana"),
     ("NetworkPolicy", "dokkaebi-workers", "default-deny-hammer-workers"),
     ("NetworkPolicy", "dokkaebi-workers", "allow-dns-egress"),
+    ("NetworkPolicy", "dokkaebi-workers", "allow-hammer-kubernetes-api-egress"),
+    ("NetworkPolicy", "dokkaebi-workers", "allow-hammer-litellm-egress"),
     ("NetworkPolicy", "dokkaebi-system", "default-deny-fire-system"),
     ("NetworkPolicy", "dokkaebi-system", "allow-fire-dns-egress"),
+    ("NetworkPolicy", "dokkaebi-system", "allow-fire-kubernetes-api-egress"),
+    ("NetworkPolicy", "dokkaebi-system", "allow-fire-litellm-egress"),
+    ("NetworkPolicy", "dokkaebi-system", "allow-fire-prometheus-ingress"),
+    ("NetworkPolicy", "dokkaebi-llm", "default-deny-litellm"),
+    ("NetworkPolicy", "dokkaebi-llm", "allow-litellm-dns-egress"),
+    ("NetworkPolicy", "dokkaebi-llm", "allow-litellm-postgres-egress"),
+    ("NetworkPolicy", "dokkaebi-llm", "allow-postgres-ingress-from-litellm"),
+    ("NetworkPolicy", "dokkaebi-llm", "allow-litellm-ingress-from-dokkaebi"),
+    ("NetworkPolicy", "dokkaebi-observability", "default-deny-observability"),
+    ("NetworkPolicy", "dokkaebi-observability", "allow-observability-dns-egress"),
+    ("NetworkPolicy", "dokkaebi-observability", "allow-prometheus-scrape-dokkaebi"),
+    ("NetworkPolicy", "dokkaebi-observability", "allow-grafana-prometheus-egress"),
+    ("NetworkPolicy", "dokkaebi-observability", "allow-prometheus-ingress-from-grafana"),
 ]:
     if key not in by_kind_name:
         errors.append(f"missing K8S object: {key[0]}/{key[1]}/{key[2]}")
@@ -359,6 +423,8 @@ for doc in documents:
     for rule in doc.get("rules", []):
         resources = set(rule.get("resources", []))
         forbidden = sorted(resources & forbidden_resources)
+        if role_name == "dokkaebi-litellm-virtual-key-secret-writer":
+            forbidden = [resource for resource in forbidden if resource != "secrets"]
         if forbidden:
             errors.append(f"{role_name} grants forbidden resources: {', '.join(forbidden)}")
         verbs = set(rule.get("verbs", []))
@@ -381,6 +447,12 @@ expected_role_rules: dict[str, set[tuple[tuple[str, ...], tuple[str, ...], tuple
         (("",), ("pods/log",), ("get",)),
         (("",), ("events",), ("get", "list", "watch")),
         (("",), ("configmaps",), ("get", "list", "watch")),
+    },
+    "dokkaebi-fire-active-writer": {
+        (("coordination.k8s.io",), ("leases",), ("create", "get", "patch", "update")),
+    },
+    "dokkaebi-litellm-virtual-key-secret-writer": {
+        (("",), ("secrets",), ("create", "delete", "get")),
     },
     "hammer-k8s-readonly": {
         (("",), ("configmaps", "events", "pods", "pods/log"), ("get", "list", "watch")),
@@ -428,6 +500,8 @@ if breakglass.get("automountServiceAccountToken") is not False:
 
 expected_role_ref_by_binding = {
     ("dokkaebi-workers", "dokkaebi-fire-job-orchestrator"): "dokkaebi-fire-job-orchestrator",
+    ("dokkaebi-system", "dokkaebi-fire-active-writer"): "dokkaebi-fire-active-writer",
+    ("dokkaebi-workers", "dokkaebi-litellm-virtual-key-secret-writer"): "dokkaebi-litellm-virtual-key-secret-writer",
     ("dokkaebi-workers", "hammer-k8s-readonly"): "hammer-k8s-readonly",
     ("dokkaebi-workers", "hammer-k8s-app-deployer"): "hammer-k8s-app-deployer",
     ("dokkaebi-workers", "hammer-k8s-job-runner"): "hammer-k8s-job-runner",
@@ -435,6 +509,12 @@ expected_role_ref_by_binding = {
 expected_subjects_by_binding = {
     ("dokkaebi-workers", "dokkaebi-fire-job-orchestrator"): {
         ("ServiceAccount", "dokkaebi-system", "dokkaebi-fire"),
+    },
+    ("dokkaebi-system", "dokkaebi-fire-active-writer"): {
+        ("ServiceAccount", "dokkaebi-system", "dokkaebi-fire"),
+    },
+    ("dokkaebi-workers", "dokkaebi-litellm-virtual-key-secret-writer"): {
+        ("ServiceAccount", "dokkaebi-system", "dokkaebi-credential-broker"),
     },
     ("dokkaebi-workers", "hammer-k8s-readonly"): {
         ("ServiceAccount", "dokkaebi-workers", "hammer-k8s-readonly"),
@@ -506,12 +586,29 @@ def validate_default_deny(namespace: str, name: str, subject: str) -> None:
 
 validate_default_deny("dokkaebi-workers", "default-deny-hammer-workers", "worker")
 validate_default_deny("dokkaebi-system", "default-deny-fire-system", "Fire")
+validate_default_deny("dokkaebi-llm", "default-deny-litellm", "LiteLLM")
+validate_default_deny("dokkaebi-observability", "default-deny-observability", "observability")
 
 allowed_network_policies = {
     ("dokkaebi-workers", "default-deny-hammer-workers"),
     ("dokkaebi-workers", "allow-dns-egress"),
+    ("dokkaebi-workers", "allow-hammer-kubernetes-api-egress"),
+    ("dokkaebi-workers", "allow-hammer-litellm-egress"),
     ("dokkaebi-system", "default-deny-fire-system"),
     ("dokkaebi-system", "allow-fire-dns-egress"),
+    ("dokkaebi-system", "allow-fire-kubernetes-api-egress"),
+    ("dokkaebi-system", "allow-fire-litellm-egress"),
+    ("dokkaebi-system", "allow-fire-prometheus-ingress"),
+    ("dokkaebi-llm", "default-deny-litellm"),
+    ("dokkaebi-llm", "allow-litellm-dns-egress"),
+    ("dokkaebi-llm", "allow-litellm-postgres-egress"),
+    ("dokkaebi-llm", "allow-postgres-ingress-from-litellm"),
+    ("dokkaebi-llm", "allow-litellm-ingress-from-dokkaebi"),
+    ("dokkaebi-observability", "default-deny-observability"),
+    ("dokkaebi-observability", "allow-observability-dns-egress"),
+    ("dokkaebi-observability", "allow-prometheus-scrape-dokkaebi"),
+    ("dokkaebi-observability", "allow-grafana-prometheus-egress"),
+    ("dokkaebi-observability", "allow-prometheus-ingress-from-grafana"),
 }
 for doc in documents:
     if doc.get("kind") != "NetworkPolicy":
@@ -579,6 +676,44 @@ def validate_dns_policy(namespace: str, name: str, subject: str) -> None:
 
 validate_dns_policy("dokkaebi-workers", "allow-dns-egress", "worker")
 validate_dns_policy("dokkaebi-system", "allow-fire-dns-egress", "Fire")
+validate_dns_policy("dokkaebi-llm", "allow-litellm-dns-egress", "LiteLLM")
+validate_dns_policy("dokkaebi-observability", "allow-observability-dns-egress", "observability")
+
+
+def validate_kubernetes_api_egress_policy(namespace: str, name: str, selector: dict[str, str], subject: str) -> None:
+    api_policy = by_kind_name.get(("NetworkPolicy", namespace, name), {})
+    metadata = api_policy.get("metadata", {}) if isinstance(api_policy.get("metadata"), dict) else {}
+    annotations = metadata.get("annotations", {}) if isinstance(metadata.get("annotations"), dict) else {}
+    if annotations.get("dokkaebi.io/cluster-service-ip-placeholder") != "true":
+        errors.append(f"{name} must mark kubernetes.default service IP as a patch-required placeholder")
+    api_spec = api_policy.get("spec", {}) if isinstance(api_policy.get("spec"), dict) else {}
+    if api_spec.get("podSelector", {}).get("matchLabels", {}) != selector:
+        errors.append(f"{name} must select only approved {subject} pods")
+    if set(api_spec.get("policyTypes", [])) != {"Egress"}:
+        errors.append(f"{name} must be egress-only")
+    api_egress = api_spec.get("egress", [])
+    if len(api_egress) != 1 or not isinstance(api_egress[0], dict):
+        errors.append(f"{name} must define exactly one egress rule")
+        return
+    rule = api_egress[0]
+    if rule.get("to") != [{"ipBlock": {"cidr": "10.96.0.1/32"}}]:
+        errors.append(f"{name} must target only placeholder kubernetes.default service IP")
+    if rule.get("ports") != [{"protocol": "TCP", "port": 443}]:
+        errors.append(f"{name} must target only TCP/443")
+
+
+validate_kubernetes_api_egress_policy(
+    "dokkaebi-system",
+    "allow-fire-kubernetes-api-egress",
+    {"app.kubernetes.io/name": "dokkaebi-fire"},
+    "Fire",
+)
+validate_kubernetes_api_egress_policy(
+    "dokkaebi-workers",
+    "allow-hammer-kubernetes-api-egress",
+    {"app.kubernetes.io/name": "dokkaebi-hammer", "dokkaebi.io/k8s-api-access": "approved"},
+    "K8S API Hammer",
+)
 
 admission_policy = by_kind_name.get(("ValidatingAdmissionPolicy", "", "dokkaebi-hammer-job-policy"), {})
 policy_spec = admission_policy.get("spec", {}) if isinstance(admission_policy.get("spec"), dict) else {}
@@ -608,11 +743,15 @@ expected_policy_validations = [
     ),
     (
         "Hammer Jobs must use an approved image profile",
-        "object.metadata.labels['dokkaebi.io/image-profile'] == 'dokkaebi-hammer-dev-sandbox' && object.spec.template.spec.containers.all(c, c.image == 'ghcr.io/project-dokkaebi/hammer:dev-sandbox') && (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, c.image == 'ghcr.io/project-dokkaebi/hammer:dev-sandbox')) && (!has(object.spec.template.spec.ephemeralContainers) || object.spec.template.spec.ephemeralContainers.all(c, c.image == 'ghcr.io/project-dokkaebi/hammer:dev-sandbox'))",
+        "object.metadata.labels['dokkaebi.io/image-profile'] == 'dokkaebi-hammer-dev-sandbox' && object.spec.template.spec.containers.all(c, c.image == 'ghcr.io/twotwo-me/hammer:dev-sandbox') && (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, c.image == 'ghcr.io/twotwo-me/hammer:dev-sandbox')) && (!has(object.spec.template.spec.ephemeralContainers) || object.spec.template.spec.ephemeralContainers.all(c, c.image == 'ghcr.io/twotwo-me/hammer:dev-sandbox'))",
     ),
     (
         "Hammer Job route profile must match its ServiceAccount and no-k8s token boundary",
         "(object.metadata.labels['dokkaebi.io/route-profile'] == 'hammer-no-k8s' && object.spec.template.spec.serviceAccountName == 'hammer-no-k8s' && has(object.spec.template.spec.automountServiceAccountToken) && object.spec.template.spec.automountServiceAccountToken == false) || (object.metadata.labels['dokkaebi.io/route-profile'] == 'hammer-k8s-readonly' && object.spec.template.spec.serviceAccountName == 'hammer-k8s-readonly') || (object.metadata.labels['dokkaebi.io/route-profile'] == 'hammer-k8s-app-deployer' && object.spec.template.spec.serviceAccountName == 'hammer-k8s-app-deployer') || (object.metadata.labels['dokkaebi.io/route-profile'] == 'hammer-k8s-job-runner' && object.spec.template.spec.serviceAccountName == 'hammer-k8s-job-runner')",
+    ),
+    (
+        "Hammer Kubernetes API egress selector label is reserved for approved K8S route profiles",
+        "!has(object.spec.template.metadata.labels) || !('dokkaebi.io/k8s-api-access' in object.spec.template.metadata.labels) || (object.metadata.labels['dokkaebi.io/route-profile'] in ['hammer-k8s-readonly', 'hammer-k8s-app-deployer', 'hammer-k8s-job-runner'] && object.spec.template.metadata.labels['dokkaebi.io/k8s-api-access'] == 'approved')",
     ),
     ("Hammer Jobs must not use imagePullSecrets", "!has(object.spec.template.spec.imagePullSecrets) || object.spec.template.spec.imagePullSecrets.size() == 0"),
     ("Hammer Jobs must not use hostNetwork", "!has(object.spec.template.spec.hostNetwork) || object.spec.template.spec.hostNetwork == false"),
@@ -645,8 +784,8 @@ expected_policy_validations = [
         "object.spec.template.spec.containers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.mountPath != '/')) && (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.mountPath != '/'))) && (!has(object.spec.template.spec.ephemeralContainers) || object.spec.template.spec.ephemeralContainers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m, m.mountPath != '/')))",
     ),
     (
-        "Hammer containers must not reference Secrets through env",
-        "object.spec.template.spec.containers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef)))) && (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))))) && (!has(object.spec.template.spec.ephemeralContainers) || object.spec.template.spec.ephemeralContainers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef)))))",
+        "Hammer containers may reference only broker-issued LiteLLM virtual-key Secrets through env",
+        "object.spec.template.spec.containers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef) || (request.userInfo.username == 'system:serviceaccount:dokkaebi-system:dokkaebi-fire' && e.name == 'DOKKAEBI_LITELLM_VIRTUAL_KEY' && has(e.valueFrom.secretKeyRef.name) && e.valueFrom.secretKeyRef.name == 'dokkaebi-litellm-virtual-key-' + object.metadata.labels['dokkaebi.io/credential-grant-id'] && has(e.valueFrom.secretKeyRef.key) && e.valueFrom.secretKeyRef.key == 'api-key' && 'dokkaebi.io/litellm-key-scope' in object.metadata.labels && object.metadata.labels['dokkaebi.io/litellm-key-scope'] == 'run-scoped' && 'dokkaebi.io/litellm-key-ttl' in object.metadata.labels && object.metadata.labels['dokkaebi.io/litellm-key-ttl'] != '' && 'dokkaebi.io/litellm-key-owner' in object.metadata.labels && object.metadata.labels['dokkaebi.io/litellm-key-owner'] == 'fire-credential-broker' && 'dokkaebi.io/run-id' in object.metadata.labels && object.metadata.labels['dokkaebi.io/run-id'] != '')))) && (!has(object.spec.template.spec.initContainers) || object.spec.template.spec.initContainers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))))) && (!has(object.spec.template.spec.ephemeralContainers) || object.spec.template.spec.ephemeralContainers.all(c, (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) && (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef)))))",
     ),
     (
         "Hammer Jobs must declare an approved durable result packet sink matching the ticket id",
@@ -687,7 +826,7 @@ if namespace_selector != expected_namespace_selector:
 def overlay_errors(overlay: Path) -> list[str]:
     found: list[str] = []
     overlay_data = load_yaml_mapping(overlay)
-    unexpected_overlay_keys = set(overlay_data) - {"apiVersion", "kind", "resources"}
+    unexpected_overlay_keys = set(overlay_data) - {"apiVersion", "kind", "resources", "patches"}
     if unexpected_overlay_keys:
         found.append(
             f"{overlay} may only declare apiVersion, kind, and resources; unexpected keys: "
@@ -699,8 +838,64 @@ def overlay_errors(overlay: Path) -> list[str]:
     if not isinstance(resources, list):
         found.append(f"{overlay} resources must be a list")
         resources = []
+
+    if "k8s/overlays/local/" in str(overlay):
+        if resources != ["../../base", "external-litellm.yaml"]:
+            found.append(f"{overlay} resources must be exactly ../../base and external-litellm.yaml")
+        patches = overlay_data.get("patches", [])
+        if not isinstance(patches, list):
+            found.append(f"{overlay} patches must be a list")
+        elif len(patches) != 3:
+            found.append(f"{overlay} local overlay must declare exactly three external LiteLLM patches")
+        return found
+
     if resources != ["../../base"]:
         found.append(f"{overlay} resources must be exactly ../../base")
+    patches = overlay_data.get("patches", [])
+    if "k8s/overlays/eks/" not in str(overlay):
+        if patches:
+            found.append(f"{overlay} may not declare patches outside the EKS identity overlay")
+        return found
+    if not isinstance(patches, list) or len(patches) != 2:
+        found.append(f"{overlay} EKS overlay must declare exactly two workload identity placeholder patches")
+        return found
+    expected_targets = {
+        ("ServiceAccount", "dokkaebi-system", "dokkaebi-fire"): "REPLACE_WITH_APPROVED_EKS_FIRE_ROLE_ARN",
+        ("ServiceAccount", "dokkaebi-llm", "litellm"): "REPLACE_WITH_APPROVED_EKS_LITELLM_ROLE_ARN",
+    }
+    seen_targets: set[tuple[str, str, str]] = set()
+    overlay_text = overlay.read_text(encoding="utf-8")
+    if "hammer-" in overlay_text:
+        found.append(f"{overlay} must not assign EKS workload identity to Hammer ServiceAccounts")
+    for patch in patches:
+        if not isinstance(patch, dict):
+            found.append(f"{overlay} patch entries must be mappings")
+            continue
+        target = patch.get("target", {})
+        patch_text = patch.get("patch", "")
+        if not isinstance(target, dict) or not isinstance(patch_text, str):
+            found.append(f"{overlay} patch entries must include target mapping and patch text")
+            continue
+        key = (
+            str(target.get("kind", "")),
+            str(target.get("namespace", "")),
+            str(target.get("name", "")),
+        )
+        seen_targets.add(key)
+        expected_role = expected_targets.get(key)
+        if expected_role is None:
+            found.append(f"{overlay} has unexpected EKS identity target: {key}")
+            continue
+        for required_text in [
+            "eks.amazonaws.com/role-arn",
+            expected_role,
+            "explicit-human-approved-aws-iam-and-eks",
+        ]:
+            if required_text not in patch_text:
+                found.append(f"{overlay} patch for {key[2]} missing {required_text}")
+    missing_targets = sorted(set(expected_targets) - seen_targets)
+    if missing_targets:
+        found.append(f"{overlay} missing EKS identity targets: {missing_targets}")
     return found
 
 
@@ -762,7 +957,7 @@ profile_service_accounts = {
     "hammer-k8s-job-runner": "hammer-k8s-job-runner",
 }
 image_profile_images = {
-    "dokkaebi-hammer-dev-sandbox": "ghcr.io/project-dokkaebi/hammer:dev-sandbox",
+    "dokkaebi-hammer-dev-sandbox": "ghcr.io/twotwo-me/hammer:dev-sandbox",
 }
 runtime_fire_job_path = Path("k8s/runtime-smoke/fire-job-orchestrator-smoke.yaml")
 runtime_hammer_job_path = Path("k8s/runtime-smoke/hammer-job-fire-created-approved.json")
@@ -870,8 +1065,40 @@ def validate_runtime_hammer_job(path: Path) -> None:
     labels = metadata.get("labels", {}) if isinstance(metadata.get("labels"), dict) else {}
     if labels.get("dokkaebi.io/route-profile") != "hammer-k8s-job-runner":
         errors.append(f"{path} must prove Fire can create the job-runner Hammer profile")
+    template = hammer_job.get("spec", {}).get("template", {}) if isinstance(hammer_job.get("spec"), dict) else {}
+    template_metadata = template.get("metadata", {}) if isinstance(template.get("metadata"), dict) else {}
+    template_labels = template_metadata.get("labels", {}) if isinstance(template_metadata.get("labels"), dict) else {}
+    if template_labels.get("dokkaebi.io/k8s-api-access") != "approved":
+        errors.append(f"{path} must carry approved Hammer Kubernetes API egress selector label")
     require_runtime_result_metadata(hammer_job, path)
 approved_result_sink_prefix = "github-workpad://Project_Dokkaebi_K8S/issues/"
+
+
+def fixture_request_username(labels: dict) -> str:
+    username = labels.get("dokkaebi.io/fixture-request-user")
+    if isinstance(username, str) and username:
+        return username
+    return "system:serviceaccount:dokkaebi-system:dokkaebi-fire"
+
+
+def is_allowed_litellm_virtual_key_env(env: dict, labels: dict, request_username: str) -> bool:
+    value_from = env.get("valueFrom", {}) if isinstance(env.get("valueFrom"), dict) else {}
+    secret_ref = value_from.get("secretKeyRef", {}) if isinstance(value_from.get("secretKeyRef"), dict) else {}
+    credential_grant_id = labels.get("dokkaebi.io/credential-grant-id")
+    if not isinstance(credential_grant_id, str) or not credential_grant_id:
+        return False
+    return (
+        env.get("name") == "DOKKAEBI_LITELLM_VIRTUAL_KEY"
+        and request_username == "system:serviceaccount:dokkaebi-system:dokkaebi-fire"
+        and secret_ref.get("name") == "dokkaebi-litellm-virtual-key-" + credential_grant_id
+        and secret_ref.get("key") == "api-key"
+        and labels.get("dokkaebi.io/litellm-key-scope") == "run-scoped"
+        and isinstance(labels.get("dokkaebi.io/litellm-key-ttl"), str)
+        and bool(labels.get("dokkaebi.io/litellm-key-ttl"))
+        and labels.get("dokkaebi.io/litellm-key-owner") == "fire-credential-broker"
+        and isinstance(labels.get("dokkaebi.io/run-id"), str)
+        and bool(labels.get("dokkaebi.io/run-id"))
+    )
 
 
 def admission_errors(job: dict) -> list[str]:
@@ -884,6 +1111,7 @@ def admission_errors(job: dict) -> list[str]:
         return found
     metadata = job.get("metadata", {}) if isinstance(job.get("metadata"), dict) else {}
     labels = metadata.get("labels", {}) if isinstance(metadata.get("labels"), dict) else {}
+    request_username = fixture_request_username(labels)
     for label in [
         "dokkaebi.io/ticket-id",
         "dokkaebi.io/tenant-id",
@@ -900,12 +1128,21 @@ def admission_errors(job: dict) -> list[str]:
     profile = labels.get("dokkaebi.io/route-profile")
     expected_service_account = profile_service_accounts.get(profile)
     spec = pod_spec(job)
+    template = job.get("spec", {}).get("template", {}) if isinstance(job.get("spec"), dict) else {}
+    template_metadata = template.get("metadata", {}) if isinstance(template.get("metadata"), dict) else {}
+    template_labels = template_metadata.get("labels", {}) if isinstance(template_metadata.get("labels"), dict) else {}
     if expected_service_account is None:
         found.append(f"unknown route profile {profile}")
     elif spec.get("serviceAccountName") != expected_service_account:
         found.append("route profile and ServiceAccount mismatch")
     if profile == "hammer-no-k8s" and spec.get("automountServiceAccountToken") is not False:
         found.append("hammer-no-k8s must not mount Kubernetes API token")
+    if template_labels.get("dokkaebi.io/k8s-api-access") and profile not in {
+        "hammer-k8s-readonly",
+        "hammer-k8s-app-deployer",
+        "hammer-k8s-job-runner",
+    }:
+        found.append("Kubernetes API egress selector label is reserved for approved K8S route profiles")
     image_profile = labels.get("dokkaebi.io/image-profile")
     expected_image = image_profile_images.get(image_profile)
     if expected_image is None:
@@ -1017,7 +1254,12 @@ def admission_errors(job: dict) -> list[str]:
                     found.append("result packet sink must match ticket id")
             value_from = env.get("valueFrom", {})
             if isinstance(value_from, dict) and "secretKeyRef" in value_from:
-                found.append(f"{container_kind} Secret env valueFrom is forbidden")
+                if container_kind == "container" and is_allowed_litellm_virtual_key_env(env, labels, request_username):
+                    continue
+                if container_kind == "container":
+                    found.append("container Secret env valueFrom must be broker-issued LiteLLM virtual key")
+                else:
+                    found.append(f"{container_kind} Secret env valueFrom is forbidden")
     if not saw_result_sink:
         found.append("missing DOKKAEBI_RESULT_PACKET_SINK")
     return found
@@ -1051,6 +1293,14 @@ for accepted_fixture, (expected_profile, expected_service_account) in accepted_f
         errors.append(f"{accepted_fixture} route profile must be {expected_profile}")
     if spec.get("serviceAccountName") != expected_service_account:
         errors.append(f"{accepted_fixture} ServiceAccount must be {expected_service_account}")
+    template = job.get("spec", {}).get("template", {}) if isinstance(job.get("spec"), dict) else {}
+    template_metadata = template.get("metadata", {}) if isinstance(template.get("metadata"), dict) else {}
+    template_labels = template_metadata.get("labels", {}) if isinstance(template_metadata.get("labels"), dict) else {}
+    if expected_profile in {"hammer-k8s-readonly", "hammer-k8s-app-deployer", "hammer-k8s-job-runner"}:
+        if template_labels.get("dokkaebi.io/k8s-api-access") != "approved":
+            errors.append(f"{accepted_fixture} K8S profile must carry approved API egress selector label")
+    elif template_labels.get("dokkaebi.io/k8s-api-access"):
+        errors.append(f"{accepted_fixture} non-K8S profile must not carry API egress selector label")
     require_runtime_result_metadata(job, accepted_fixture)
 
 matrix_rejected_entries = [
@@ -1140,10 +1390,10 @@ required_k8s_subcriteria = {
     "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
     "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
     "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
-    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 80},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 100},
     "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 100},
-    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 80},
-    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 100},
+    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 100},
 }
 
 
@@ -1212,8 +1462,17 @@ k8s_area = areas.get("k8s_platformization")
 if not k8s_area:
     errors.append("criteria.json missing k8s_platformization area")
 else:
-    if k8s_area.get("currentPercent") in (None, 100):
-        errors.append("k8s_platformization must remain below 100 until runtime evidence closes it")
+    if k8s_area.get("currentPercent") != 100:
+        errors.append("k8s_platformization must be 100 after runtime, LiteLLM, Grafana, identity, and documentation E2E evidence")
+    for evidence_path in [
+        "docs/operations/k8s-platform-e2e-2026-06-21.md",
+        "docs/operations/k8s-platform-usage.md",
+        "docs/adr/0003-k8s-identity-secret-boundary.md",
+        "scripts/run-k8s-platform-e2e.sh",
+        "scripts/validate-k8s-platform-e2e.sh",
+    ]:
+        if evidence_path not in k8s_area.get("currentEvidence", []):
+            errors.append(f"k8s_platformization missing 100-point evidence: {evidence_path}")
     require_exact_k8s_current_evidence(k8s_area)
     validate_k8s_subcriteria(k8s_area)
     next_issues = k8s_area.get("nextIssues", [])
@@ -1308,3 +1567,5 @@ if errors:
 
 print("PASS Dokkaebi K8S platformization loop and manifests are structurally valid")
 PY
+
+bash scripts/validate-k8s-litellm-grafana-platform.sh
