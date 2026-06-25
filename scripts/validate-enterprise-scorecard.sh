@@ -164,10 +164,10 @@ required_k8s_subcriteria = {
     "k8s_admission_fixture_matrix": {"weight": 20, "currentPercent": 100},
     "k8s_accepted_route_profile_fixtures": {"weight": 15, "currentPercent": 100},
     "k8s_disposable_api_server_admission_rbac": {"weight": 10, "currentPercent": 100},
-    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 80},
+    "fire_k8s_deployment_runtime_smoke": {"weight": 10, "currentPercent": 100},
     "hammer_job_profile_runtime_smoke": {"weight": 10, "currentPercent": 100},
-    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 80},
-    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 0},
+    "k8s_result_packet_reconciliation": {"weight": 5, "currentPercent": 100},
+    "eks_identity_secret_boundary": {"weight": 5, "currentPercent": 100},
 }
 
 
@@ -270,8 +270,17 @@ k8s_subcriteria_scores: dict[str, tuple[int, int]] = {}
 if not k8s_area:
     errors.append("missing k8s_platformization area")
 else:
-    if k8s_area.get("currentPercent") == 100:
-        errors.append("k8s_platformization must not be scored 100 before live or approved-sandbox runtime evidence")
+    if k8s_area.get("currentPercent") != 100:
+        errors.append("k8s_platformization must be scored 100 after approved local/sandbox E2E evidence")
+    for evidence_path in [
+        "docs/operations/k8s-platform-e2e-2026-06-21.md",
+        "docs/operations/k8s-platform-usage.md",
+        "docs/adr/0003-k8s-identity-secret-boundary.md",
+        "scripts/run-k8s-platform-e2e.sh",
+        "scripts/validate-k8s-platform-e2e.sh",
+    ]:
+        if evidence_path not in k8s_area.get("currentEvidence", []):
+            errors.append(f"k8s_platformization missing 100-point evidence: {evidence_path}")
     k8s_subcriteria_scores = validate_k8s_subcriteria(k8s_area)
     actual_issues = {
         issue.get("title"): issue.get("issueBodyPath")
@@ -322,7 +331,8 @@ if scorecard_path.is_file():
         "hammer-job-profile-smoke",
         "k8s-result-packet-reconciliation",
         "eks-identity-and-secret-boundary",
-        "must not mark a score 100",
+        "Repository-Owned K8S Continuous Improvement Gates",
+        "approved local/sandbox runtime evidence",
     ]:
         if required_text not in scorecard_text:
             errors.append(f"project scorecard missing text: {required_text}")

@@ -4,6 +4,9 @@
 # Local loop runtime/session state
 .om[o]/
 
+# Local secrets
+litellm-key
+
 # OS/editor noise
 .DS_Store
 *.swp

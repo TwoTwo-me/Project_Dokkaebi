@@ -1,0 +1,130 @@
+{
+  "matrixId": "k8s_result_packet_reconciliation",
+  "matrixVersion": 1,
+  "purpose": "Executable replay matrix for Kubernetes Job, GitHub Project, PR/check, log, approval, and result-packet closeout agreement. Validators fail if 100-point reconciliation loses stale, failed, or disagreement cases.",
+  "sourceOfTruth": "GitHub Project Status plus durable Manager-reviewed result evidence",
+  "requiredDecisionRule": "Done is rejected unless GitHub Project state, Kubernetes Job state, logs, result packet, PR/check state, approval evidence, and cleanup evidence agree.",
+  "cases": [
+    {
+      "caseId": "accepted-closeout",
+      "githubProjectStatus": "Needs Review",
+      "kubernetesJobState": "Complete",
+      "logs": "present",
+      "resultPacket": "present",
+      "pullRequestState": "checks-passed",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "present",
+      "expectedManagerDecision": "move-to-human-review",
+      "requiredEvidence": [
+        "ticket id",
+        "route profile",
+        "namespace",
+        "ServiceAccount",
+        "image digest",
+        "exit status",
+        "validation output",
+        "PR/check link",
+        "cleanup receipt"
+      ]
+    },
+    {
+      "caseId": "missing-result-packet",
+      "githubProjectStatus": "Needs Review",
+      "kubernetesJobState": "Complete",
+      "logs": "present",
+      "resultPacket": "missing",
+      "pullRequestState": "checks-passed",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "present",
+      "expectedManagerDecision": "reject-closeout",
+      "requiredEvidence": [
+        "Job completion is insufficient without durable result packet evidence",
+        "request worker fixup"
+      ]
+    },
+    {
+      "caseId": "failed-job",
+      "githubProjectStatus": "In Progress",
+      "kubernetesJobState": "Failed",
+      "logs": "present",
+      "resultPacket": "missing",
+      "pullRequestState": "not-ready",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "pending",
+      "expectedManagerDecision": "fix-requested-or-failed",
+      "requiredEvidence": [
+        "failed Job condition",
+        "logs surface",
+        "route metadata",
+        "next action"
+      ]
+    },
+    {
+      "caseId": "done-while-job-running",
+      "githubProjectStatus": "Done",
+      "kubernetesJobState": "Running",
+      "logs": "partial",
+      "resultPacket": "missing",
+      "pullRequestState": "not-ready",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "pending",
+      "expectedManagerDecision": "reopen-or-block-done",
+      "requiredEvidence": [
+        "GitHub Project state drift",
+        "running Job state",
+        "missing result packet",
+        "manager block reason"
+      ]
+    },
+    {
+      "caseId": "stale-job",
+      "githubProjectStatus": "In Progress",
+      "kubernetesJobState": "RunningPastTtlOrLease",
+      "logs": "stale",
+      "resultPacket": "missing",
+      "pullRequestState": "not-ready",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "pending",
+      "expectedManagerDecision": "create-recovery-ticket",
+      "requiredEvidence": [
+        "stale lease",
+        "last heartbeat",
+        "cleanup plan",
+        "recovery ticket"
+      ]
+    },
+    {
+      "caseId": "pr-check-failed",
+      "githubProjectStatus": "Needs Review",
+      "kubernetesJobState": "Complete",
+      "logs": "present",
+      "resultPacket": "present",
+      "pullRequestState": "checks-failed",
+      "approvalEvidence": "present",
+      "cleanupEvidence": "present",
+      "expectedManagerDecision": "fix-requested",
+      "requiredEvidence": [
+        "failed check name",
+        "result packet reference",
+        "validation failure",
+        "next action"
+      ]
+    },
+    {
+      "caseId": "missing-approval",
+      "githubProjectStatus": "Needs Review",
+      "kubernetesJobState": "Complete",
+      "logs": "present",
+      "resultPacket": "present",
+      "pullRequestState": "checks-passed",
+      "approvalEvidence": "missing",
+      "cleanupEvidence": "present",
+      "expectedManagerDecision": "reject-closeout",
+      "requiredEvidence": [
+        "missing approval evidence",
+        "authority review",
+        "manager block reason"
+      ]
+    }
+  ]
+}

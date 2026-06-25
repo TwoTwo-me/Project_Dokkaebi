@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# noqa: SIZE_OK - end-to-end disposable kind smoke orchestrator; splitting would obscure paired setup/cleanup receipts required by the evidence gate.
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -8,7 +9,7 @@ CLUSTER_NAME="${DOKKAEBI_K8S_SMOKE_CLUSTER:-dokkaebi-runtime-smoke}"
 KIND_VERSION="${DOKKAEBI_KIND_VERSION:-v0.29.0}"
 KUBECTL_VERSION="${DOKKAEBI_KUBECTL_VERSION:-v1.30.0}"
 KIND_NODE_IMAGE="${DOKKAEBI_KIND_NODE_IMAGE:-kindest/node:v1.30.0}"
-HAMMER_IMAGE="ghcr.io/project-dokkaebi/hammer:dev-sandbox"
+HAMMER_IMAGE="ghcr.io/twotwo-me/hammer:dev-sandbox"
 FIRE_IMAGE="ghcr.io/project-dokkaebi/fire:dev-sandbox"
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dokkaebi-k8s-runtime.XXXXXX")"
 BIN_DIR="$WORK_DIR/bin"
@@ -246,6 +247,48 @@ apply_and_assert_accepted_fixture() {
   assert_hammer_log "dokkaebi-workers" "$name" "$ticket" "$profile" "$service_account"
 }
 
+apply_and_assert_litellm_virtual_key_fixture() {
+  secret_name="dokkaebi-litellm-virtual-key-grant-litellm-pdk8s-001"
+  work_secret="$WORK_DIR/litellm-virtual-key-secret.yaml"
+  cat > "$work_secret" <<'EOF'
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dokkaebi-litellm-virtual-key-grant-litellm-pdk8s-001
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-litellm-virtual-key
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/litellm-key-scope: run-scoped
+    dokkaebi.io/litellm-key-owner: fire-credential-broker
+    dokkaebi.io/run-id: run-pdk8s-litellm-001
+type: Opaque
+stringData:
+  api-key: REPLACE_WITH_APPROVED_RUN_SCOPED_LITELLM_VIRTUAL_KEY_SMOKE
+EOF
+
+  run "$KUBECTL_BIN" create \
+    --as=system:serviceaccount:dokkaebi-system:dokkaebi-credential-broker \
+    -f "$work_secret"
+  log "litellm_virtual_key_secret_created_by_broker=$secret_name"
+
+  name="$("$KUBECTL_BIN" create \
+    --as=system:serviceaccount:dokkaebi-system:dokkaebi-fire \
+    -f k8s/fixtures/accepted/hammer-job-litellm-virtual-key-approved.yaml \
+    -o jsonpath='{.metadata.name}')"
+  echo
+  log "accepted_fixture_applied_by_fire path=k8s/fixtures/accepted/hammer-job-litellm-virtual-key-approved.yaml job=$name"
+  wait_for_job "dokkaebi-workers" "$name"
+  assert_job_metadata "dokkaebi-workers" "$name" hammer-k8s-readonly hammer-k8s-readonly "$HAMMER_IMAGE"
+  assert_hammer_log "dokkaebi-workers" "$name" PDK8S-LITELLM-001 hammer-k8s-readonly hammer-k8s-readonly
+  log "litellm_virtual_key_job_created_by_fire=$name"
+
+  run "$KUBECTL_BIN" delete secret "$secret_name" \
+    --namespace dokkaebi-workers \
+    --as=system:serviceaccount:dokkaebi-system:dokkaebi-credential-broker
+  log "litellm_virtual_key_secret_deleted_by_broker=$secret_name"
+}
+
 assert_rejected_fixture_denied_for_fire() {
   set +e
   output="$("$KUBECTL_BIN" create \
@@ -264,6 +307,27 @@ assert_rejected_fixture_denied_for_fire() {
   log "fire_rejected_fixture_denied=missing-approval-id"
 }
 
+assert_litellm_self_spoof_denied_for_hammer() {
+  runtime_fixture="$WORK_DIR/litellm-virtual-key-self-spoof-runtime.yaml"
+  grep -v "dokkaebi.io/fixture-request-user:" \
+    k8s/fixtures/rejected/litellm-virtual-key-self-spoof.yaml > "$runtime_fixture"
+  set +e
+  output="$("$KUBECTL_BIN" create \
+    --as=system:serviceaccount:dokkaebi-workers:hammer-k8s-job-runner \
+    --dry-run=server \
+    -f "$runtime_fixture" 2>&1)"
+  status=$?
+  set -e
+  printf '%s\n' "$output"
+  if [ "$status" -eq 0 ]; then
+    echo "Hammer ServiceAccount unexpectedly self-spoofed LiteLLM virtual-key Secret access" >&2
+    exit 73
+  fi
+  printf '%s\n' "$output" | grep -F "ValidatingAdmissionPolicy 'dokkaebi-hammer-job-policy'" >/dev/null
+  printf '%s\n' "$output" | grep -F "Hammer containers may reference only broker-issued LiteLLM virtual-key Secrets through env" >/dev/null
+  log "hammer_litellm_virtual_key_self_spoof_denied=hammer-k8s-job-runner"
+}
+
 main() {
   bootstrap_tools
   build_smoke_images
@@ -280,6 +344,8 @@ main() {
   expect_can_i dokkaebi-system dokkaebi-fire create jobs.batch dokkaebi-workers yes
   expect_can_i dokkaebi-system dokkaebi-fire get secrets dokkaebi-workers no
   expect_can_i dokkaebi-system dokkaebi-fire create rolebindings.rbac.authorization.k8s.io dokkaebi-workers no
+  expect_can_i dokkaebi-system dokkaebi-credential-broker create secrets dokkaebi-workers yes
+  expect_can_i dokkaebi-system dokkaebi-credential-broker list secrets dokkaebi-workers no
   expect_can_i dokkaebi-workers hammer-no-k8s get pods dokkaebi-workers no
   expect_can_i dokkaebi-workers hammer-k8s-readonly get pods dokkaebi-workers yes
   expect_can_i dokkaebi-workers hammer-k8s-readonly create jobs.batch dokkaebi-workers no
@@ -297,6 +363,8 @@ main() {
   apply_and_assert_accepted_fixture k8s/fixtures/accepted/hammer-job-approved.yaml
   apply_and_assert_accepted_fixture k8s/fixtures/accepted/hammer-job-app-deployer-approved.yaml
   apply_and_assert_accepted_fixture k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml
+  apply_and_assert_litellm_virtual_key_fixture
+  assert_litellm_self_spoof_denied_for_hammer
 
   run "$KUBECTL_BIN" get jobs --namespace dokkaebi-workers
   run "$KUBECTL_BIN" get pods --namespace dokkaebi-workers

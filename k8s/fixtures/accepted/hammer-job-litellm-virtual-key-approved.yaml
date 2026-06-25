@@ -1,0 +1,101 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hammer-ticket-pdk8s-litellm-001
+  namespace: dokkaebi-workers
+  labels:
+    app.kubernetes.io/name: dokkaebi-hammer
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/ticket-id: PDK8S-LITELLM-001
+    dokkaebi.io/tenant-id: tenant-sandbox
+    dokkaebi.io/approval-id: approval-litellm-virtual-key-2026-06-19
+    dokkaebi.io/route-profile: hammer-k8s-readonly
+    dokkaebi.io/credential-grant-id: grant-litellm-pdk8s-001
+    dokkaebi.io/image-profile: dokkaebi-hammer-dev-sandbox
+    dokkaebi.io/litellm-key-scope: run-scoped
+    dokkaebi.io/litellm-key-ttl: 1h
+    dokkaebi.io/litellm-key-owner: fire-credential-broker
+    dokkaebi.io/run-id: run-pdk8s-litellm-001
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: dokkaebi-hammer
+        app.kubernetes.io/part-of: dokkaebi
+        dokkaebi.io/ticket-id: PDK8S-LITELLM-001
+        dokkaebi.io/tenant-id: tenant-sandbox
+        dokkaebi.io/route-profile: hammer-k8s-readonly
+        dokkaebi.io/k8s-api-access: approved
+        dokkaebi.io/litellm-key-scope: run-scoped
+        dokkaebi.io/run-id: run-pdk8s-litellm-001
+    spec:
+      restartPolicy: Never
+      serviceAccountName: hammer-k8s-readonly
+      automountServiceAccountToken: true
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: hammer
+          image: ghcr.io/twotwo-me/hammer:dev-sandbox
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOKKAEBI_TICKET_ID
+              value: PDK8S-LITELLM-001
+            - name: DOKKAEBI_TENANT_ID
+              value: tenant-sandbox
+            - name: DOKKAEBI_ROUTE_PROFILE
+              value: hammer-k8s-readonly
+            - name: DOKKAEBI_NAMESPACE
+              value: dokkaebi-workers
+            - name: DOKKAEBI_SERVICE_ACCOUNT
+              value: hammer-k8s-readonly
+            - name: DOKKAEBI_IMAGE_PROFILE
+              value: dokkaebi-hammer-dev-sandbox
+            - name: DOKKAEBI_RESULT_PACKET_SINK
+              value: github-workpad://Project_Dokkaebi_K8S/issues/PDK8S-LITELLM-001
+            - name: DOKKAEBI_PERMISSION_LEVEL
+              value: docs-only
+            - name: DOKKAEBI_LITELLM_BASE_URL
+              value: http://litellm.dokkaebi-llm.svc.cluster.local:4000
+            - name: DOKKAEBI_LITELLM_MODEL
+              value: dokkaebi-default
+            - name: CODEX_HOME
+              value: /home/dokkaebi/.codex
+            - name: DOKKAEBI_LITELLM_VIRTUAL_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: dokkaebi-litellm-virtual-key-grant-litellm-pdk8s-001
+                  key: api-key
+          volumeMounts:
+            - name: codex-home
+              mountPath: /home/dokkaebi/.codex
+            - name: tmp
+              mountPath: /tmp
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      volumes:
+        - name: codex-home
+          emptyDir: {}
+        - name: tmp
+          emptyDir: {}

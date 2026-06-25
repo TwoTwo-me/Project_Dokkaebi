@@ -13,3 +13,19 @@ metadata:
   labels:
     app.kubernetes.io/part-of: dokkaebi
     dokkaebi.io/plane: worker
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dokkaebi-llm
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/plane: llm-gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dokkaebi-observability
+  labels:
+    app.kubernetes.io/part-of: dokkaebi
+    dokkaebi.io/plane: observability

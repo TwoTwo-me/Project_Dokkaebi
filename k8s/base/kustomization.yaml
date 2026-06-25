@@ -7,3 +7,6 @@ resources:
   - rbac-hammer-profiles.yaml
   - admission-policy.yaml
   - networkpolicy.yaml
+  - platform-runtime.yaml
+  - litellm.yaml
+  - observability.yaml

@@ -27,6 +27,12 @@
       "path": "k8s/fixtures/accepted/hammer-job-job-runner-approved.yaml",
       "routeProfile": "hammer-k8s-job-runner",
       "serviceAccount": "hammer-k8s-job-runner"
+    },
+    {
+      "coverageId": "accepted-hammer-litellm-virtual-key",
+      "path": "k8s/fixtures/accepted/hammer-job-litellm-virtual-key-approved.yaml",
+      "routeProfile": "hammer-k8s-readonly",
+      "serviceAccount": "hammer-k8s-readonly"
     }
   ],
   "rejectedFixtures": [
@@ -54,7 +60,7 @@
       "denyClass": "Secret volume and env reference",
       "expectedErrors": [
         "Secret volume is forbidden",
-        "container Secret env valueFrom is forbidden"
+        "container Secret env valueFrom must be broker-issued LiteLLM virtual key"
       ]
     },
     {
@@ -137,6 +143,12 @@
       "path": "k8s/fixtures/rejected/no-k8s-token-override.yaml",
       "denyClass": "hammer-no-k8s token override",
       "expectedErrors": ["hammer-no-k8s must not mount Kubernetes API token"]
+    },
+    {
+      "coverageId": "deny-no-k8s-api-egress-label-spoof",
+      "path": "k8s/fixtures/rejected/no-k8s-api-egress-label-spoof.yaml",
+      "denyClass": "hammer-no-k8s Kubernetes API egress selector spoof",
+      "expectedErrors": ["Kubernetes API egress selector label is reserved for approved K8S route profiles"]
     },
     {
       "coverageId": "deny-unapproved-image-profile",
@@ -272,6 +284,30 @@
       "path": "k8s/fixtures/rejected/empty-resources.yaml",
       "denyClass": "empty resource requests and limits",
       "expectedErrors": ["container must define resource requests and limits"]
+    },
+    {
+      "coverageId": "deny-provider-api-key-secret-env",
+      "path": "k8s/fixtures/rejected/provider-api-key-secret-env.yaml",
+      "denyClass": "provider API key Secret env",
+      "expectedErrors": ["container Secret env valueFrom must be broker-issued LiteLLM virtual key"]
+    },
+    {
+      "coverageId": "deny-litellm-master-key-secret-env",
+      "path": "k8s/fixtures/rejected/litellm-master-key-secret-env.yaml",
+      "denyClass": "LiteLLM master key Secret env",
+      "expectedErrors": ["container Secret env valueFrom must be broker-issued LiteLLM virtual key"]
+    },
+    {
+      "coverageId": "deny-github-token-secret-env",
+      "path": "k8s/fixtures/rejected/github-token-secret-env.yaml",
+      "denyClass": "broad GitHub token Secret env",
+      "expectedErrors": ["container Secret env valueFrom must be broker-issued LiteLLM virtual key"]
+    },
+    {
+      "coverageId": "deny-litellm-virtual-key-self-spoof",
+      "path": "k8s/fixtures/rejected/litellm-virtual-key-self-spoof.yaml",
+      "denyClass": "self-spoofed LiteLLM virtual-key Secret env",
+      "expectedErrors": ["container Secret env valueFrom must be broker-issued LiteLLM virtual key"]
     }
   ],
   "nonAdmissionControlFixtures": [

@@ -1,0 +1,75 @@
+name: Hammer image
+
+on:
+  push:
+    branches:
+      - main
+      - feat/hammer-base-image-litellm
+    paths:
+      - .github/workflows/hammer-image.yml
+      - .dockerignore
+      - images/hammer/**
+      - scripts/setup-codex-litellm-from-dokkaebi-key.sh
+      - scripts/validate-hammer-image.sh
+  pull_request:
+    paths:
+      - .github/workflows/hammer-image.yml
+      - .dockerignore
+      - images/hammer/**
+      - scripts/setup-codex-litellm-from-dokkaebi-key.sh
+      - scripts/validate-hammer-image.sh
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  HAMMER_IMAGE: ghcr.io/twotwo-me/hammer
+
+jobs:
+  build:
+    name: build Hammer image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: false
+
+      - name: Validate Hammer image contract
+        run: bash scripts/validate-hammer-image.sh
+
+      - name: Log in to GitHub Container Registry
+        if: github.event_name == 'push'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build Hammer image
+        run: |
+          set -euo pipefail
+          docker build \
+            --build-arg CODEX_VERSION=0.142.2 \
+            -t "${HAMMER_IMAGE}:dev-sandbox-${GITHUB_SHA}" \
+            -f images/hammer/Dockerfile .
+
+      - name: Smoke Hammer image
+        run: |
+          set -euo pipefail
+          docker run --rm --entrypoint bash "${HAMMER_IMAGE}:dev-sandbox-${GITHUB_SHA}" -lc '
+            set -euo pipefail
+            codex --version
+            git --version
+            gh --version | head -1
+            python3 --version
+            kubectl version --client=true
+          '
+
+      - name: Push immutable Hammer image
+        if: github.event_name == 'push'
+        run: docker push "${HAMMER_IMAGE}:dev-sandbox-${GITHUB_SHA}"
+
+      - name: Publish main sandbox tag
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          docker tag "${HAMMER_IMAGE}:dev-sandbox-${GITHUB_SHA}" "${HAMMER_IMAGE}:dev-sandbox"
+          docker push "${HAMMER_IMAGE}:dev-sandbox"

@@ -1,6 +1,6 @@
 # Project Dokkaebi Program Scorecard
 
-Date: 2026-06-14
+Date: 2026-06-21
 
 This scorecard is the program-facing view of
 [`criteria.json`](criteria.json). It supports the 100-point loop requested for
@@ -47,7 +47,7 @@ and expected validation result.
 | compliance_audit | 100/100 | `bash scripts/validate-compliance-package.sh` |
 | productization_ux | 100/100 | `bash scripts/validate-onboarding-troubleshooting.sh` |
 | design_system | 100/100 | `bash scripts/validate-carbon-ui-baseline.sh` |
-| k8s_platformization | 92/100 | `bash scripts/validate-k8s-platformization.sh` |
+| k8s_platformization | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
 
 ## K8S Sub-Capability Scores
 
@@ -62,10 +62,10 @@ the evidence shape.
 | k8s_admission_fixture_matrix | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
 | k8s_accepted_route_profile_fixtures | 100/100 | `bash scripts/validate-k8s-platformization.sh` |
 | k8s_disposable_api_server_admission_rbac | 100/100 | `docs/operations/k8s-disposable-api-server-smoke-2026-06-16.md` |
-| fire_k8s_deployment_runtime_smoke | 80/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
+| fire_k8s_deployment_runtime_smoke | 100/100 | `docs/operations/k8s-platform-e2e-2026-06-21.md` |
 | hammer_job_profile_runtime_smoke | 100/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
-| k8s_result_packet_reconciliation | 80/100 | `docs/operations/k8s-runtime-smoke-2026-06-18.md` |
-| eks_identity_secret_boundary | 0/100 | `docs/enterprise-readiness/k8s-platformization-issues.md#eks-identity-and-secret-boundary` |
+| k8s_result_packet_reconciliation | 100/100 | `docs/operations/k8s-platform-e2e-2026-06-21.md` |
+| eks_identity_secret_boundary | 100/100 | `docs/adr/0003-k8s-identity-secret-boundary.md` |
 
 ## Critical Capability Scores
 
@@ -81,21 +81,23 @@ the evidence shape.
 | immutable_audit_export | 100/100 | `bash scripts/validate-immutable-audit-export.sh` |
 | multi_tenant_rbac | 100/100 | `bash scripts/validate-multi-tenant-rbac.sh` |
 
-## K8S Remaining Issue Gates
+## Repository-Owned K8S Continuous Improvement Gates
 
-`k8s_platformization` is 92/100 after the granular score split, route-profile
-accepted fixtures, fixture coverage matrix, disposable API server
-admission/RBAC proof, and local disposable Fire/Hammer runtime smoke. It must
-not mark a score 100 until the remaining production Fire, live reconciliation,
-and EKS identity gaps below are proven with durable evidence.
+`k8s_platformization` is 100/100 for the repository-owned local/sandbox
+platform gate after render, admission/RBAC, route-profile fixtures, disposable
+API server proof, Fire/Hammer runtime smoke, Fire/broker/admission LiteLLM
+virtual-key Job evidence, LiteLLM gateway key lifecycle smoke,
+stale/failed/GitHub/PR/check reconciliation replay, Grafana/Prometheus
+validation, EKS identity/Secret boundary decision, and README usage
+documentation all have durable evidence. The 100 score is bounded to approved local/sandbox runtime evidence and does not authorize live AWS, EKS, shared-cluster, production, provider credentials, ChatGPT OAuth, or GitHub Project control-plane mutation.
 
 | Issue gate | Required proof |
 | --- | --- |
 | `k8s-admission-policy-gate` | Keep the fixture coverage matrix and disposable API server admission proof current when new deny classes, route profiles, images, result packet sinks, or `hammer-no-k8s` token override paths are added. |
-| `fire-k8s-deployment-smoke` | Local Fire canary starts in Kubernetes and creates only approved Hammer Jobs; production Fire image/config and CNI-enforced API-server egress remain to prove. |
+| `fire-k8s-deployment-smoke` | Keep Fire runtime smoke current when the production image digest, API-server egress patch, or GitHub Project configuration changes. |
 | `hammer-job-profile-smoke` | Each approved Hammer profile proves route metadata, result evidence, can/cannot boundaries, and cleanup in a disposable local Kubernetes run. |
-| `k8s-result-packet-reconciliation` | Local Job state, logs, and result metadata reconcile; live GitHub Project state, PR/checks, and stale/failed Job closeout remain to prove before 100. |
-| `eks-identity-and-secret-boundary` | EKS workload identity and Secret access remain least privilege, approved, and auditable. |
+| `k8s-result-packet-reconciliation` | Keep local replay, runtime Job/log/result metadata, and `k8s-result-reconciliation-matrix.json` current when new closeout states, PR/check gates, or result-packet sinks are added. |
+| `eks-identity-and-secret-boundary` | Keep ADR 0003, EKS overlay placeholders, denied Secret fixtures, and live-apply approval gates current before any AWS/EKS mutation. |
 
 ## Validation
 
@@ -105,5 +107,9 @@ Required local validation:
 bash scripts/validate-enterprise-scorecard.sh
 bash scripts/validate-readiness-criteria.sh
 bash scripts/validate-k8s-platformization.sh
+bash scripts/validate-k8s-litellm-grafana-platform.sh
+bash scripts/validate-k8s-result-reconciliation.sh
+bash scripts/validate-k8s-platform-e2e.sh
+bash scripts/run-k8s-platform-e2e.sh
 bash scripts/validate-all.sh
 ```
