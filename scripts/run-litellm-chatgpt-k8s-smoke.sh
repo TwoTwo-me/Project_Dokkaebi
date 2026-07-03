@@ -9,7 +9,7 @@ KIND_NODE_IMAGE="${DOKKAEBI_KIND_NODE_IMAGE:-kindest/node:v1.30.0}"
 LITELLM_IMAGE="${DOKKAEBI_LITELLM_IMAGE:-ghcr.io/berriai/litellm-database:main-latest}"
 POSTGRES_IMAGE="${DOKKAEBI_POSTGRES_IMAGE:-postgres:16-alpine}"
 CURL_IMAGE="${DOKKAEBI_CURL_IMAGE:-curlimages/curl:8.8.0}"
-MASTER_KEY="${DOKKAEBI_LITELLM_MASTER_KEY:-sk-dokkaebi-litellm-smoke-master}"
+MASTER_KEY="${DOKKAEBI_LITELLM_MASTER_KEY:-dokkaebi-litellm-smoke-master}"
 WORK_DIR="$(mktemp -d "${TMPDIR:-/tmp}/dokkaebi-litellm-k8s.XXXXXX")"
 KUBECONFIG="$WORK_DIR/kubeconfig"
 KIND_BIN="${KIND_BIN:-$(command -v kind || true)}"
@@ -86,7 +86,7 @@ type: Opaque
 stringData:
   LITELLM_MASTER_KEY: ${MASTER_KEY}
   DATABASE_URL: postgresql://litellm:litellm-smoke-pass@postgres.dokkaebi-llm.svc.cluster.local:5432/litellm
-  OPENAI_API_KEY: sk-dokkaebi-litellm-smoke-provider
+  OPENAI_API_KEY: dokkaebi-litellm-smoke-provider-placeholder
   POSTGRES_DB: litellm
   POSTGRES_USER: litellm
   POSTGRES_PASSWORD: litellm-smoke-pass

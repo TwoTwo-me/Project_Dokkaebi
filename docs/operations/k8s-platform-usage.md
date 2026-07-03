@@ -17,9 +17,10 @@ Prometheus fit together.
 
 The base package is in [`../../k8s/base`](../../k8s/base). Local and EKS overlay
 skeletons are in [`../../k8s/overlays`](../../k8s/overlays).
-The local overlay routes the in-cluster `litellm` Service to the external
-operator gateway at `10.10.40.150:4000` and scales the in-cluster LiteLLM and
-Postgres Deployments to zero.
+The local overlay routes the in-cluster `litellm` Service to the
+documentation-only external gateway example at `192.0.2.150:4000` and scales
+the in-cluster LiteLLM and Postgres Deployments to zero. Patch that address to
+an approved reachable operator gateway before applying the overlay.
 
 ## Safety Model
 
@@ -127,8 +128,9 @@ prepare a local overlay or patch set for these items:
 - Patch the Kubernetes API Service IP in
   `allow-fire-kubernetes-api-egress` and
   `allow-hammer-kubernetes-api-egress` for your cluster.
-- If using the local overlay, confirm the external LiteLLM gateway at
-  `10.10.40.150:4000` is approved and reachable from the cluster.
+- If using the local overlay, patch the example external LiteLLM gateway
+  `192.0.2.150:4000` to an approved endpoint and confirm it is reachable from
+  the cluster.
 - Add any other approved provider-egress NetworkPolicy for LiteLLM only after
   provider, destination, budget, and credential owner are approved.
 - Replace placeholder LiteLLM/Postgres/Grafana Secret values through an
@@ -211,8 +213,9 @@ kubectl apply -k k8s/overlays/local
 ```
 
 The overlay keeps the service name stable as
-`http://litellm.dokkaebi-llm.svc.cluster.local:4000` while routing it to
-`10.10.40.150:4000`.
+`http://litellm.dokkaebi-llm.svc.cluster.local:4000` while routing it to the
+documentation-only example `192.0.2.150:4000`; replace the example before a
+real apply.
 
 Detailed LiteLLM/ChatGPT references:
 

@@ -60,7 +60,7 @@ if subsets and isinstance(subsets[0], dict):
     ports = subsets[0].get("ports", [])
     endpoint_ip = addresses[0].get("ip") if addresses and isinstance(addresses[0], dict) else None
     endpoint_port = ports[0].get("port") if ports and isinstance(ports[0], dict) else None
-    require(endpoint_ip == "10.10.40.150", "local external LiteLLM endpoint must use 10.10.40.150")
+    require(endpoint_ip == "192.0.2.150", "local external LiteLLM endpoint must use documentation TEST-NET address 192.0.2.150")
     require(endpoint_port == 4000, "local external LiteLLM endpoint must use port 4000")
 else:
     require(False, "local external LiteLLM Endpoints must declare one subset")
@@ -83,7 +83,7 @@ for policy_name in [
     if destinations and not isinstance(destinations[0], dict):
         require(False, f"{policy_name} egress destination must be a mapping")
     elif destinations:
-        require(destinations[0].get("ipBlock", {}).get("cidr") == "10.10.40.150/32", f"{policy_name} must restrict egress to 10.10.40.150/32")
+        require(destinations[0].get("ipBlock", {}).get("cidr") == "192.0.2.150/32", f"{policy_name} must restrict egress to 192.0.2.150/32")
         require(set(destinations[0]) == {"ipBlock"}, f"{policy_name} must not combine external LiteLLM with namespace or pod selectors")
     if ports and not isinstance(ports[0], dict):
         require(False, f"{policy_name} egress port must be a mapping")
@@ -129,7 +129,7 @@ if rendered_subsets and isinstance(rendered_subsets[0], dict):
     rendered_ports = rendered_subsets[0].get("ports", [])
     rendered_ip = rendered_addresses[0].get("ip") if rendered_addresses and isinstance(rendered_addresses[0], dict) else None
     rendered_port = rendered_ports[0].get("port") if rendered_ports and isinstance(rendered_ports[0], dict) else None
-    require(rendered_ip == "10.10.40.150", "rendered local LiteLLM endpoint must use 10.10.40.150")
+    require(rendered_ip == "192.0.2.150", "rendered local LiteLLM endpoint must use documentation TEST-NET address 192.0.2.150")
     require(rendered_port == 4000, "rendered local LiteLLM endpoint must use port 4000")
 else:
     require(False, "rendered local LiteLLM Endpoints must declare one subset")
@@ -152,7 +152,7 @@ for policy_name in [
     if destinations and not isinstance(destinations[0], dict):
         require(False, f"rendered {policy_name} egress destination must be a mapping")
     elif destinations:
-        require(destinations[0].get("ipBlock", {}).get("cidr") == "10.10.40.150/32", f"rendered {policy_name} must restrict egress to 10.10.40.150/32")
+        require(destinations[0].get("ipBlock", {}).get("cidr") == "192.0.2.150/32", f"rendered {policy_name} must restrict egress to 192.0.2.150/32")
         require(set(destinations[0]) == {"ipBlock"}, f"rendered {policy_name} must not combine external LiteLLM with namespace or pod selectors")
     if ports and not isinstance(ports[0], dict):
         require(False, f"rendered {policy_name} egress port must be a mapping")

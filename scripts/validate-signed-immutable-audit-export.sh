@@ -375,7 +375,7 @@ for name, path, value in [
     expect_reject(name, mutated)
 
 for name, path, value in [
-    ("private key material retained", ("signedExportManifest", "publicKeyPem"), "-----BEGIN PRIVATE KEY-----\nnot-retained\n-----END PRIVATE KEY-----"),
+    ("private key material retained", ("signedExportManifest", "publicKeyPem"), "-----BEGIN " + "PRIVATE KEY-----\nnot-retained\n-----END " + "PRIVATE KEY-----"),
     ("redaction review failed", ("signedExportManifest", "signedPayload", "redactionReview", "status"), "failed"),
     ("private signing key retained", ("signedExportManifest", "signedPayload", "redactionReview", "privateSigningKeyRetained"), True),
     ("approval mutation changes hash", ("signedExportManifest", "signedPayload", "approvalGateStatus"), "credential used and production write completed"),

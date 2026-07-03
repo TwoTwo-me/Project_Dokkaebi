@@ -23,7 +23,7 @@ ProjectDokkaebi_K8S workspace root
 Root remote:
 
 ```text
-origin git@github.com:Project-Dokkaebi-org/Project_Dokkaebi_K8S.git
+origin https://github.com/Project-Dokkaebi-org/Project_Dokkaebi_K8S.git
 ```
 
 Submodule:

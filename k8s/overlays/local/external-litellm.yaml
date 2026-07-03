@@ -7,10 +7,10 @@ metadata:
     app.kubernetes.io/name: litellm
     app.kubernetes.io/part-of: dokkaebi
     dokkaebi.io/external-endpoint: "true"
-    dokkaebi.io/litellm-endpoint-host: "10.10.40.150"
+    dokkaebi.io/litellm-endpoint-host: "192.0.2.150"
 subsets:
   - addresses:
-      - ip: 10.10.40.150
+      - ip: 192.0.2.150
     ports:
       - name: http
         port: 4000
@@ -32,7 +32,7 @@ spec:
   egress:
     - to:
         - ipBlock:
-            cidr: 10.10.40.150/32
+            cidr: 192.0.2.150/32
       ports:
         - protocol: TCP
           port: 4000
@@ -54,7 +54,7 @@ spec:
   egress:
     - to:
         - ipBlock:
-            cidr: 10.10.40.150/32
+            cidr: 192.0.2.150/32
       ports:
         - protocol: TCP
           port: 4000
@@ -75,7 +75,7 @@ spec:
   egress:
     - to:
         - ipBlock:
-            cidr: 10.10.40.150/32
+            cidr: 192.0.2.150/32
       ports:
         - protocol: TCP
           port: 4000
